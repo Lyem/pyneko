@@ -1,0 +1,1 @@
+from core.__seedwork.infra.http.httpx import HttpxService as Http

@@ -1,0 +1,1 @@
+from .pillow import PillowDownloadRepository as DownloadRepository

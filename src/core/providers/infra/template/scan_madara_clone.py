@@ -4,6 +4,7 @@ import ast
 import math
 from io import BytesIO
 from typing import List
+from pathlib import Path
 from zipfile import ZipFile
 from bs4 import BeautifulSoup
 from core.__seedwork.infra.http import Http
@@ -81,8 +82,7 @@ class ScanMadaraClone(Base):
                                 os.makedirs(path)
                             file_path = os.path.join(path, f"%03d.webp" % page_number)
                             files.append(file_path)
-                            with open(file_path, 'wb') as f:
-                                f.write(content)
+                            Path(file_path).write_bytes(content)
 
             if fn != None:
                 fn(math.ceil(i * 100)/len(pages.pages))

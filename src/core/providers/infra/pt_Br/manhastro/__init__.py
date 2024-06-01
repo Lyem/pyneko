@@ -30,7 +30,6 @@ class SussyScanProvider(WordPressMadara):
         response = Http.get(uri)
         soup = BeautifulSoup(response.content, 'html.parser')
         script_tag = soup.find('script', text=lambda text: text and 'var imageLinks =' in text)
-        print(script_tag)
         script_text = script_tag.string
     
         start_index = script_text.find('[')

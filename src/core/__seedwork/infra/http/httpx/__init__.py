@@ -1,5 +1,5 @@
 from core.__seedwork.infra.http.contract.http import Http, Response
-from core.cloudflare.application.use_cases import IsCloudflareBlockingUseCase, BypassCloudflareUseCase
+from core.cloudflare.application.use_cases import IsCloudflareBlockingUseCase, BypassCloudflareUseCase, BypassCloudflareNoCapchaUseCase
 from tinydb import TinyDB, where, Query
 from platformdirs import user_data_path
 from httpx import get, post
@@ -41,12 +41,21 @@ class HttpxService(Http):
 
             if response.status_code == 403:
                 if IsCloudflareBlockingUseCase().execute(response.text):
-                    request_data = db.search(where('domain') == domain)
-                    if(len(request_data) > 0):
-                        db.remove(where('domain') == domain)
-                    data = BypassCloudflareUseCase().execute(f'https://{domain}')
-                    db.insert(RequestData(domain=domain, headers=data.user_agent, cookies=data.cloudflare_cookie_value).as_dict())
-
+                    if(count == 1):
+                        request_data = db.search(where('domain') == domain)
+                        if(len(request_data) > 0):
+                            db.remove(where('domain') == domain)
+                        data = BypassCloudflareUseCase().execute(f'https://{domain}')
+                        db.insert(RequestData(domain=domain, headers=data.user_agent, cookies=data.cloudflare_cookie_value).as_dict())
+                    elif(count == 2):
+                        request_data = db.search(where('domain') == domain)
+                        if(len(request_data) > 0):
+                            db.remove(where('domain') == domain)
+                        data = BypassCloudflareUseCase().execute(url)
+                        db.insert(RequestData(domain=domain, headers=data.user_agent, cookies=data.cloudflare_cookie_value).as_dict())
+                    else:
+                        content = BypassCloudflareNoCapchaUseCase().execute(url)
+                        return Response(200, content, content, url)
             elif status not in range(200, 299) and not 403 and not 429:
                 sleep(1)
             elif status == 429:

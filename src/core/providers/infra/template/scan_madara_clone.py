@@ -45,7 +45,6 @@ class ScanMadaraClone(Base):
     def getPages(self, id: str) -> Pages:
         if not self.url in id:
             id = f'{self.url}{id}'
-        print(id)
         response = Http.get(id)
         soup = BeautifulSoup(response.content, 'html.parser')
         scripts = soup.find_all('script', attrs={'async': True, 'type': 'text/javascript'})

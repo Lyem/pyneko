@@ -10,3 +10,7 @@ class BypassRepository(ABC):
     def bypass_cloudflare(url: str) -> Request:
         raise NotImplementedError()
 
+    @abstractmethod
+    def bypass_cloudflare_no_capcha(url: str) -> str:
+        raise NotImplementedError()
+

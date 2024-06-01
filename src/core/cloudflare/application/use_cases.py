@@ -12,3 +12,7 @@ class BypassCloudflareUseCase(UseCase):
     def execute(self, url: str) -> Request:
         return Cloudflare().bypass_cloudflare(url)
 
+class BypassCloudflareNoCapchaUseCase(UseCase):
+    def execute(self, url: str) -> str:
+        return Cloudflare().bypass_cloudflare_no_capcha(url)
+

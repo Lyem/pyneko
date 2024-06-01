@@ -47,3 +47,28 @@ class Cloudflare(BypassRepository):
             browser.stop()
         uc.loop().run_until_complete(get_cloudflare_cookie())
         return Request(user_agent=headers, cloudflare_cookie_value=cookies)
+    
+    def bypass_cloudflare_no_capcha(self, url: str) -> str:
+        content={}
+        async def get_cloudflare_cookie():
+            nonlocal content
+            browser = await uc.start(
+                browser_args=[
+                    '--window-size=600,600', 
+                    f'--app={url}',
+                    '--disable-extensions', 
+                    '--disable-popup-blocking'
+                ],
+                browser_executable_path=None
+            )
+            page = await browser.get(url)
+            while(True):
+                page_content = await page.evaluate('document.documentElement.outerHTML')
+                if self.is_cloudflare_blocking(page_content):
+                    sleep(1)
+                else:
+                    content = page_content 
+                    break
+            browser.stop()
+        uc.loop().run_until_complete(get_cloudflare_cookie())
+        return content

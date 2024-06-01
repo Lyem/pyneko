@@ -62,8 +62,10 @@ class ScanMadaraClone(Base):
         
     
     def download(self, pages: Pages, fn: any, headers=None, cookies=None):
+        title = (pages.name[:20]) if len(pages.name) > 20 else pages.name
+        title = re.sub('[^a-zA-Z0-9&_áàâãéèêíïóôõöúçñÁÀÂÃÉÈÊÍÏÓÔÕÖÚÇÑ-]', '', title)
         path = os.path.join(os.getcwd(), 'mangas',
-                            f'{pages.name}', f'{pages.number}')
+                            title, pages.number)
         os.makedirs(path, exist_ok=True)
         files = []
         page_number = 0

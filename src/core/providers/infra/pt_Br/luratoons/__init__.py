@@ -8,4 +8,4 @@ class LuratoonsProvider(ScanMadaraClone):
     domain = 'luratoons.com'
 
     def __init__(self):
-        self.url = 'https://luratoons.com/'   
+        self.url = 'https://luratoons.com'   

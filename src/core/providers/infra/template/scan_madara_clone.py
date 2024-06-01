@@ -43,9 +43,14 @@ class ScanMadaraClone(Base):
         return list
     
     def getPages(self, id: str) -> Pages:
+        if not self.url in id:
+            id = f'{self.url}{id}'
+        print(id)
         response = Http.get(id)
         soup = BeautifulSoup(response.content, 'html.parser')
         scripts = soup.find_all('script', attrs={'async': True, 'type': 'text/javascript'})
+        if len(scripts) == 0:
+            scripts = soup.find_all('script', attrs={'type': 'text/javascript'})
         match = re.search(r'const\s+urls\s*=\s*(\[.*?\]);', str(scripts), re.DOTALL)
         urls = ast.literal_eval(match.group(1))
         title_and_cap = soup.find_all('h1', class_='nav__nome__obra')[0].get_text().split('-')
@@ -53,6 +58,7 @@ class ScanMadaraClone(Base):
         for url in urls:
             list.append(f'{self.url}{url}')
         return Pages(id=id, number=title_and_cap[0], name=title_and_cap[1], pages=list)
+
         
     
     def download(self, pages: Pages, fn: any, headers=None, cookies=None):

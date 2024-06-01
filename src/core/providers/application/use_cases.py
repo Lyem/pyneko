@@ -54,8 +54,8 @@ class ProviderGetPagesUseCase(UseCase):
     def __init__(self, provider: ProviderRepository) -> None:
         self.provider = provider
 
-    def execute(self, id: str) -> Pages:
-        return self.provider().getPages(id)
+    def execute(self, ch: Chapter) -> Pages:
+        return self.provider().getPages(ch)
 
 class ProviderDownloadUseCase(UseCase):
     def __init__(self, provider: ProviderRepository) -> None:

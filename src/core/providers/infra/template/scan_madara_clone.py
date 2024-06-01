@@ -43,21 +43,20 @@ class ScanMadaraClone(Base):
             list.append(Chapter(id=tag.get('href'), number=cap, name=title))
         return list
     
-    def getPages(self, id: str) -> Pages:
-        if not self.url in id:
-            id = f'{self.url}{id}'
-        response = Http.get(id)
+    def getPages(self, ch: Chapter) -> Pages:
+        if not self.url in ch.id:
+            id = f'{self.url}{ch.id}'
+        response = Http.get(ch.id)
         soup = BeautifulSoup(response.content, 'html.parser')
         scripts = soup.find_all('script', attrs={'async': True, 'type': 'text/javascript'})
         if len(scripts) == 0:
             scripts = soup.find_all('script', attrs={'type': 'text/javascript'})
         match = re.search(r'const\s+urls\s*=\s*(\[.*?\]);', str(scripts), re.DOTALL)
         urls = ast.literal_eval(match.group(1))
-        title_and_cap = soup.find_all('h1', class_='nav__nome__obra')[0].get_text().split('-')
         list = []
         for url in urls:
             list.append(f'{self.url}{url}')
-        return Pages(id=id, number=title_and_cap[0], name=title_and_cap[1], pages=list)
+        return Pages(id=id, number=ch.number, name=ch.name, pages=list)
 
         
     

@@ -1,5 +1,4 @@
 import re
-import json
 from typing import List
 from bs4 import BeautifulSoup
 from core.__seedwork.infra.http import Http
@@ -16,7 +15,7 @@ class WordPressMadara(Base):
         self.query_mangas = 'div.post-title h3 a, div.post-title h5 a'
         self.query_chapters = 'li.wp-manga-chapter > a'
         self.query_chapters_title_bloat = None
-        self.query_pages = 'div[class="page-break no-gaps"]'
+        self.query_pages = 'div.page-break.no-gaps'
         self.query_title_for_uri = 'head meta[property="og:title"]'
         self.query_placeholder = '[id^="manga-chapters-holder"][data-id]'
 
@@ -68,28 +67,23 @@ class WordPressMadara(Base):
 
         return chs
 
-    def getPages(self, id: str) -> Pages:
-        uri = urljoin(self.url, id)
+    def getPages(self, ch: Chapter) -> Pages:
+        uri = urljoin(self.url, ch.id)
         uri = self._add_query_params(uri, {'style': 'list'})
         response = Http.get(uri)
         soup = BeautifulSoup(response.content, 'html.parser')
-        data = soup.find_all('div', class_='page-break no-gaps')
+        data = soup.select(self.query_pages)
         if not data:
             uri = self._remove_query_params(uri, ['style'])
             response = Http.get(uri)
             soup = BeautifulSoup(response.content, 'html.parser')
             data = soup.select(self.query_pages)
-        
-        script_tag = soup.find('script', type='application/ld+json')
-        json_data = json.loads(script_tag.string)
-        headline = json_data.get('headline')
-        chapter_heading = soup.find('h1', id='chapter-heading').text.replace(headline, '').strip()
-
         list = [] 
         for el in data:
             list.append(self._process_page_element(el, uri))
-        number = re.findall(r'\d+', chapter_heading)[0]
-        return Pages(id, number, headline, list)
+
+        number = re.findall(r'\d+', str(ch.number))[0]
+        return Pages(ch.id, number, ch.name, list)
 
     def _create_manga_request(self, page):
         form = {

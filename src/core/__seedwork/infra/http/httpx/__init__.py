@@ -21,7 +21,7 @@ class HttpxService(Http):
         count = 0
         extract = tldextract.extract(url)
         domain = f"{extract.domain}.{extract.suffix}"
-
+     
         while(status not in range(200, 299) and count <= 10):
             count += 1
 
@@ -61,7 +61,11 @@ class HttpxService(Http):
             elif status == 429:
                 sleep(60)
             elif status == 301 and 'Location' in response.headers:
-                new_url = f'https://{domain}{response.headers['Location']}'
+                location = response.headers['Location']
+                if(location.startswith('https://')):
+                    new_url = location
+                else:
+                    new_url = f'https://{domain}{response.headers['Location']}'
                 response = get(new_url, params=params, headers=headers, cookies=cookies, timeout=None, **kwargs)
                 status = response.status_code
             if status in range(200, 299):

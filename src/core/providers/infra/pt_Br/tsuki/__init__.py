@@ -41,15 +41,15 @@ class TsukiProvider(Base):
             list.append(Chapter(chapter['versions'][0]['id'], chapter['number'], str(chapter['title'])))
         return list
 
-    def getPages(self, id: str) -> Pages:
+    def getPages(self, ch: Chapter) -> Pages:
         list = []
-        response = Http.get(f'{self.base}/api/v3/chapter/versions/{id}', headers=self.headers).json()
+        response = Http.get(f'{self.base}/api/v3/chapter/versions/{ch.id}', headers=self.headers).json()
         for data in response['pages']:
             if(data['server'] == 1):
                 list.append(f'https://cdn.tsuki-mangas.com/tsuki{data['url']}')
             else:
                 list.append(f'https://cdn1.tsuki-mangas.com/imgs/{data['url']}')
-        return Pages(id, str(response['chapter']['number']), str(response['chapter']['manga']['title']), list)
+        return Pages(id, ch.number, ch.name, list)
   
     def download(self, pages: Pages, fn: any, headers=None, cookies=None):
         if headers is not None:

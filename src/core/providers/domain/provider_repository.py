@@ -22,7 +22,7 @@ class ProviderRepository(ABC):
         raise NotImplementedError()
     
     @abstractmethod
-    def getPages(id: str) -> Pages:
+    def getPages(ch: Chapter) -> Pages:
         raise NotImplementedError()
     
     @abstractmethod

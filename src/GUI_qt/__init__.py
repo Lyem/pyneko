@@ -8,6 +8,7 @@ from tldextract import extract
 from PyQt6.QtWidgets import QApplication, QMessageBox
 from concurrent.futures import ThreadPoolExecutor
 from GUI_qt.load_providers import import_classes_recursively
+from core.providers.domain.chapter_entity import Chapter
 from core.providers.application.use_cases import ProviderMangaUseCase, ProviderGetChaptersUseCase, ProviderGetPagesUseCase, ProviderDownloadUseCase
 
 class MangaDownloaderApp:
@@ -58,10 +59,10 @@ class MangaDownloaderApp:
             QMessageBox.critical(None, "Erro", f"Falha no download {str(e)}")
         self.downloading.pop()
 
-    def chapter_download_button_clicked(self, chapter_id, progress_bar, download_button):
+    def chapter_download_button_clicked(self, ch: Chapter, progress_bar, download_button):
         download_button.setEnabled(False)
         progress_bar.setVisible(True)
-        pages = ProviderGetPagesUseCase(self.provider_selected).execute(chapter_id)
+        pages = ProviderGetPagesUseCase(self.provider_selected).execute(ch)
         def update_progress_bar(value):
             progress_bar.setValue(int(value))
         # ProviderDownloadUseCase(self.provider_selected).execute(pages=pages, fn=update_progress_bar)
@@ -80,7 +81,7 @@ class MangaDownloaderApp:
             chapter_ui.numberLabel.setText(str(chapter.number))
             chapter_ui.ChapterprogressBar.setVisible(False)
             chapter_ui.read.setEnabled(False)
-            chapter_ui.download.clicked.connect(lambda _, ch_id=chapter.id, progress_bar=chapter_ui.ChapterprogressBar, download_button=chapter_ui.download: self.chapter_download_button_clicked(ch_id, progress_bar, download_button))
+            chapter_ui.download.clicked.connect(lambda _, ch=chapter, progress_bar=chapter_ui.ChapterprogressBar, download_button=chapter_ui.download: self.chapter_download_button_clicked(ch, progress_bar, download_button))
             self.window.verticalChapter.addWidget(chapter_ui)
 
     def download_all_chapters(self):

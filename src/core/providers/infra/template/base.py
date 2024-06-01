@@ -19,7 +19,7 @@ class Base(ProviderRepository):
     def getChapters(id: str) -> List[Chapter]:
         raise NotImplementedError()
     
-    def getPages(id: str) -> Pages:
+    def getPages(ch: Chapter) -> Pages:
         raise NotImplementedError()
     
     def download(self, pages: Pages, fn: any, headers=None, cookies=None):

@@ -77,9 +77,11 @@ class ScanMadaraClone(Base):
                         page_number += 1
                         with zip_file.open(file_name) as file:
                             content = file.read()
-                            file = os.path.join(path, f"%03d.webp" % page_number)
-                            files.append(file)
-                            with open(file, 'wb') as f:
+                            if not os.path.exists(path):
+                                os.makedirs(path)
+                            file_path = os.path.join(path, f"%03d.webp" % page_number)
+                            files.append(file_path)
+                            with open(file_path, 'wb') as f:
                                 f.write(content)
 
             if fn != None:

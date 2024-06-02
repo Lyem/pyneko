@@ -48,9 +48,8 @@ class ScanMadaraClone(Base):
             ch.id = f'{self.url}{ch.id}'
         response = Http.get(ch.id)
         soup = BeautifulSoup(response.content, 'html.parser')
-        scripts = soup.find_all('script', attrs={'async': True, 'type': 'text/javascript'})
-        if len(scripts) == 0:
-            scripts = soup.find_all('script', attrs={'type': 'text/javascript'})
+        scripts = soup.find('div', id='imageContainer')
+        scripts = str(scripts.find_all('script')[1])
         match = re.search(r'const\s+urls\s*=\s*(\[.*?\]);', str(scripts), re.DOTALL)
         urls = ast.literal_eval(match.group(1))
         list = []

@@ -15,7 +15,7 @@ class PillowDownloadRepository(DownloadRepository):
     def download(pages: Pages, fn=None, headers=None, cookies=None) -> Chapter:
         title = (pages.name[:20]) if len(pages.name) > 20 else pages.name
         title = re.sub('[^a-zA-Z0-9&_áàâãéèêíïóôõöúçñÁÀÂÃÉÈÊÍÏÓÔÕÖÚÇÑ-]', '', title)
-        path = os.path.join(os.getcwd(), 'mangas', title, pages.number)
+        path = os.path.join(os.getcwd(), 'mangas', str(title), str(pages.number))
         os.makedirs(path, exist_ok=True)
 
         page_number = 1

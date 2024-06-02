@@ -56,7 +56,7 @@ class ScanMadaraClone(Base):
         list = []
         for url in urls:
             list.append(f'{self.url}{url}')
-        return Pages(id=id, number=ch.number, name=ch.name, pages=list)
+        return Pages(id=ch.id, number=ch.number, name=ch.name, pages=list)
 
         
     

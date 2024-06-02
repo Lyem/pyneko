@@ -39,13 +39,13 @@ class ScanMadaraClone(Base):
         title = soup.find_all('h1', class_='desc__titulo__comic')[0].get_text()
         list = []
         for tag in tags:
-            cap = tag.find('span', class_='numero__capitulo')
+            cap = tag.find('span', class_='numero__capitulo').get_text()
             list.append(Chapter(id=tag.get('href'), number=cap, name=title))
         return list
     
     def getPages(self, ch: Chapter) -> Pages:
         if not self.url in ch.id:
-            id = f'{self.url}{ch.id}'
+            ch.id = f'{self.url}{ch.id}'
         response = Http.get(ch.id)
         soup = BeautifulSoup(response.content, 'html.parser')
         scripts = soup.find_all('script', attrs={'async': True, 'type': 'text/javascript'})

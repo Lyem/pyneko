@@ -34,3 +34,9 @@ Example: ``sudo zypper install xsel`` OR ``sudo zypper install xclip``
 🐧 On Linux/BSD - Wayland
 Install wl-clipboard package
 Example: ``sudo zypper install wl-clipboard``
+
+## Sponsors ❤️
+
+Check out our awesome sponsors!
+
+<a href="https://github.com/Benjigx"><img src="https://github.com/Benjigx.png" width="80px" alt="Benjigx" /></a>&nbsp;&nbsp;

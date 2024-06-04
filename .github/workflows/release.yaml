@@ -24,12 +24,12 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.12.2
+          python-version: '3.12.2'
 
       - name: Setup Poetry
         uses: abatilo/actions-poetry@v2
         with:
-          poetry-version: 1.8.3
+          poetry-version: '1.8.3'
 
       - name: Install dependencies
         run: poetry install

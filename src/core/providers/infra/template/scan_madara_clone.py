@@ -2,6 +2,8 @@ import os
 import re
 import ast
 import math
+import pillow_avif
+from PIL import Image
 from io import BytesIO
 from typing import List
 from pathlib import Path
@@ -11,6 +13,7 @@ from core.__seedwork.infra.http import Http
 from core.providers.infra.template.base import Base
 from core.providers.domain.entities import Chapter, Pages, Manga
 from core.download.domain.dowload_entity import Chapter as DChapter
+Image.MAX_IMAGE_PIXELS = 933120000
 
 class ScanMadaraClone(Base):
 
@@ -49,7 +52,7 @@ class ScanMadaraClone(Base):
         response = Http.get(ch.id)
         soup = BeautifulSoup(response.content, 'html.parser')
         scripts = soup.find('div', id='imageContainer')
-        scripts = str(scripts.find_all('script')[1])
+        scripts = str(scripts.find_all('script'))
         match = re.search(r'const\s+urls\s*=\s*(\[.*?\]);', str(scripts), re.DOTALL)
         urls = ast.literal_eval(match.group(1))
         list = []
@@ -80,9 +83,20 @@ class ScanMadaraClone(Base):
                             content = file.read()
                             if not os.path.exists(path):
                                 os.makedirs(path)
-                            file_path = os.path.join(path, f"%03d.webp" % page_number)
-                            files.append(file_path)
-                            Path(file_path).write_bytes(content)
+                            try:
+                                img = Image.open(BytesIO(content))
+                                img.verify()
+                                icc = img.info.get('icc_profile')
+                                if img.mode in ("RGBA", "P"):
+                                    img = img.convert("RGB")
+                                file = os.path.join(path, f"%03d.jpg" % page_number)
+                                files.append(file)
+                                img.save(file, quality=80, dpi=(72, 72), icc_profile=icc)
+                            except:
+                                if response.status == 200:
+                                    file = os.path.join(path, f"%03d.jpg" % page_number)
+                                    files.append(file)
+                                    Path(file).write_bytes(content)
 
             if fn != None:
                 fn(math.ceil(i * 100)/len(pages.pages))

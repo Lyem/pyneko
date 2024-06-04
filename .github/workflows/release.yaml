@@ -45,10 +45,6 @@ jobs:
         if: ${{ matrix.config.os == 'ubuntu-22.04' }}
         run: mv ./dist/__init__ ./dist/Pyneko
 
-      - name: Rename build app for macOS
-        if: ${{ matrix.config.os == 'macos-12' }}
-        run: mv ./dist/__init__.app ./dist/Pyneko.app
-
       - name: Move build directory
         run: mv ./dist ./dist-${{ matrix.config.os }}
 
@@ -67,6 +63,9 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: pyneko-pyinstaller-artifact
+        
+      - name: Zip file macos
+        run: zip -r helper_macos.zip dist-macos-*
 
       - name: Create Release
         id: create_release
@@ -78,6 +77,6 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            dist-windows-2019/Pyneko.exe
-            dist-ubuntu-22.04/Pyneko
-            dist-macos-12/Pyneko.app
+            dist-windows-${{ matrix.config.os }}/Pyneko.exe
+            dist-ubuntu-${{ matrix.config.os }}/Pyneko
+            helper_macos.zip

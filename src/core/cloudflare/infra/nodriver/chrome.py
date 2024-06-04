@@ -36,7 +36,13 @@ def get_windows_candidates() -> list[str]:
     return windows_candidates
 
 def find_chrome_executable() -> str | None:
-    is_posix = sys.platform.startswith(("darwin", "cygwin", "linux", "linux2"))
+    is_frozen = getattr(sys, 'frozen', False)
+    
+    if is_frozen:
+        is_posix = sys.platform.startswith(("darwin", "cygwin", "linux", "linux2"))
+    else:
+        is_posix = os.name == 'posix'
+
     candidates = get_posix_candidates() if is_posix else get_windows_candidates()
 
     valid_candidates = [c for c in candidates if os.path.exists(c) and os.access(c, os.X_OK)]

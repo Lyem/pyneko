@@ -33,24 +33,30 @@ jobs:
 
       - name: Install dependencies
         run: poetry install
-      
+
       - name: Build
         run: poetry run build
-      
-      - name: Rename build app
+
+      - name: Rename build app for Windows
         if: ${{ matrix.config.os == 'windows-2019' }}
-          run: mv ./dist/__init__.exe ./dist/Pyneko.exe
+        run: mv ./dist/__init__.exe ./dist/Pyneko.exe
+
+      - name: Rename build app for Ubuntu
         if: ${{ matrix.config.os == 'ubuntu-22.04' }}
-          run: mv ./dist/__init__ ./dist/Pyneko
+        run: mv ./dist/__init__ ./dist/Pyneko
+
+      - name: Rename build app for macOS
         if: ${{ matrix.config.os == 'macos-12' }}
-          run: mv ./dist/__init__.app ./dist/Pyneko.app
+        run: mv ./dist/__init__.app ./dist/Pyneko.app
+
+      - name: Move build directory
         run: mv ./dist ./dist-${{ matrix.config.os }}
-      
+
       - name: Upload result job ${{ matrix.config.os }}
         uses: actions/upload-artifact@v2
         with:
           name: pyneko-pyinstaller-artifact
-          path: ./dist*
+          path: ./dist-${{ matrix.config.os }}
 
   release:
     name: Release
@@ -72,6 +78,6 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            dist-windows-*/Pyneko.exe
-            dist-ubuntu-*/Pyneko
-            dist-macos-*/Pyneko.app
+            dist-windows-2019/Pyneko.exe
+            dist-ubuntu-22.04/Pyneko
+            dist-macos-12/Pyneko.app

@@ -1,9 +1,16 @@
 import importlib.util
 import os
+import sys
+from pathlib import Path
 from core.providers.domain.provider_repository import ProviderRepository
 from typing import List
 
-package_path = os.path.join('src', 'core', 'providers', 'infra')
+def base_path():
+    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+        return Path(sys._MEIPASS)
+    return Path('.') / 'src'
+
+package_path = os.path.join(base_path(), 'core', 'providers', 'infra')
 ignore_folders = ['template', '__pycache__']
 
 def import_classes_recursively() -> List[ProviderRepository]:

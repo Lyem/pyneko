@@ -7,7 +7,7 @@ from clipman import init, get
 from tldextract import extract
 from PyQt6.QtWidgets import QApplication, QMessageBox
 from concurrent.futures import ThreadPoolExecutor
-from GUI_qt.load_providers import import_classes_recursively
+from GUI_qt.load_providers import import_classes_recursively, base_path
 from core.providers.domain.chapter_entity import Chapter
 from core.providers.application.use_cases import ProviderMangaUseCase, ProviderGetChaptersUseCase, ProviderGetPagesUseCase, ProviderDownloadUseCase
 
@@ -25,7 +25,7 @@ class MangaDownloaderApp:
         self.clock_worker = 1
         self.max_concurrent_downloads = 3
 
-        self.current_dir = os.path.dirname(os.path.abspath(__file__))
+        self.current_dir = os.path.join(base_path(), 'GUI_qt')
         self.assets = os.path.join(self.current_dir, 'assets')
 
         self.app = QApplication(sys.argv)
@@ -128,7 +128,7 @@ class MangaDownloaderApp:
         self.running = False
         event.accept()
 
-if __name__ == "__main__":    
+if __name__ == "__main__":
     try:
         init()
         app = MangaDownloaderApp()

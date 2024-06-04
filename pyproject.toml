@@ -1,18 +1,18 @@
 [tool.poetry]
-name = "manga"
+name = "pyneko"
 version = "0.1.0"
 description = ""
 authors = ["lyem <rfael403@gmail.com>"]
 readme = "README.md"
+packages = [{ include = "scripts/*" }]
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = ">=3.12,<3.13"
 httpx = "^0.27.0"
 undetected-chromedriver = "^3.5.5"
 nodriver = "^0.29rc2"
 pillow = "^10.3.0"
 fake-useragent = "^1.5.1"
-bs4 = "^0.0.2"
 thumbhash-python = "^1.0.1"
 tinydb = "^4.8.0"
 beautifulsoup4 = "^4.12.3"
@@ -23,3 +23,9 @@ clipman = "^3.2.3"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.1"
+pyinstaller = "^6.7.0"
+
+[tool.poetry.scripts]
+clean = "scripts.remove_cache:remove_cache_folders"
+start = "scripts.start:run"
+build = "scripts.build:install"

@@ -1,3 +1,6 @@
 mangas
 __pycache__
 .pytest_cache
+build
+dist
+__init__.spec

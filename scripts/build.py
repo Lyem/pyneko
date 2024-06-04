@@ -7,7 +7,6 @@ is_posix = platform.startswith(("darwin", "cygwin", "linux", "linux2"))
 
 src_path = Path(__file__).resolve().parent.parent / 'src'
 path_to_main = str(src_path / 'GUI_qt' / '__init__.py')
-icon = str(src_path.parent / 'assets' / 'icon.ico')
 
 separator = ':' if is_posix else ';'
 
@@ -25,7 +24,7 @@ def install():
         '--collect-all=httpx',
         '--collect-all=fake_useragent',
         '--collect-all=pillow_avif',
-        f'--icon="{icon}"',
+        f'--icon=assets/icon.ico',
         '--exclude-module=tests',
         f'--add-data=src/core/providers/infra{separator}core/providers/infra',
         f'--add-data=src/core/__seedwork/infra{separator}core/__seedwork/infra',

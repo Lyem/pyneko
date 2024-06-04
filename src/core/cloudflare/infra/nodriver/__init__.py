@@ -29,9 +29,9 @@ class Cloudflare(BypassRepository):
                     f'--app={url}',
                     '--disable-extensions', 
                     '--disable-popup-blocking'
+                    '--no-sandbox'
                 ],
                 browser_executable_path=find_chrome_executable(),
-                sandbox=False
             )
             page = await browser.get(url)
             agent = await page.evaluate('navigator.userAgent')

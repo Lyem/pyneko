@@ -3,6 +3,7 @@ from time import sleep
 from bs4 import BeautifulSoup
 from core.cloudflare.domain.request_entity import Request
 from core.cloudflare.domain.bypass_repository import BypassRepository
+from core.cloudflare.infra.nodriver.chrome import find_chrome_executable
 
 class Cloudflare(BypassRepository):
     def is_cloudflare_blocking(self, html: str) -> bool:
@@ -29,7 +30,7 @@ class Cloudflare(BypassRepository):
                     '--disable-extensions', 
                     '--disable-popup-blocking'
                 ],
-                browser_executable_path=None
+                browser_executable_path=find_chrome_executable()
             )
             page = await browser.get(url)
             agent = await page.evaluate('navigator.userAgent')

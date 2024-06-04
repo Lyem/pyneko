@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup Python
-      - uses: actions/setup-python@v4
+        uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.config.python-version }}
 
@@ -38,13 +38,19 @@ jobs:
       - name: build
         run: poetry run build
       
-      - name: Rename builded app
+      - name: Rename build app
         run: |
-          mv ./dist/__init__ PyNeko
+          if [[ "${{ matrix.config.os }}" == 'windows-2019' ]]; then
+            mv ./dist/__init__.exe ./dist/Pyneko.exe
+          elif [[ "${{ matrix.config.os }}" == 'ubuntu-22.04' ]]; then
+            mv ./dist/__init__ ./dist/Pyneko
+          elif [[ "${{ matrix.config.os }}" == 'macos-12' ]]; then
+            mv ./dist/__init__.app ./dist/Pyneko.app
+          fi
           mv ./dist ./dist-${{ matrix.config.os }}
       
       - name: Upload result job ${{ matrix.config.os }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: pyneko-pyinstaller-artifact
           path: ./dist*
@@ -55,18 +61,9 @@ jobs:
     needs: build
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v2
         with:
           name: pyneko-pyinstaller-artifact
-
-      - name: Zip file windows
-        run: zip -r pyneko_windows.zip dist-windows-*
-
-      - name: Zip file ubuntu
-        run: zip -r pyneko_ubuntu.zip dist-ubuntu-*
-
-      - name: Zip file macos
-        run: zip -r pyneko_macos.zip dist-macos-*
 
       - name: Create Release
         id: create_release
@@ -78,6 +75,6 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            pyneko_windows.zip
-            pyneko_ubuntu.zip
-            pyneko_macos.zip
+            dist-windows-*/Pyneko.exe
+            dist-ubuntu-*/Pyneko
+            dist-macos-*/Pyneko.app

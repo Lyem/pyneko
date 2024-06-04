@@ -16,8 +16,7 @@ jobs:
           - os: ubuntu-22.04
           - os: macos-12
           - os: windows-2019
-          - python-version: 3.12.2
-          - poetry-version: 1.8.3
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -25,12 +24,12 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.config.python-version }}
+          python-version: 3.12.2
 
       - name: Setup Poetry
         uses: abatilo/actions-poetry@v2
         with:
-          poetry-version: ${{ matrix.config.poetry-version }}
+          poetry-version: 1.8.3
 
       - name: Install dependencies
         run: poetry install

@@ -24,6 +24,7 @@ def install():
         '--collect-all=bs4',
         '--collect-all=httpx',
         '--collect-all=fake_useragent',
+        '--collect-all=pillow_avif',
         f'--icon="{icon}"',
         '--exclude-module=tests',
         f'--add-data=src/core/providers/infra{separator}core/providers/infra',

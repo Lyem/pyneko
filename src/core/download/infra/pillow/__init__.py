@@ -1,6 +1,7 @@
 import re
 import os
 import math
+import pillow_avif
 from PIL import Image
 from io import BytesIO
 from core.__seedwork.infra.http import Http
@@ -28,12 +29,12 @@ class PillowDownloadRepository(DownloadRepository):
                 icc = img.info.get('icc_profile')
                 if img.mode in ("RGBA", "P"):
                     img = img.convert("RGB")
-                file = os.path.join(path, f"%03d.webp" % page_number)
+                file = os.path.join(path, f"%03d.jpg" % page_number)
                 files.append(file)
                 img.save(file, quality=80, dpi=(72, 72), icc_profile=icc)
             except:
                 if response.status == 200:
-                    file = os.path.join(path, f"%03d.webp" % page_number)
+                    file = os.path.join(path, f"%03d.jpg" % page_number)
                     files.append(file)
                     with open(file, 'wb') as archive:
                         archive.write(response.content)

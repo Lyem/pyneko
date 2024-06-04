@@ -20,6 +20,7 @@ pyqt6 = "^6.7.0"
 platformdirs = "^4.2.2"
 tldextract = "^5.1.2"
 clipman = "^3.2.3"
+pillow-avif-plugin = "^1.4.3"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.1"

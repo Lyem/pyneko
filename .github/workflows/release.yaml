@@ -65,7 +65,7 @@ jobs:
           name: pyneko-pyinstaller-artifact
         
       - name: Zip file macos
-        run: zip -r helper_macos.zip dist-macos-*
+        run: zip -r pyneko_macos.zip __init__.app __init__
 
       - name: Create Release
         id: create_release
@@ -77,6 +77,6 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            dist-windows-${{ matrix.config.os }}/Pyneko.exe
-            dist-ubuntu-${{ matrix.config.os }}/Pyneko
-            helper_macos.zip
+            Pyneko.exe
+            Pyneko
+            pyneko_macos.zip

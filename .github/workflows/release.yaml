@@ -34,7 +34,7 @@ jobs:
       - name: Install dependencies
         run: poetry install
       
-      - name: build
+      - name: Build
         run: poetry run build
       
       - name: Rename build app

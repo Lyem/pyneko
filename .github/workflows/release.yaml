@@ -38,15 +38,13 @@ jobs:
         run: poetry run build
       
       - name: Rename build app
-        run: |
-          if [ "${{ matrix.config.os }}" == 'windows-2019' ]; then
-            mv ./dist/__init__.exe ./dist/Pyneko.exe
-          elif [ "${{ matrix.config.os }}" == 'ubuntu-22.04' ]; then
-            mv ./dist/__init__ ./dist/Pyneko
-          elif [ "${{ matrix.config.os }}" == 'macos-12' ]; then
-            mv ./dist/__init__.app ./dist/Pyneko.app
-          fi
-          mv ./dist ./dist-${{ matrix.config.os }}
+        if: ${{ matrix.config.os == 'windows-2019' }}
+          run: mv ./dist/__init__.exe ./dist/Pyneko.exe
+        if: ${{ matrix.config.os == 'ubuntu-22.04' }}
+          run: mv ./dist/__init__ ./dist/Pyneko
+        if: ${{ matrix.config.os == 'macos-12' }}
+          run: mv ./dist/__init__.app ./dist/Pyneko.app
+        run: mv ./dist ./dist-${{ matrix.config.os }}
       
       - name: Upload result job ${{ matrix.config.os }}
         uses: actions/upload-artifact@v2

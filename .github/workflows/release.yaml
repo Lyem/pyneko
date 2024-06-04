@@ -39,11 +39,11 @@ jobs:
       
       - name: Rename build app
         run: |
-          if [[ "${{ matrix.config.os }}" == 'windows-2019' ]]; then
+          if [ "${{ matrix.config.os }}" == 'windows-2019' ]; then
             mv ./dist/__init__.exe ./dist/Pyneko.exe
-          elif [[ "${{ matrix.config.os }}" == 'ubuntu-22.04' ]]; then
+          elif [ "${{ matrix.config.os }}" == 'ubuntu-22.04' ]; then
             mv ./dist/__init__ ./dist/Pyneko
-          elif [[ "${{ matrix.config.os }}" == 'macos-12' ]]; then
+          elif [ "${{ matrix.config.os }}" == 'macos-12' ]; then
             mv ./dist/__init__.app ./dist/Pyneko.app
           fi
           mv ./dist ./dist-${{ matrix.config.os }}

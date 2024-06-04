@@ -31,27 +31,10 @@ jobs:
         with:
           poetry-version: '1.8.3'
 
-      - name: Create non-root user (Linux and MacOS)
-        if: ${{ matrix.config.os != 'windows-2019' }}
-        run: |
-          sudo useradd -m builduser
-          sudo chown -R builduser:builduser .
-          sudo chmod -R 755 .
+      - name: Install dependencies
+        run: poetry install
 
-      - name: Install dependencies (Linux and MacOS)
-        if: ${{ matrix.config.os != 'windows-2019' }}
-        run: sudo -u builduser -H poetry install
-
-      - name: Build (Linux and MacOS)
-        if: ${{ matrix.config.os != 'windows-2019' }}
-        run: sudo -u builduser -H poetry run build
-      
-      - name: Install dependencies windows
-        if: ${{ matrix.config.os == 'windows-2019' }}
-        run: sudo -u builduser -H poetry install
-
-      - name: Build windows
-        if: ${{ matrix.config.os == 'windows-2019' }}
+      - name: Build
         run: poetry run build
 
       - name: Rename build app for Windows

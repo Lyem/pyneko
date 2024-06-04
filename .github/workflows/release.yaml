@@ -1,0 +1,83 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+    name: Build app
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - os: ubuntu-22.04
+          - os: macos-12
+          - os: windows-2019
+          - python-version: 3.12.2
+          - poetry-version: 1.8.3
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.config.python-version }}
+
+      - name: Setup Poetry
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: ${{ matrix.config.poetry-version }}
+
+      - name: Install dependencies
+        run: poetry install
+      
+      - name: build
+        run: poetry run build
+      
+      - name: Rename builded app
+        run: |
+          mv ./dist/__init__ PyNeko
+          mv ./dist ./dist-${{ matrix.config.os }}
+      
+      - name: Upload result job ${{ matrix.config.os }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: pyneko-pyinstaller-artifact
+          path: ./dist*
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: pyneko-pyinstaller-artifact
+
+      - name: Zip file windows
+        run: zip -r pyneko_windows.zip dist-windows-*
+
+      - name: Zip file ubuntu
+        run: zip -r pyneko_ubuntu.zip dist-ubuntu-*
+
+      - name: Zip file macos
+        run: zip -r pyneko_macos.zip dist-macos-*
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          draft: false
+          prerelease: false
+          files: |
+            pyneko_windows.zip
+            pyneko_ubuntu.zip
+            pyneko_macos.zip

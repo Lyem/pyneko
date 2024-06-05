@@ -59,7 +59,7 @@ class HttpxService(Http):
             elif status not in range(200, 299) and not 403 and not 429:
                 sleep(1)
             elif status == 429:
-                sleep(60)
+                sleep(60)                
             elif status == 301 and 'Location' in response.headers:
                 location = response.headers['Location']
                 if(location.startswith('https://')):
@@ -68,7 +68,7 @@ class HttpxService(Http):
                     new_url = f'https://{domain}{response.headers['Location']}'
                 response = get(new_url, params=params, headers=headers, cookies=cookies, timeout=None, **kwargs)
                 status = response.status_code
-            if status in range(200, 299):
+            if status in range(200, 299) or status == 404:
                 return Response(response.status_code, response.text, response.content, url)
 
         raise Exception(f"Failed to fetch the URL STATUS: {status}")

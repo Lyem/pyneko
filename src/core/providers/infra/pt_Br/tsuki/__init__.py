@@ -17,6 +17,7 @@ class TsukiProvider(Base):
         ua = UserAgent()
         user = ua.random
         self.headers = {'referer': f'{self.base}'}
+        self.cdns = ['https://cdn.tsuki-mangas.com/tsuki', 'https://cdn1.tsuki-mangas.com/imgs', 'https://cdn2.tsuki-mangas.com']
     
     def getMangas(self) -> List[Manga]:
         list = []
@@ -44,12 +45,16 @@ class TsukiProvider(Base):
     def getPages(self, ch: Chapter) -> Pages:
         list = []
         response = Http.get(f'{self.base}/api/v3/chapter/versions/{ch.id}', headers=self.headers).json()
+        cdn_selected = ''
         for data in response['pages']:
-            if(data['server'] == 1):
-                list.append(f'https://cdn.tsuki-mangas.com/tsuki{data['url']}')
-            else:
-                list.append(f'https://cdn1.tsuki-mangas.com/imgs/{data['url']}')
-        return Pages(id, ch.number, ch.name, list)
+            if len(cdn_selected) == 0:
+                for cdn in self.cdns:
+                    r = Http.get(f'{cdn}{data['url']}', headers=self.headers)
+                    if r.status == 200:
+                        cdn_selected = cdn
+                        break
+            list.append(f'{cdn_selected}{data['url']}')
+        return Pages(id, ch.number, response['chapter']['manga']['title'], list)
   
     def download(self, pages: Pages, fn: any, headers=None, cookies=None):
         if headers is not None:

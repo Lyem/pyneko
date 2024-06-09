@@ -1,3 +1,4 @@
+import base64
 import nodriver as uc
 from time import sleep
 from bs4 import BeautifulSoup
@@ -70,6 +71,42 @@ class Cloudflare(BypassRepository):
                     sleep(1)
                 else:
                     content = page_content 
+                    break
+            browser.stop()
+        uc.loop().run_until_complete(get_cloudflare_cookie())
+        return content
+    
+    def bypass_cloudflare_no_capcha_fetch(self, domain: str, url: str) -> any:
+        content={}
+        async def get_cloudflare_cookie():
+            nonlocal content
+            browser = await uc.start(
+                browser_args=[
+                    '--window-size=600,600', 
+                    f'--app={domain}',
+                    '--disable-extensions', 
+                    '--disable-popup-blocking'
+                ],
+                browser_executable_path=None
+            )
+            page = await browser.get(domain)
+            while(True):
+                page_content = await page.evaluate('document.documentElement.outerHTML')
+                fetch_content = await page.evaluate(f'''
+                    fetch("{url}")''' + '''.then(response => response.arrayBuffer()).then(buffer => {
+                        let binary = '';
+                        let bytes = new Uint8Array(buffer);
+                        let len = bytes.byteLength;
+                        for (let i = 0; i < len; i++) {
+                            binary += String.fromCharCode(bytes[i]);
+                        }
+                        return btoa(binary);
+                    });
+                ''', await_promise=True)
+                if self.is_cloudflare_blocking(page_content):
+                    sleep(1)
+                else:
+                    content = base64.b64decode(fetch_content)
                     break
             browser.stop()
         uc.loop().run_until_complete(get_cloudflare_cookie())

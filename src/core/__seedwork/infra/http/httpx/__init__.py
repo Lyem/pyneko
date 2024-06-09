@@ -1,5 +1,5 @@
 from core.__seedwork.infra.http.contract.http import Http, Response
-from core.cloudflare.application.use_cases import IsCloudflareBlockingUseCase, BypassCloudflareUseCase, BypassCloudflareNoCapchaUseCase
+from core.cloudflare.application.use_cases import IsCloudflareBlockingUseCase, BypassCloudflareUseCase, BypassCloudflareNoCapchaUseCase, BypassCloudflareNoCapchaFeachUseCase
 from tinydb import TinyDB, where, Query
 from platformdirs import user_data_path
 from httpx import get, post
@@ -41,6 +41,9 @@ class HttpxService(Http):
 
             if response.status_code == 403:
                 if IsCloudflareBlockingUseCase().execute(response.text):
+                    if(url.endswith('.zip')):
+                        content = BypassCloudflareNoCapchaFeachUseCase().execute(f'https://{domain}', url)
+                        return Response(200, 'a', content, url)
                     if(count == 1):
                         request_data = db.search(where('domain') == domain)
                         if(len(request_data) > 0):

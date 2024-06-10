@@ -36,6 +36,8 @@ class YugenProvider(Base):
         return list
 
     def getManga(self, link: str) -> Manga:
+        if link.endswith('/'):
+            link = link[:-1]
         slug = link.split("/")[-1]
         response = Http.post(f'{self.cdn}api/serie/serie_details/{slug}')
         data = response.json()

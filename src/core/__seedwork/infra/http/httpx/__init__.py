@@ -63,7 +63,7 @@ class HttpxService(Http):
                 sleep(1)
             elif status == 429:
                 sleep(60)                
-            elif status == 301 and 'Location' in response.headers:
+            elif status == 301 and 'Location' in response.headers or status == 302 and 'Location' in response.headers:
                 location = response.headers['Location']
                 if(location.startswith('https://')):
                     new_url = location

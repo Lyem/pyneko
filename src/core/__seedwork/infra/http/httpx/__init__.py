@@ -59,6 +59,9 @@ class HttpxService(Http):
                     else:
                         content = BypassCloudflareNoCapchaUseCase().execute(url)
                         return Response(200, content, content, url)
+                else:
+                    content = BypassCloudflareNoCapchaFeachUseCase().execute(f'https://{domain}', url)
+                    return Response(200, 'a', content, url)
             elif status not in range(200, 299) and not 403 and not 429:
                 sleep(1)
             elif status == 429:

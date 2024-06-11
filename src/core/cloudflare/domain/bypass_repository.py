@@ -15,6 +15,6 @@ class BypassRepository(ABC):
         raise NotImplementedError()
     
     @abstractmethod
-    def bypass_cloudflare_no_capcha_fetch(domain: str, url: str) -> any:
+    def bypass_cloudflare_no_capcha_fetch(domain: str, url: str, background: bool) -> any:
         raise NotImplementedError()
 

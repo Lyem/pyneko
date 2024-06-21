@@ -47,13 +47,14 @@ class MangaDownloaderApp:
             if len(self.queue_download) > 0:
                 if len(self.downloading) < self.max_concurrent_downloads:
                     self.downloading.append('item')
-                    pages, update_progress_bar = self.queue_download[0]
+                    ch, update_progress_bar = self.queue_download[0]
                     del self.queue_download[0]
-                    threading.Thread(target=self.make_download, args=(pages, update_progress_bar)).start()
+                    threading.Thread(target=self.make_download, args=(ch, update_progress_bar)).start()
             sleep(self.clock_worker)
     
-    def make_download(self, pages, update_progress_bar):
+    def make_download(self, ch, update_progress_bar):
         try:
+            pages = ProviderGetPagesUseCase(self.provider_selected).execute(ch)
             ProviderDownloadUseCase(self.provider_selected).execute(pages=pages, fn=update_progress_bar)
         except Exception as e:
             QMessageBox.critical(None, "Erro", f"Falha no download {str(e)}")
@@ -62,11 +63,10 @@ class MangaDownloaderApp:
     def chapter_download_button_clicked(self, ch: Chapter, progress_bar, download_button):
         download_button.setEnabled(False)
         progress_bar.setVisible(True)
-        pages = ProviderGetPagesUseCase(self.provider_selected).execute(ch)
         def update_progress_bar(value):
             progress_bar.setValue(int(value))
         # ProviderDownloadUseCase(self.provider_selected).execute(pages=pages, fn=update_progress_bar)
-        self.queue_download.append((pages, update_progress_bar))
+        self.queue_download.append((ch, update_progress_bar))
 
     def get_chapters(self, item):
         index = self.window.mangaList.row(item)

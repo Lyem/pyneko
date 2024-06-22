@@ -33,7 +33,6 @@ class MangaDownloaderApp:
         self.window.closeEvent = self.closeEvent
         self.window.CopyLinkButton.clicked.connect(self.manga_by_link)
         self.window.downloadAll.clicked.connect(self.download_all_chapters)
-        self.window.downloadAll.setEnabled(False)
         self.window.providersButton.setEnabled(False)
         self.window.LoadButton.setEnabled(False)
         self.window.mangaFilter.setEnabled(False)
@@ -85,25 +84,19 @@ class MangaDownloaderApp:
             self.window.verticalChapter.addWidget(chapter_ui)
 
     def download_all_chapters(self):
-        pass
-        # if self.manga_id_selectd != None:
-        #     chapters = ProviderGetChaptersUseCase(self.provider_selected).execute(self.manga_id_selectd)
-        #     for i in range(self.window.verticalChapter.count()):
-        #         chapter_ui = self.window.verticalChapter.itemAt(i).widget()
-        #         for ch in chapters:
-        #             if str(ch.number) == chapter_ui.numberLabel.text():
-        #                 progress_bar = chapter_ui.ChapterprogressBar
-        #                 progress_bar.setVisible(True)
-        #     for i in range(self.window.verticalChapter.count()):
-        #         chapter_ui = self.window.verticalChapter.itemAt(i).widget()
-        #         for ch in chapters:
-        #             if str(ch.number) == chapter_ui.numberLabel.text():
-        #                 progress_bar = chapter_ui.ChapterprogressBar
-        #                 pages = ProviderGetPagesUseCase(self.provider_selected).execute(ch.id)
-        #                 def update_progress_bar(value):
-        #                     progress_bar.setValue(int(value))
-        #                 self.queue_download.append((pages, update_progress_bar))
-        #                 sleep(self.clock_worker)
+        if self.manga_id_selectd is not None:
+            chapters = ProviderGetChaptersUseCase(self.provider_selected).execute(self.manga_id_selectd)
+            for i in range(self.window.verticalChapter.count()):
+                chapter_ui = self.window.verticalChapter.itemAt(i).widget()
+                for ch in chapters:
+                    if str(ch.number) == chapter_ui.numberLabel.text():
+                        progress_bar = chapter_ui.ChapterprogressBar
+                        progress_bar.setVisible(True)
+
+                        def update_progress_bar(value, progress_bar=progress_bar):
+                            progress_bar.setValue(int(value))
+                        self.queue_download.append((ch, update_progress_bar))
+
 
     def manga_by_link(self):
         if self.window.mangaList.count() > 0:

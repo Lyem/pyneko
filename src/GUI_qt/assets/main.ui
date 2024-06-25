@@ -58,7 +58,7 @@
         <item>
          <widget class="QPushButton" name="CopyLinkButton">
           <property name="text">
-           <string>Copiar link</string>
+           <string>Colar link</string>
           </property>
          </widget>
         </item>

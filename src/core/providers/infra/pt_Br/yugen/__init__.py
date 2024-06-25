@@ -1,5 +1,6 @@
-from typing import List
 import json
+from typing import List
+import unicodedata
 from bs4 import BeautifulSoup
 from core.__seedwork.infra.http import Http
 from core.providers.infra.template.base import Base
@@ -10,11 +11,11 @@ class YugenProvider(Base):
     icon = 'https://i.imgur.com/QRjE79s.png'
     icon_hash = 'd/iFDQIoqraAa360R1NPCZWlHiugekWiJw'
     lang = 'pt-Br'
-    domain = 'yugenmangas.net.br'
+    domain = 'yugenapp.lat'
 
     def __init__(self) -> None:
-        self.base = 'https://yugenmangas.net.br'
-        self.cdn = 'https://api.yugenmangas.net.br/'
+        self.base = 'https://yugenapp.lat'
+        self.cdn = 'https://api.yugenapp.lat/'
         self.headers = {'referer': f'{self.base}'}
     
     def getMangas(self) -> List[Manga]:
@@ -42,7 +43,7 @@ class YugenProvider(Base):
         response = Http.post(f'{self.cdn}api/serie/serie_details/{slug}')
         data = response.json()
         return Manga(data['slug'], data['name'])
-
+    
     def getChapters(self, id: str) -> List[Chapter]:
         response = Http.post(f'{self.cdn}api/chapters/get_chapters_by_serie/', json={
             "serie_slug": id
@@ -54,21 +55,12 @@ class YugenProvider(Base):
         return list
 
     def getPages(self, ch: Chapter) -> Pages:
-        response = Http.get(f'{self.base}/series/{ch.id}')
+        text = ch.id.split('/')
+        response = Http.post(f'https://api.yugenapp.lat/api/serie/{text[0]}/chapter/{text[1]}/images/imgs/get/').json()
 
-        soup = BeautifulSoup(response.content, 'html.parser')
-
-        script_tag = soup.find('script', {'id': '__NUXT_DATA__'})
-
-        script_content = script_tag.contents[0]
-
-        script_content = script_content.strip()
-
-        data = json.loads(script_content)
-
-        imgs = data[4]
-        
         links = []
-        for img in imgs:
-            links.append(f'{self.cdn}{data[img]}')
+
+        for link in response['chapter_images']:
+            links.append(f'https://api.yugenapp.lat/{link}')
+
         return Pages(ch.id, ch.number, ch.name, links)

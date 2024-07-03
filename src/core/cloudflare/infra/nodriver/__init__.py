@@ -18,6 +18,15 @@ class Cloudflare(BypassRepository):
             return True
         
         return False
+    
+    def is_cloudflare_time_out(self, html: str) -> bool:
+        soup = BeautifulSoup(html, 'html.parser')
+
+        title = soup.title.string if soup.title else ""
+        if "Gateway time-out" in title:
+            return True
+        
+        return False
 
     def bypass_cloudflare(self, url: str) -> Request:
         headers={}

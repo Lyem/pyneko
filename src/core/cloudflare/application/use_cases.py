@@ -7,6 +7,9 @@ class IsCloudflareBlockingUseCase(UseCase):
     def execute(self, html: str) -> bool:
         return Cloudflare().is_cloudflare_blocking(html)
 
+class IsCloudflareBlockingTimeOutUseCase(UseCase):
+    def execute(self, html: str) -> bool:
+        return Cloudflare().is_cloudflare_time_out(html)
 
 class BypassCloudflareUseCase(UseCase):
     def execute(self, url: str) -> Request:

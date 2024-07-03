@@ -32,12 +32,22 @@ class SlimeReadProvider(Base):
         title = soup.select_one('p.text-3xl')
         return Manga(id, title.get_text())
 
+    def _is_json(self, texto):
+        try:
+            json.loads(texto)
+            return True
+        except json.JSONDecodeError:
+            return False
+
     def getChapters(self, id: str) -> List[Chapter]:
         list = []
         response = Http.get(f'{self.api}/book_cap_units_all?manga_id={id}', headers=self.headers)
-        chs = BeautifulSoup(response.content, 'html.parser')
-        pre_tag_content = chs.find('pre').text
-        array = json.loads(pre_tag_content)
+        if(not self._is_json(response.content)):
+            chs = BeautifulSoup(response.content, 'html.parser')
+            pre_tag_content = chs.find('pre').text
+            array = json.loads(pre_tag_content)
+        else:
+            array = response.json()
         page = Http.get(f'{self.base}/manga/{id}', headers=self.headers)
         soup = BeautifulSoup(page.content, 'html.parser')
         title = soup.select_one('p.text-3xl')
@@ -49,9 +59,12 @@ class SlimeReadProvider(Base):
         list = []
         ids = ch.id.split('/')
         response = Http.get(f'{self.api}/book_cap_units?manga_id={ids[0]}&cap={ids[1]}', headers=self.headers)
-        pages = BeautifulSoup(response.content, 'html.parser')
-        pre_tag_content = pages.find('pre').text
-        api_content = json.loads(pre_tag_content)
+        if(not self._is_json(response.content)):
+            pages = BeautifulSoup(response.content, 'html.parser')
+            pre_tag_content = pages.find('pre').text
+            api_content = json.loads(pre_tag_content)
+        else:
+            api_content = response.json()
         for data in api_content[0]['book_temp_cap_unit']:
             if(data['btcu_image'] != 'folders/pagina_inicial.png' and data['btcu_image'] != 'folders/pagina_final.png'):
                 list.append(f'{self.cdn}{data['btcu_image']}')

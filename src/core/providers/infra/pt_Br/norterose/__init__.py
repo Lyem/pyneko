@@ -1,0 +1,51 @@
+from fake_useragent import UserAgent
+from core.providers.domain.entities import Pages
+from core.download.application.use_cases import DownloadUseCase
+from core.providers.infra.template.wordpress_madara import WordPressMadara
+import re
+from typing import List
+from bs4 import BeautifulSoup
+from core.__seedwork.infra.http import Http
+from core.providers.infra.template.base import Base
+from core.__seedwork.infra.http.contract.http import Response
+from core.providers.domain.entities import Chapter, Pages, Manga
+from urllib.parse import urljoin, urlencode, urlparse, urlunparse, parse_qs
+
+class NorteRoseProvider(WordPressMadara):
+    name = 'norterose'
+    icon = 'https://i.imgur.com/ycuyRsy.png'
+    icon_hash = 'T3mBA4AkUz9sptRplgCb9VU7iHiQiYc'
+    lang = 'pt-Br'
+    domain = 'norterose.com.br'
+
+    def __init__(self):
+        self.url = 'https://norterose.com.br'
+
+        self.path = ''
+        
+        self.query_mangas = 'div.post-title h3 a, div.post-title h5 a'
+        self.query_chapters = 'li.wp-manga-chapter.has-thumb > a'
+        self.query_chapters_title_bloat = None
+        self.query_pages = 'div.page-break.no-gaps'
+        self.query_title_for_uri = 'head meta[property="og:title"]'
+        self.query_placeholder = '[id^="manga-chapters-holder"][data-id]'
+        ua = UserAgent()
+        user = ua.chrome
+        self.user = ua.chrome
+        self.headers = {'host': 'norterose.com.br', 'Cookie': 'visited=true; wpmanga-reading-history=W3siaWQiOjQxMiwiYyI6IjI1MTYiLCJwIjoxLCJpIjoiIiwidCI6MTcxOTk2MzA1OX1d', 'user_agent': user, 'referer': f'{self.url}'}
+    
+    def download(self, pages: Pages, fn: any, headers=None, cookies=None):
+        if headers is not None:
+            headers = headers | self.headers
+        else:
+            headers = self.headers
+        DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)
+    
+    def _get_chapters_ajax(self, manga_id):
+        uri = urljoin(self.url, f'{manga_id}ajax/chapters/')
+        response = Http.post(uri, headers={'Cookie': 'visited=true; wpmanga-reading-history=W3siaWQiOjg4MiwiYyI6IjIzMzU5IiwicCI6MSwiaSI6IiIsInQiOjE3MTk5NjEwODN9XQ%3D%3D'})
+        data = self._fetch_dom(response, self.query_chapters)
+        if data:
+            return data
+        else:
+            raise Exception('No chapters found (new ajax endpoint)!')

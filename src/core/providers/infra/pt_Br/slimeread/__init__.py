@@ -20,7 +20,7 @@ class SlimeReadProvider(Base):
         ua = UserAgent()
         user = ua.chrome
         self.headers = {'origin': 'slimeread.com','referer': f'{self.base}', 'User-Agent': user}
-        self.cdn = 'https://black.slimeread.com/'
+        self.cdns = ['https://objects.slimeread.com/', 'https://black.slimeread.com/']
     
     def getMangas(self) -> List[Manga]:
         pass
@@ -65,8 +65,22 @@ class SlimeReadProvider(Base):
             api_content = json.loads(pre_tag_content)
         else:
             api_content = response.json()
+        cdn_selected = ''
         for data in api_content[0]['book_temp_cap_unit']:
             if(data['btcu_image'] != 'folders/pagina_inicial.png' and data['btcu_image'] != 'folders/pagina_final.png'):
-                list.append(f'{self.cdn}{data['btcu_image']}')
+                if len(cdn_selected) == 0:
+                    for cdn in self.cdns:
+                        r = Http.get(f'{cdn}{data['btcu_image']}', headers=self.headers)
+                        if r.status == 200:
+                            cdn_selected = cdn
+                            break
+                list.append(f'{cdn_selected}{data['btcu_image']}')
         return Pages(ch.id, ch.number, ch.name, list)
+
+if __name__ == "__main__":
+    manga = SlimeReadProvider().getManga('https://slimeread.com/manga/545/a-caixa-de-joias-da-princesa')
+    chps = SlimeReadProvider().getChapters(manga.id)
+    pages = SlimeReadProvider().getPages(chps[0])
+    print(pages)
+
 

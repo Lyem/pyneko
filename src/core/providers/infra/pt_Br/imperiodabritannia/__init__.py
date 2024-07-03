@@ -2,14 +2,9 @@ from fake_useragent import UserAgent
 from core.providers.domain.entities import Pages
 from core.download.application.use_cases import DownloadUseCase
 from core.providers.infra.template.wordpress_madara import WordPressMadara
-import re
-from typing import List
-from bs4 import BeautifulSoup
 from core.__seedwork.infra.http import Http
-from core.providers.infra.template.base import Base
-from core.__seedwork.infra.http.contract.http import Response
-from core.providers.domain.entities import Chapter, Pages, Manga
-from urllib.parse import urljoin, urlencode, urlparse, urlunparse, parse_qs
+from core.providers.domain.entities import Pages
+from urllib.parse import urljoin
 
 class ImperiodabritanniaProvider(WordPressMadara):
     name = 'imperiodabritannia'

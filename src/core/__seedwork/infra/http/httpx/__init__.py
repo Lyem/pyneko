@@ -41,7 +41,7 @@ class HttpxService(Http):
 
             if response.status_code == 403:
                 if IsCloudflareBlockingUseCase().execute(response.text):
-                    if(url.endswith('.zip')):
+                    if(url.endswith('.zip') or url.endswith('.jpg') or url.endswith('.avif') or url.endswith('.png')):
                         content = BypassCloudflareNoCapchaFeachUseCase().execute(f'https://{domain}', url)
                         return Response(200, 'a', content, url)
                     if(count == 1):

@@ -1,5 +1,5 @@
 from core.__seedwork.infra.http.contract.http import Http, Response
-from core.cloudflare.application.use_cases import IsCloudflareBlockingUseCase, BypassCloudflareUseCase, BypassCloudflareNoCapchaUseCase, BypassCloudflareNoCapchaFeachUseCase
+from core.cloudflare.application.use_cases import IsCloudflareBlockingUseCase, BypassCloudflareUseCase, BypassCloudflareNoCapchaUseCase, BypassCloudflareNoCapchaFeachUseCase, IsCloudflareBlockingTimeOutUseCase
 from tinydb import TinyDB, where, Query
 from platformdirs import user_data_path
 from httpx import get, post
@@ -58,7 +58,10 @@ class HttpxService(Http):
                         db.insert(RequestData(domain=domain, headers=data.user_agent, cookies=data.cloudflare_cookie_value).as_dict())
                     else:
                         content = BypassCloudflareNoCapchaUseCase().execute(url)
-                        return Response(200, content, content, url)
+                        if(not IsCloudflareBlockingTimeOutUseCase().execute(content)):
+                            return Response(200, content, content, url)
+                        else:
+                            sleep(30)
                 else:
                     content = BypassCloudflareNoCapchaFeachUseCase().execute(f'https://{domain}', url)
                     return Response(200, 'a', content, url)

@@ -90,6 +90,7 @@ class MangaDownloaderApp:
                 chapter_ui = self.window.verticalChapter.itemAt(i).widget()
                 for ch in chapters:
                     if str(ch.number) == chapter_ui.numberLabel.text():
+                        chapter_ui.download.setEnabled(False)
                         progress_bar = chapter_ui.ChapterprogressBar
                         progress_bar.setVisible(True)
 

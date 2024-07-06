@@ -65,6 +65,7 @@ class WordPressMadara(Base):
             ch_name = title
             chs.append(Chapter(ch_id, ch_number, ch_name))
 
+        chs.reverse()
         return chs
 
     def getPages(self, ch: Chapter) -> Pages:

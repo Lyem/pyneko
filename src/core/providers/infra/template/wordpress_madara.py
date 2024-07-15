@@ -83,7 +83,7 @@ class WordPressMadara(Base):
         for el in data:
             list.append(self._process_page_element(el, uri))
 
-        number = re.findall(r'\d+', str(ch.number))[0]
+        number = re.findall(r'\d+\.?\d*', str(ch.number))[0]
         return Pages(ch.id, number, ch.name, list)
 
     def _create_manga_request(self, page):

@@ -28,17 +28,18 @@ Manga downloader for Linux, Windows and MacOS based on [hakuneko](https://github
 
 - chrome
 
-🐧 On Linux/BSD - ▶️ KDE (any display server)
-Native support. No additional dependencies are needed.
-It seems that all dependencies are listed below are already installed by default in all KDE distributions
+🐧 On Linux/BSD 
 
+- ▶️ KDE (any display server)
+Native support. No additional dependencies are needed.
+It seems that all dependencies are listed below are already installed by default in all KDE distributions.
 The only minimum requirement is ``dbus``, ``klipper`` (which is now built-in into KDE), and an ``dbus-python``
 
-🐧 On Linux/BSD - X11
+- X11
 Install ``xsel`` or ``xclip`` package
 Example: ``sudo zypper install xsel`` OR ``sudo zypper install xclip``
 
-🐧 On Linux/BSD - Wayland
+- Wayland
 Install wl-clipboard package
 Example: ``sudo zypper install wl-clipboard``
 

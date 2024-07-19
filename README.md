@@ -1,3 +1,7 @@
+# Pyneko
+
+Manga downloader for Linux, Windows and MacOS based on [hakuneko](https://github.com/manga-download/hakuneko)
+
 ## install
 
 ``poetry install``

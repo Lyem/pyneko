@@ -9,9 +9,6 @@ class SilencescanProvider(MangaReaderCms):
 
     def __init__(self):
         super().__init__()
-        self.id = None
-        self.label = None
-        self.tags = ['manga']
         self.url = 'https://silencescan.com.br'
         self.path = '/'
 
@@ -19,5 +16,4 @@ class SilencescanProvider(MangaReaderCms):
         self.query_chapters = 'div#chapterlist ul li'
         self.query_pages = 'div#readerarea img'
         self.query_title_for_uri = 'h1.entry-title'
-        self.language = ''
     

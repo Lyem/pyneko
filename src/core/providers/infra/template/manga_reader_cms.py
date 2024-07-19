@@ -10,9 +10,6 @@ from core.providers.domain.entities import Chapter, Pages, Manga
 class MangaReaderCms(Base):
     def __init__(self):
         super().__init__()
-        self.id = None
-        self.label = None
-        self.tags = ['manga']
         self.url = None
         self.path = '/'
 
@@ -20,7 +17,6 @@ class MangaReaderCms(Base):
         self.query_chapters = 'ul.chapters li h5.chapter-title-rtl'
         self.query_pages = 'div#all source.img-responsive'
         self.query_title_for_uri = 'h1.entry-title'
-        self.language = ''
 
     def fetch_dom(self, response, query):
         soup = BeautifulSoup(response.content, 'html.parser')

@@ -53,6 +53,7 @@ class MangaReaderCms(Base):
                 number=element.select('span.chapternum')[0].text,
                 name=title
             ))
+        chapters.reverse()
         return chapters
 
     def getPages(self, ch: Chapter) -> Pages:

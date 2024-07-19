@@ -1,3 +1,4 @@
+import re
 from typing import List
 from fake_useragent import UserAgent
 from core.__seedwork.infra.http import Http
@@ -42,11 +43,15 @@ class TsukiProvider(Base):
             list.append(Chapter(chapter['versions'][0]['id'], chapter['number'], str(chapter['title'])))
         return list
 
+    def _extract_number_from_page_url(self, url):
+        match = re.search(r'_(\d+)\.png', url)
+        return int(match.group(1)) if match else 0
+
     def getPages(self, ch: Chapter) -> Pages:
         list = []
         response = Http.get(f'{self.base}/api/v3/chapter/versions/{ch.id}', headers=self.headers).json()
         cdn_selected = ''
-        for data in response['pages']:
+        for data in sorted(response['pages'], key=lambda x: self._extract_number_from_page_url(x['url'])):
             if len(cdn_selected) == 0:
                 for cdn in self.cdns:
                     r = Http.get(f'{cdn}{data['url']}', headers=self.headers)
@@ -62,6 +67,4 @@ class TsukiProvider(Base):
         else:
             headers = self.headers
         DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)
-
-    
 

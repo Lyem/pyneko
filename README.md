@@ -2,6 +2,9 @@
 
 Manga downloader for Linux, Windows and MacOS based on [hakuneko](https://github.com/manga-download/hakuneko)
 
+## support
+[![](https://dcbadge.limes.pink/api/server/EYm6svnw5b)](https://discord.gg/EYm6svnw5b)
+
 ## install
 
 ``poetry install``

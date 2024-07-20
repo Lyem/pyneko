@@ -1,4 +1,5 @@
 import json
+import nodriver as uc
 from typing import List
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
@@ -27,8 +28,8 @@ class SlimeReadProvider(Base):
     
     def getManga(self, link: str) -> Manga:
         id = link.split('/')[4]
-        page = Http.get(f'{self.base}/manga/{id}', headers=self.headers)
-        soup = BeautifulSoup(page.content, 'html.parser')
+        page = self.getPageContent(f'{self.base}/manga/{id}')
+        soup = BeautifulSoup(page, 'html.parser')
         title = soup.select_one('p.text-3xl')
         return Manga(id, title.get_text())
 
@@ -38,6 +39,32 @@ class SlimeReadProvider(Base):
             return True
         except json.JSONDecodeError:
             return False
+    
+    def getPageContent(self, domain: str, background = False) -> any:
+        content= ''
+        async def get_script_result():
+            nonlocal content
+            browser = await uc.start(
+                browser_args=[
+                    '--window-size=600,600', 
+                    f'--app={domain}',
+                    '--disable-extensions', 
+                    '--disable-popup-blocking'
+                ],
+                browser_executable_path=None,
+                headless=background
+            )
+            page = await browser.get(domain)
+            data = []
+            while len(data) == 0:
+                page_content = await page.evaluate('document.documentElement.outerHTML')
+                soup = BeautifulSoup(page_content, 'html.parser')
+                data = soup.select('p.text-3xl')
+
+            content = page_content
+            browser.stop()
+        uc.loop().run_until_complete(get_script_result())
+        return content
 
     def getChapters(self, id: str) -> List[Chapter]:
         list = []
@@ -48,8 +75,8 @@ class SlimeReadProvider(Base):
             array = json.loads(pre_tag_content)
         else:
             array = response.json()
-        page = Http.get(f'{self.base}/manga/{id}', headers=self.headers)
-        soup = BeautifulSoup(page.content, 'html.parser')
+        page = self.getPageContent(f'{self.base}/manga/{id}')
+        soup = BeautifulSoup(page, 'html.parser')
         title = soup.select_one('p.text-3xl')
         for chapter in array:
             list.append(Chapter(f'{id}/{chapter['btc_cap']}', int(chapter['btc_cap']) + 1, title.get_text()))

@@ -1,6 +1,7 @@
 import json
 import nodriver as uc
 from typing import List
+from time import sleep
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 from core.__seedwork.infra.http import Http
@@ -21,7 +22,7 @@ class SlimeReadProvider(Base):
         ua = UserAgent()
         user = ua.chrome
         self.headers = {'origin': 'slimeread.com','referer': f'{self.base}', 'User-Agent': user}
-        self.cdns = ['https://objects.slimeread.com/', 'https://black.slimeread.com/']
+        self.cdns = ['https://cdn2.slimeread.com/', 'https://cdn.slimeread.com/']
     
     def getMangas(self) -> List[Manga]:
         pass
@@ -95,17 +96,23 @@ class SlimeReadProvider(Base):
         cdn_selected = ''
         for data in api_content[0]['book_temp_cap_unit']:
             if(data['btcu_image'] != 'folders/pagina_inicial.png' and data['btcu_image'] != 'folders/pagina_final.png'):
-                if len(cdn_selected) == 0:
-                    for cdn in self.cdns:
-                        r = Http.get(f'{cdn}{data['btcu_image']}', headers=self.headers)
-                        if r.status == 200:
-                            cdn_selected = cdn
-                            break
+                if data['btcu_provider_host'] == 5:
+                    cdn_selected = self.cdns[0]
+                else:
+                    cdn_selected = self.cdns[1]
                 list.append(f'{cdn_selected}{data['btcu_image']}')
         return Pages(ch.id, ch.number, ch.name, list)
+    
+    def download(self, pages: Pages, fn: any, headers=None, cookies=None):
+        if headers is not None:
+            headers = headers | self.headers
+        else:
+            headers = self.headers
+        DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)
 
 if __name__ == "__main__":
     manga = SlimeReadProvider().getManga('https://slimeread.com/manga/545/a-caixa-de-joias-da-princesa')
+    sleep(20)
     chps = SlimeReadProvider().getChapters(manga.id)
     pages = SlimeReadProvider().getPages(chps[0])
     print(pages)

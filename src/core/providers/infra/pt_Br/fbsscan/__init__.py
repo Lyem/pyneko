@@ -5,10 +5,10 @@ class FbsScanProvider(WordPressMadara):
     icon = 'https://i.imgur.com/ycuyRsy.png'
     icon_hash = 'T3mBA4AkUz9sptRplgCb9VU7iHiQiYc'
     lang = 'pt-Br'
-    domain = 'fbsscan.com'
+    domain = 'fbsquadx.com'
 
     def __init__(self):
-        self.url = 'https://fbsscan.com'
+        self.url = 'https://fbsquadx.com'
 
         self.path = ''
         

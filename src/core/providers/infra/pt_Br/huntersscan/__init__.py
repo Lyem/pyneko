@@ -8,10 +8,10 @@ class HuntersScanProvider(WordPressMadara):
     icon = 'https://i.imgur.com/ycuyRsy.png'
     icon_hash = 'T3mBA4AkUz9sptRplgCb9VU7iHiQiYc'
     lang = 'pt-Br'
-    domain = 'huntersscan.xyz'
+    domain = 'huntersscan.net'
 
     def __init__(self):
-        self.url = 'https://huntersscan.xyz'
+        self.url = 'https://huntersscan.net'
 
         self.path = ''
         
@@ -23,7 +23,7 @@ class HuntersScanProvider(WordPressMadara):
         self.query_placeholder = '[id^="manga-chapters-holder"][data-id]'
         ua = UserAgent()
         user = ua.chrome
-        self.headers = {'host': 'huntersscan.xyz', 'user_agent': user, 'referer': f'{self.url}/series'}
+        self.headers = {'host': 'huntersscan.net', 'user_agent': user, 'referer': f'{self.url}/series'}
 
     
     def download(self, pages: Pages, fn: any, headers=None, cookies=None):

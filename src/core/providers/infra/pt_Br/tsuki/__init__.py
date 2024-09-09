@@ -44,14 +44,14 @@ class TsukiProvider(Base):
         return list
 
     def _extract_number_from_page_url(self, url):
-        match = re.search(r'_(\d+)\.png', url)
+        match = re.search(r'_(\d+)\.\w+', url)
         return int(match.group(1)) if match else 0
 
     def getPages(self, ch: Chapter) -> Pages:
         list = []
         response = Http.get(f'{self.base}/api/v3/chapter/versions/{ch.id}', headers=self.headers).json()
         cdn_selected = ''
-        for data in sorted(response['pages'], key=lambda x: self._extract_number_from_page_url(x['url'])):
+        for data in response['pages']:
             if len(cdn_selected) == 0:
                 for cdn in self.cdns:
                     r = Http.get(f'{cdn}{data['url']}', headers=self.headers)
@@ -59,7 +59,8 @@ class TsukiProvider(Base):
                         cdn_selected = cdn
                         break
             list.append(f'{cdn_selected}{data['url']}')
-        return Pages(id, ch.number, response['chapter']['manga']['title'], list)
+
+        return Pages(id, ch.number, response['chapter']['manga']['title'], sorted(list, key=self._extract_number_from_page_url))
   
     def download(self, pages: Pages, fn: any, headers=None, cookies=None):
         if headers is not None:

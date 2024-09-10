@@ -44,8 +44,8 @@ class TsukiProvider(Base):
         return list
 
     def _extract_number_from_page_url(self, url):
-        match = re.search(r'_(\d+)\.\w+', url)
-        return int(match.group(1)) if match else 0
+        match = re.search(r'(\d+)\.(?:jpg|jpeg|png|webp)$', url)
+        return int(match.group(1))
 
     def getPages(self, ch: Chapter) -> Pages:
         list = []

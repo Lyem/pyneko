@@ -48,7 +48,7 @@ class MangaDownloaderApp:
         self.window.show()
 
         self.window.logs.clicked.connect(self.open_log_window)
-        if os.environ['PYNEKOENV'] != 'dev':
+        if os.environ.get('PYNEKOENV') != 'dev':
             self.window.logs.hide()
 
         self.window.progress.clicked.connect(self.open_progress_window)

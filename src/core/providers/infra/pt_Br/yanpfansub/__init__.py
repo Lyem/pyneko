@@ -5,10 +5,10 @@ class YanpFansubProvider(WordPressMadara):
     icon = 'https://i.imgur.com/ycuyRsy.png'
     icon_hash = 'T3mBA4AkUz9sptRplgCb9VU7iHiQiYc'
     lang = 'pt-Br'
-    domain = 'yanpfansub.com'
+    domain = 'trisalyanp.com'
 
     def __init__(self):
-        self.url = 'https://yanpfansub.com/'
+        self.url = 'https://trisalyanp.com/'
 
         self.path = ''
         

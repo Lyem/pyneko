@@ -76,5 +76,5 @@ jobs:
           prerelease: false
           files: |
             pyneko-pyinstaller-artifact-windows-2019/Pyneko.exe
-            Pyneko
-            pyneko-pyinstaller-artifact-ubuntu-22.04/pyneko_macos.zip
+            pyneko-pyinstaller-artifact-ubuntu-22.04/Pyneko
+            pyneko_macos.zip

@@ -7,7 +7,7 @@ from core.providers.domain.entities import Pages
 from urllib.parse import urljoin
 
 class NorteRoseProvider(WordPressMadara):
-    name = 'norterose'
+    name = 'Norte rose'
     icon = 'https://i.imgur.com/ycuyRsy.png'
     icon_hash = 'T3mBA4AkUz9sptRplgCb9VU7iHiQiYc'
     lang = 'pt-Br'

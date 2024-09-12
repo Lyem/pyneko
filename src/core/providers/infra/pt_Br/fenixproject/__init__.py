@@ -1,7 +1,7 @@
 from core.providers.infra.template.wordpress_madara import WordPressMadara
 
 class FenixProjectProvider(WordPressMadara):
-    name = 'fenixproject'
+    name = 'Fenix Project'
     icon = 'https://i.imgur.com/ycuyRsy.png'
     icon_hash = 'T3mBA4AkUz9sptRplgCb9VU7iHiQiYc'
     lang = 'pt-Br'

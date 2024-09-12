@@ -38,9 +38,10 @@ class TsukiProvider(Base):
 
     def getChapters(self, id: str) -> List[Chapter]:
         list = []
+        manga = Http.get(f'{self.base}/api/v3/mangas/{id}', headers=self.headers).json()
         response = Http.get(f'{self.base}/api/v3/chapters/{id}/all', headers=self.headers).json()
         for chapter in response['chapters']:
-            list.append(Chapter(chapter['versions'][0]['id'], chapter['number'], str(chapter['title'])))
+            list.append(Chapter(chapter['versions'][0]['id'], chapter['number'], str(manga['title'])))
         return list
 
     def _extract_number_from_page_url(self, url):

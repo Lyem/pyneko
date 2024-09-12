@@ -6,7 +6,7 @@ from core.providers.domain.entities import Chapter
 from core.providers.infra.template.manga_reader_cms import MangaReaderCms
 
 class YaoiFanClubProvider(MangaReaderCms):
-    name = 'yaoifanclub'
+    name = 'Yaoi fanclub'
     icon = 'https://i.imgur.com/QRjE79s.png'
     icon_hash = 'd/iFDQIoqraAa360R1NPCZWlHiugekWiJw'
     lang = 'pt-Br'

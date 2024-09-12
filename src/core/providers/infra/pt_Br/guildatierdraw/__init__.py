@@ -6,7 +6,7 @@ from core.providers.domain.entities import Chapter
 from core.providers.infra.template.manga_reader_cms import MangaReaderCms
 
 class GuildaTierDrawProvider(MangaReaderCms):
-    name = 'guildatierdraw'
+    name = 'Guilda Tier draw'
     icon = 'https://i.imgur.com/QRjE79s.png'
     icon_hash = 'd/iFDQIoqraAa360R1NPCZWlHiugekWiJw'
     lang = 'pt-Br'

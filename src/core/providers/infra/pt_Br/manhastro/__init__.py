@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 import base64
 
 class SussyScanProvider(WordPressMadara):
-    name = 'manhastro'
+    name = 'Manhastro'
     icon = 'https://i.imgur.com/ycuyRsy.png'
     icon_hash = 'T3mBA4AkUz9sptRplgCb9VU7iHiQiYc'
     lang = 'pt-Br'

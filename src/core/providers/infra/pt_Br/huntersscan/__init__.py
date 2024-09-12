@@ -4,7 +4,7 @@ from core.download.application.use_cases import DownloadUseCase
 from core.providers.infra.template.wordpress_madara import WordPressMadara
 
 class HuntersScanProvider(WordPressMadara):
-    name = 'huntersscan'
+    name = 'Hunters scan'
     icon = 'https://i.imgur.com/ycuyRsy.png'
     icon_hash = 'T3mBA4AkUz9sptRplgCb9VU7iHiQiYc'
     lang = 'pt-Br'

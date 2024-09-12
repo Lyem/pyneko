@@ -11,56 +11,56 @@ class YugenProvider(Base):
     icon = 'https://i.imgur.com/QRjE79s.png'
     icon_hash = 'd/iFDQIoqraAa360R1NPCZWlHiugekWiJw'
     lang = 'pt-Br'
-    domain = 'yugenapp.lat'
+    domain = 'voblog.xyz'
 
     def __init__(self) -> None:
-        self.base = 'https://yugenapp.lat'
-        self.cdn = 'https://api.yugenapp.lat/'
+        self.base = 'https://yugenmangasbr.voblog.xyz'
+        self.cdn = 'https://media.yugenweb.com/'
+        self.api = 'https://api.yugenweb.com/'
         self.headers = {'referer': f'{self.base}'}
     
     def getMangas(self) -> List[Manga]:
-        response = Http.get(f'{self.base}/series')
-        soup = BeautifulSoup(response.content, 'html.parser')
-
-        script_tag = soup.find('script', {'id': '__NUXT_DATA__'})
-
-        script_content = script_tag.contents[0]
-
-        script_content = script_content.strip()
-
-        data = json.loads(script_content)
-        names_and_slugs = [(item["name"], item["slug"]) for item in data if isinstance(item, dict) and "name" in item and "slug" in item]
-
-        list = []
-        for name, slug in names_and_slugs:
-            list.append(Manga(data[slug].replace('series/', ''), data[name]))
-        return list
+        pass
 
     def getManga(self, link: str) -> Manga:
         if link.endswith('/'):
             link = link[:-1]
-        slug = link.split("/")[-1]
-        response = Http.post(f'{self.cdn}api/serie/serie_details/{slug}')
+        id = link.split("/").pop();
+        response = Http.post(f'{self.api}api/series/detail/series/', json={'code': id})
         data = response.json()
-        return Manga(data['slug'], data['name'])
+        return Manga(id, data['title'])
     
     def getChapters(self, id: str) -> List[Chapter]:
-        response = Http.post(f'{self.cdn}api/chapters/get_chapters_by_serie/', json={
-            "serie_slug": id
+        media_response = Http.post(f'{self.api}api/series/detail/series/', json={'code': id})
+        media_data = media_response.json()
+        response = Http.post(f'{self.api}api/series/chapters/get-series-chapters/?page=1', json={
+            "code": id,
+            "reverse": False
         })
         data = response.json()
         list = []
-        for ch in data['chapters']:
-            list.append(Chapter(f'{id}/{ch['slug']}', ch['name'], id.replace('-', ' ')))
+        for ch in data['results']['chapters']:
+            list.append(Chapter(ch['code'], ch['name'], media_data['title']))
+        while data['next'] != None:
+            response = Http.post(f'{data['next']}', json={
+                "code": id,
+                "reverse": False
+            })
+            data = response.json()
+            for ch in data['results']['chapters']:
+                list.append(Chapter(ch['code'], ch['name'], media_data['title']))
+
         return list
 
     def getPages(self, ch: Chapter) -> Pages:
-        text = ch.id.split('/')
-        response = Http.post(f'https://api.yugenapp.lat/api/serie/{text[0]}/chapter/{text[1]}/images/imgs/get/').json()
+        response = Http.post(f'{self.api}api/chapters/chapter-info/', json={
+            "code": ch.id,
+        })
+        data = response.json()
 
         links = []
 
-        for link in response['chapter_images']:
-            links.append(f'https://api.yugenapp.lat/{link}')
+        for link in data['images']:
+            links.append(f'{self.cdn}{link}')
 
         return Pages(ch.id, ch.number, ch.name, links)

@@ -51,7 +51,7 @@ jobs:
       - name: Upload result job ${{ matrix.config.os }}
         uses: actions/upload-artifact@v4
         with:
-          name: pyneko-pyinstaller-artifact
+          name: pyneko-pyinstaller-artifact-${{ matrix.config.os }}
           path: ./dist-${{ matrix.config.os }}
 
   release:
@@ -62,7 +62,7 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
-          name: pyneko-pyinstaller-artifact
+          name: pyneko-pyinstaller-artifact-${{ matrix.config.os }}
         
       - name: Zip file macos
         run: zip -r pyneko_macos.zip __init__.app __init__

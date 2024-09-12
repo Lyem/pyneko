@@ -61,11 +61,9 @@ jobs:
     steps:
       - name: Download artifacts
         uses: actions/download-artifact@v4
-        with:
-          path: pyneko-pyinstaller
 
       - name: Zip file macos
-        run: zip -r pyneko_macos.zip __init__.app __init__
+        run: zip -r pyneko_macos.zip pyneko-pyinstaller-artifact-macos-12/__init__.app pyneko-pyinstaller-artifact-macos-12/__init__
 
       - name: Create Release
         id: create_release
@@ -77,6 +75,6 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            Pyneko.exe
+            pyneko-pyinstaller-artifact-windows-2019/Pyneko.exe
             Pyneko
-            pyneko_macos.zip
+            pyneko-pyinstaller-artifact-ubuntu-22.04/pyneko_macos.zip

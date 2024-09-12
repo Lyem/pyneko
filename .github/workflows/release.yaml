@@ -56,33 +56,16 @@ jobs:
 
   release:
     name: Release
-    runs-on: ${{ matrix.config.os }}
+    runs-on: ubuntu-latest
     needs: build
     steps:
       - name: Download artifacts
         uses: actions/download-artifact@v4
-        with:
-          name: pyneko-pyinstaller-artifact-${{ matrix.config.os }}
         
       - name: Zip file macos
-        if: ${{ matrix.config.os == 'macos-12' }}
         run: zip -r pyneko_macos.zip __init__.app __init__
 
       - name: Create Release
-        if: ${{ matrix.config.os == 'ubuntu-22.04' }}
-        id: create_release
-        uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          draft: false
-          prerelease: false
-          files: |
-            Pyneko
-      
-      - name: Create Release
-        if: ${{ matrix.config.os == 'windows-2019' }}
         id: create_release
         uses: softprops/action-gh-release@v1
         env:
@@ -93,16 +76,5 @@ jobs:
           prerelease: false
           files: |
             Pyneko.exe
-      
-      - name: Create Release
-        if: ${{ matrix.config.os == 'macos-12' }}
-        id: create_release
-        uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          draft: false
-          prerelease: false
-          files: |
+            Pyneko
             pyneko_macos.zip

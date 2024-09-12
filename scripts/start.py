@@ -12,6 +12,7 @@ def run():
 
     if(is_posix):
         os.environ['PYTHONPATH'] = str(src_path)
+        os.environ['PYNEKOENV'] = 'dev'
 
         result = subprocess.run(["python", str(app)], capture_output=True, text=True, env=os.environ)
     else:

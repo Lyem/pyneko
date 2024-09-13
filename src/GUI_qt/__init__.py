@@ -47,6 +47,7 @@ class MangaDownloaderApp:
         self.window = uic.loadUi(os.path.join(self.assets, 'main.ui'))
         self.window.show()
 
+        self.window.progress_scroll.hide()
         self.window.logs.clicked.connect(self.open_log_window)
         if os.environ.get('PYNEKOENV') != 'dev':
             self.window.logs.hide()
@@ -59,7 +60,6 @@ class MangaDownloaderApp:
         self.window.search.textChanged.connect(self.filter_chapters)
         self.log_window = None
         self.websites_window = None
-        self.progress_window = uic.loadUi(os.path.join(self.assets, 'treeView.ui'))
 
         self.vertical_spacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
@@ -152,8 +152,8 @@ class MangaDownloaderApp:
         for download in self.download_status:
             ch, provider, runnable = download
             
-            groupbox = self.progress_window.findChild(QGroupBox, f'groupboxprovider{provider.name}')
-            layout = self.progress_window.findChild(QVBoxLayout, f"layoutprovider{provider.name}")
+            groupbox = self.window.findChild(QGroupBox, f'groupboxprovider{provider.name}')
+            layout = self.window.findChild(QVBoxLayout, f"layoutprovider{provider.name}")
             if groupbox == None: 
                 groupbox = QGroupBox()
                 groupbox.setTitle(provider.name)
@@ -161,10 +161,10 @@ class MangaDownloaderApp:
                 layout = QVBoxLayout()
                 layout.setObjectName(f"layoutprovider{provider.name}")
                 groupbox.setLayout(layout)
-                self.progress_window.verticalProgress.addWidget(groupbox)
+                self.window.verticalProgress.addWidget(groupbox)
             
-            groupbox2 = self.progress_window.findChild(QGroupBox, f'groupboxmedia{ch.name}')
-            layout2 = self.progress_window.findChild(QVBoxLayout, f"layoutmedia{ch.name}")
+            groupbox2 = self.window.findChild(QGroupBox, f'groupboxmedia{ch.name}')
+            layout2 = self.window.findChild(QVBoxLayout, f"layoutmedia{ch.name}")
             if groupbox2 == None:
                 groupbox2 = QGroupBox()
                 groupbox2.setTitle(ch.name)
@@ -174,7 +174,7 @@ class MangaDownloaderApp:
                 groupbox2.setLayout(layout2)
                 layout.addWidget(groupbox2)
             
-            layout_item = self.progress_window.findChild(QHBoxLayout, f'chaptermedia{ch.name}{ch.id}{provider.name}')
+            layout_item = self.window.findChild(QHBoxLayout, f'chaptermedia{ch.name}{ch.id}{provider.name}')
             if layout_item == None:
                 layout_item = QHBoxLayout()
                 layout_item.setObjectName(f'chaptermedia{ch.name}{ch.id}{provider.name}')
@@ -190,7 +190,7 @@ class MangaDownloaderApp:
                 layout_item.addWidget(progress_bar)
                 layout2.addWidget(widget)
 
-        for child in self.progress_window.findChildren(QWidget):
+        for child in self.window.findChildren(QWidget):
             layout = child.layout()
             if layout and layout.objectName().startswith('layoutmedia'):
                 for i in range(layout.count()):
@@ -200,7 +200,10 @@ class MangaDownloaderApp:
                 layout.addItem(QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))
     
     def open_progress_window(self):
-        self.progress_window.show()
+        if self.window.progress_scroll.isHidden():
+            self.window.progress_scroll.show()
+        else:
+            self.window.progress_scroll.hide()
 
     def open_log_window(self):
         if self.log_window is None:

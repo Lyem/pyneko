@@ -1,4 +1,5 @@
 import re
+import os
 from typing import List
 from fake_useragent import UserAgent
 from core.__seedwork.infra.http import Http
@@ -45,8 +46,7 @@ class TsukiProvider(Base):
         return list
 
     def _extract_number_from_page_url(self, url):
-        match = re.search(r'(\d+)\.(?:jpg|jpeg|png|webp|copiar.jpg|copiar.png|copiar.jpeg|copiar.webp)(?:\?.*)?$', url)
-        return int(match.group(1))
+        return os.path.basename(url.split("?")[0])
 
     def getPages(self, ch: Chapter) -> Pages:
         list = []

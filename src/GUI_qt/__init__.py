@@ -114,18 +114,22 @@ class MangaDownloaderApp:
         provider_find = False
         for provider in self.providers:
             if provider.domain == domain:
-                self.window.pages.setCurrentIndex(1)
-                QApplication.processEvents()
-                self.provider_selected = provider
-                provider_find = True
-                manga = ProviderMangaUseCase(provider).execute(link)
-                self.manga_id_selectd = manga.id
-                self.window.setWindowTitle(f'PyNeko | {manga.name} | {provider.name}')
-                chapters = ProviderGetChaptersUseCase(provider).execute(manga.id)
-                self.chapters = chapters
-                self.all_chapters = chapters
-                self._add_chapters()
-                self.window.pages.setCurrentIndex(0)
+                try:
+                    self.window.pages.setCurrentIndex(1)
+                    QApplication.processEvents()
+                    self.provider_selected = provider
+                    provider_find = True
+                    manga = ProviderMangaUseCase(provider).execute(link)
+                    self.manga_id_selectd = manga.id
+                    self.window.setWindowTitle(f'PyNeko | {manga.name} | {provider.name}')
+                    chapters = ProviderGetChaptersUseCase(provider).execute(manga.id)
+                    self.chapters = chapters
+                    self.all_chapters = chapters
+                    self._add_chapters()
+                    self.window.pages.setCurrentIndex(0)
+                except Exception as e:
+                    self.window.pages.setCurrentIndex(0)
+                    QMessageBox.critical(None, "Erro", str(e))
         if provider_find == False:
             msg = QMessageBox()
             msg.setWindowTitle("Erro")

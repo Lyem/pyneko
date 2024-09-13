@@ -181,7 +181,7 @@ class MangaDownloaderApp:
                 widget = QWidget()
                 widget.setLayout(layout_item)
                 label = QLabel()
-                label.setText(ch.number)
+                label.setText(str(ch.number))
                 layout_item.addWidget(label)
                 progress_bar = QProgressBar()
                 def update_progress_bar(value):

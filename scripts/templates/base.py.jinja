@@ -1,0 +1,28 @@
+from typing import List
+from core.__seedwork.infra.http import Http
+from core.providers.infra.template.base import Base
+from core.providers.domain.entities import Chapter, Pages, Manga
+
+class {{class}}Provider(Base):
+    name = '{{ name }}'
+    icon = 'https://i.imgur.com/ycuyRsy.png'
+    icon_hash = 'T3mBA4AkUz9sptRplgCb9VU7iHiQiYc'
+    lang = '{{lang}}'
+    domain = '{{domain}}'
+
+    def __init__(self) -> None:
+        pass
+        
+    def getMangas(self) -> List[Manga]:
+        pass
+    
+    def getManga(self, link: str) -> Manga:
+        pass
+
+    def getChapters(self, id: str) -> List[Chapter]:
+        pass
+
+    def getPages(self, ch: Chapter) -> Pages:
+        pass
+
+

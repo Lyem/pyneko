@@ -1,0 +1,18 @@
+from core.providers.infra.template.manga_reader_cms import MangaReaderCms
+
+class {{class}}Provider(MangaReaderCms):
+    name = '{{ name }}'
+    icon = 'https://i.imgur.com/ycuyRsy.png'
+    icon_hash = 'T3mBA4AkUz9sptRplgCb9VU7iHiQiYc'
+    lang = '{{lang}}'
+    domain = '{{domain}}'
+
+    def __init__(self):
+        super().__init__()
+        self.url = '{{link}}'
+        self.path = '/'
+
+        self.query_mangas = 'ul.manga-list li a'
+        self.query_chapters = 'ul.chapters li h5.chapter-title-rtl'
+        self.query_pages = 'div#all source.img-responsive'
+        self.query_title_for_uri = 'h1.entry-title'

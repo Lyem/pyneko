@@ -21,6 +21,10 @@ Manga downloader for Linux, Windows and MacOS based on [hakuneko](https://github
 
 ``poetry run clean``
 
+## create a new provider
+
+``poetry run new``
+
 
 ## dependencies
 

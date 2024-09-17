@@ -16,5 +16,5 @@ class PortalYaoiProvider(WordPressMadara):
         self.query_chapters = 'li.wp-manga-chapter > a'
         self.query_chapters_title_bloat = None
         self.query_pages = 'div.page-break.no-gaps'
-        self.query_title_for_uri = 'head meta[property="og:title"]'
+        self.query_title_for_uri = 'h1'
         self.query_placeholder = '[id^="manga-chapters-holder"][data-id]'

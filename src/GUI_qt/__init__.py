@@ -4,8 +4,11 @@ from PyQt6 import uic
 from clipman import init, get
 from tldextract import extract
 from GUI_qt.logs import LogWindow
+from GUI_qt.version import version
 from GUI_qt.websites import WebSiteOpener
+from GUI_qt.new_version import NewVersion
 from core.providers.domain.chapter_entity import Chapter
+from GUI_qt.git import update_providers, get_last_version
 from GUI_qt.load_providers import import_classes_recursively, base_path
 from PyQt6.QtCore import QRunnable, QThreadPool, pyqtSignal, QObject
 from core.providers.application.use_cases import ProviderMangaUseCase, ProviderGetChaptersUseCase, ProviderGetPagesUseCase, ProviderDownloadUseCase
@@ -222,6 +225,13 @@ class MangaDownloaderApp:
 
 if __name__ == "__main__":
     try:
+        update_providers()
+        if os.environ.get('PYNEKOENV') != 'dev':
+            if version != get_last_version():
+                app = QApplication(sys.argv)
+                window = NewVersion()
+                window.show()
+                sys.exit(app.exec())
         init()
         app = MangaDownloaderApp()
         app.run()

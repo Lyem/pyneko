@@ -1,13 +1,16 @@
-import importlib.util
 import os
-import sys
-from pathlib import Path
-from core.providers.domain.provider_repository import ProviderRepository
+import importlib.util
 from typing import List
+from pathlib import Path
+from platformdirs import user_data_path
+from core.providers.domain.provider_repository import ProviderRepository
+
+data_path = user_data_path('pyneko')
 
 def base_path():
-    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
-        return Path(sys._MEIPASS)
+    if os.environ.get('PYNEKOENV') != 'dev':
+        return data_path / 'pyneko' / 'src'
+
     return Path('.') / 'src'
 
 package_path = os.path.join(base_path(), 'core', 'providers', 'infra')

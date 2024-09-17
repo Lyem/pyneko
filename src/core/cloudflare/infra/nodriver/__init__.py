@@ -47,7 +47,7 @@ class Cloudflare(BypassRepository):
             agent = await page.evaluate('navigator.userAgent')
             headers = { 'user-agent': agent }
             while(True):
-                page_content = await page.evaluate('document.documentElement.outerHTML')
+                page_content = await page.get_content()
                 if self.is_cloudflare_blocking(page_content):
                     sleep(1)
                 else:
@@ -75,7 +75,7 @@ class Cloudflare(BypassRepository):
             )
             page = await browser.get(url)
             while(True):
-                page_content = await page.evaluate('document.documentElement.outerHTML')
+                page_content = await page.get_content()
                 if self.is_cloudflare_blocking(page_content):
                     sleep(1)
                 else:
@@ -101,7 +101,7 @@ class Cloudflare(BypassRepository):
             )
             page = await browser.get(domain)
             while(True):
-                page_content = await page.evaluate('document.documentElement.outerHTML')
+                page_content = await page.get_content()
                 fetch_content = await page.evaluate(f'''
                     fetch("{url}")''' + '''.then(response => response.arrayBuffer()).then(buffer => {
                         let binary = '';

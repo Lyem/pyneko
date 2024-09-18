@@ -225,8 +225,8 @@ class MangaDownloaderApp:
 
 if __name__ == "__main__":
     try:
-        update_providers()
         if os.environ.get('PYNEKOENV') != 'dev':
+            update_providers()
             if version != get_last_version():
                 app = QApplication(sys.argv)
                 window = NewVersion()

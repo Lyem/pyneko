@@ -31,7 +31,7 @@ class WebSiteOpener(QWidget):
         self.listWidget.itemClicked.connect(self.openSite)
 
         self.setLayout(layout)
-        self.setWindowTitle('Lista de Sites Suportados')
+        self.setWindowTitle(f'Lista de Sites Suportados | {len(websites)}')
         self.resize(300, 200)
         self.setWindowIcon(QIcon(os.path.join(assets, 'icon.ico')))
     

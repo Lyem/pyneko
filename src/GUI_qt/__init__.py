@@ -113,7 +113,10 @@ class MangaDownloaderApp:
     def manga_by_link(self):
         link = get()
         extract_info = extract(link)
-        domain = f"{extract_info.domain}.{extract_info.suffix}"
+        if extract_info.subdomain:
+            domain = f"{extract_info.subdomain}.{extract_info.domain}.{extract_info.suffix}"
+        else:
+            domain = f"{extract_info.domain}.{extract_info.suffix}"
         provider_find = False
         for provider in self.providers:
             if provider.domain == domain:

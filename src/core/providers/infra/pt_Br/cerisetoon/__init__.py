@@ -5,7 +5,7 @@ class CerisetoonProvider(ScanMadaraClone):
     icon = 'https://i.imgur.com/ycuyRsy.png'
     icon_hash = 'T3mBA4AkUz9sptRplgCb9VU7iHiQiYc'
     lang = 'pt-Br'
-    domain = 'cerisetoon.com'
+    domain = 'cerise.leitorweb.com'
 
     def __init__(self):
-        self.url = 'https://cerisetoon.com'   
+        self.url = 'https://cerise.leitorweb.com'   

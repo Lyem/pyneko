@@ -5,7 +5,7 @@ class SinensistoonProvider(ScanMadaraClone):
     icon = 'https://i.imgur.com/ycuyRsy.png'
     icon_hash = 'T3mBA4AkUz9sptRplgCb9VU7iHiQiYc'
     lang = 'pt-Br'
-    domain = 'sinensistoon.com'
+    domain = 'sinensis.leitorweb.com'
 
     def __init__(self):
-        self.url = 'https://sinensistoon.com'
+        self.url = 'https://sinensis.leitorweb.com'

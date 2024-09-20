@@ -11,7 +11,7 @@ class YugenProvider(Base):
     icon = 'https://i.imgur.com/QRjE79s.png'
     icon_hash = 'd/iFDQIoqraAa360R1NPCZWlHiugekWiJw'
     lang = 'pt-Br'
-    domain = 'voblog.xyz'
+    domain = 'yugenmangasbr.voblog.xyz'
 
     def __init__(self) -> None:
         self.base = 'https://yugenmangasbr.voblog.xyz'

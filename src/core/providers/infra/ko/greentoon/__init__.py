@@ -4,6 +4,7 @@ from typing import List
 from bs4 import BeautifulSoup
 from core.__seedwork.infra.http import Http
 from core.providers.infra.template.base import Base
+from core.download.application.use_cases import DownloadUseCase
 from core.providers.domain.entities import Chapter, Pages, Manga
 
 class GreentoonProvider(Base):
@@ -47,3 +48,10 @@ class GreentoonProvider(Base):
             list.append(page.get('src'))
        
         return Pages(ch.id, ch.number, ch.name, list)
+
+    def download(self, pages: Pages, fn: any, headers=None, cookies=None):
+        if headers is not None:
+            headers = headers | self.headers
+        else:
+            headers = self.headers
+        DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)

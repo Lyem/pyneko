@@ -58,7 +58,7 @@ class SlimeReadProvider(Base):
             page = await browser.get(domain)
             data = []
             while len(data) == 0:
-                page_content = await page.evaluate('document.documentElement.outerHTML')
+                page_content = await page.get_content()
                 soup = BeautifulSoup(page_content, 'html.parser')
                 data = soup.select('p.text-3xl')
 

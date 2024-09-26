@@ -10,7 +10,7 @@ class GuildaTierDrawProvider(MangaReaderCms):
     icon = 'https://i.imgur.com/QRjE79s.png'
     icon_hash = 'd/iFDQIoqraAa360R1NPCZWlHiugekWiJw'
     lang = 'pt-Br'
-    domain = 'guildatierdraw.top'
+    domain = 'www.guildatierdraw.top'
 
     def __init__(self):
         super().__init__()

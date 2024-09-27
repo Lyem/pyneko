@@ -1,10 +1,18 @@
 import base64
+import tldextract
 import nodriver as uc
 from time import sleep
 from bs4 import BeautifulSoup
+from tinydb import TinyDB, where
+from platformdirs import user_data_path
+from core.config.request_data import RequestData
 from core.cloudflare.domain.request_entity import Request
 from core.cloudflare.domain.bypass_repository import BypassRepository
 from core.cloudflare.infra.nodriver.chrome import find_chrome_executable
+
+data_path = user_data_path('pyneko')
+db_path = data_path / 'request.json'
+db = TinyDB(db_path)
 
 class Cloudflare(BypassRepository):
     def is_cloudflare_blocking(self, html: str) -> bool:
@@ -64,6 +72,9 @@ class Cloudflare(BypassRepository):
         content={}
         async def get_cloudflare_cookie():
             nonlocal content
+            cloudflare = False
+            extract = tldextract.extract(url)
+            onlydomain = f"{extract.domain}.{extract.suffix}"
             browser = await uc.start(
                 browser_args=[
                     '--window-size=600,600', 
@@ -74,11 +85,29 @@ class Cloudflare(BypassRepository):
                 browser_executable_path=None
             )
             page = await browser.get(url)
+            request_data = db.search(where('domain') == onlydomain)
+            if(len(request_data) > 0):
+                re = RequestData.from_dict(request_data[0])
+                await page.evaluate(f'document.cookie = "cf_clearance={re.cookies['cf_clearance']}; path=/; max-age=3600; secure; samesite=strict";')
+                await page.reload()
             while(True):
                 page_content = await page.get_content()
                 if self.is_cloudflare_blocking(page_content):
+                    cloudflare = True
                     sleep(1)
                 else:
+                    if cloudflare:
+                        request_data = db.search(where('domain') == onlydomain)
+                        if(len(request_data) > 0):
+                            db.remove(where('domain') == onlydomain)
+                        agent = await page.evaluate('navigator.userAgent')
+                        headers = { 'user-agent': agent }
+                        cookiesB = await browser.cookies.get_all()
+                        cookies={}
+                        for cookie in cookiesB:
+                            if(cookie.name == 'cf_clearance'):
+                                cookies = {'cf_clearance': cookie.value}
+                        db.insert(RequestData(domain=onlydomain, headers=headers, cookies=cookies).as_dict())
                     content = page_content 
                     break
             browser.stop()
@@ -89,6 +118,9 @@ class Cloudflare(BypassRepository):
         content={}
         async def get_cloudflare_cookie():
             nonlocal content
+            cloudflare = False
+            extract = tldextract.extract(domain)
+            onlydomain = f"{extract.domain}.{extract.suffix}"
             browser = await uc.start(
                 browser_args=[
                     '--window-size=600,600', 
@@ -100,6 +132,11 @@ class Cloudflare(BypassRepository):
                 headless=background
             )
             page = await browser.get(domain)
+            request_data = db.search(where('domain') == onlydomain)
+            if(len(request_data) > 0):
+                re = RequestData.from_dict(request_data[0])
+                await page.evaluate(f'document.cookie = "cf_clearance={re.cookies['cf_clearance']}; path=/; max-age=3600; secure; samesite=strict";')
+                await page.reload()
             while(True):
                 page_content = await page.get_content()
                 fetch_content = await page.evaluate(f'''
@@ -114,8 +151,21 @@ class Cloudflare(BypassRepository):
                     });
                 ''', await_promise=True)
                 if self.is_cloudflare_blocking(page_content):
+                    cloudflare = True
                     sleep(1)
                 else:
+                    if cloudflare:
+                        request_data = db.search(where('domain') == onlydomain)
+                        if(len(request_data) > 0):
+                            db.remove(where('domain') == onlydomain)
+                        agent = await page.evaluate('navigator.userAgent')
+                        headers = { 'user-agent': agent }
+                        cookiesB = await browser.cookies.get_all()
+                        cookies={}
+                        for cookie in cookiesB:
+                            if(cookie.name == 'cf_clearance'):
+                                cookies = {'cf_clearance': cookie.value}
+                        db.insert(RequestData(domain=onlydomain, headers=headers, cookies=cookies).as_dict())
                     content = base64.b64decode(fetch_content)
                     break
             browser.stop()

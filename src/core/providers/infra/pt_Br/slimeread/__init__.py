@@ -18,7 +18,7 @@ class SlimeReadProvider(Base):
 
     def __init__(self) -> None:
         self.base = 'https://slimeread.com'
-        self.api = 'https://ola-scrapper-to-precisando-de-gente-bora.slimeread.com:8443'
+        self.api = 'https://morri.slimeread.com:8443'
         ua = UserAgent()
         user = ua.chrome
         self.headers = {'origin': 'slimeread.com','referer': f'{self.base}', 'User-Agent': user}

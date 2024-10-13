@@ -9,7 +9,7 @@ class ModeScanlatorProvider(Base):
     icon = 'https://i.imgur.com/EvOBEp6.png'
     icon_hash = 'AAiCBQAjpQ1HiXl0aQt+p9kgJ0iFeYDKVw'
     lang = 'pt-Br'
-    domain = 'modescanlator.net'
+    domain = 'site.modescanlator.net'
 
     def __init__(self) -> None:
         self.api = 'https://api.modescanlator.net'

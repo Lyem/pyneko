@@ -69,7 +69,7 @@ class SussyScanProvider(WordPressMadara):
 
         _, max_val, _, max_loc = cv2.minMaxLoc(result)
 
-        if max_val >= 0.8:
+        if max_val >= 0.7:
             x, y = max_loc
             img_without_mark = img[:y, :]
 

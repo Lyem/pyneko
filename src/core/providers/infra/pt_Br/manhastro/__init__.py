@@ -9,7 +9,7 @@ from core.providers.domain.entities import Chapter, Pages
 from core.download.application.use_cases import DownloadUseCase
 from core.providers.infra.template.wordpress_madara import WordPressMadara
 
-class SussyScanProvider(WordPressMadara):
+class ManhastroProvider(WordPressMadara):
     name = 'Manhastro'
     icon = 'https://i.imgur.com/ycuyRsy.png'
     icon_hash = 'T3mBA4AkUz9sptRplgCb9VU7iHiQiYc'
@@ -58,24 +58,32 @@ class SussyScanProvider(WordPressMadara):
 
         return template
     
-    def removeMark(self, img_path, template_path, output_path):
+    def removeMark(self, img_path, template_path, output_path) -> bool:
         img = cv2.imread(img_path)
         template = cv2.imread(template_path)
         template = self.adjust_template_size(template, img)
 
         h, w = template.shape[:2]
 
-        result = cv2.matchTemplate(img, template, cv2.TM_CCOEFF_NORMED)
+        img_cropped = img[-h:, :]
+
+        result = cv2.matchTemplate(img_cropped, template, cv2.TM_CCOEFF_NORMED)
 
         _, max_val, _, max_loc = cv2.minMaxLoc(result)
-
-        if max_val >= 0.7:
-            x, y = max_loc
-            img_without_mark = img[:y, :]
+        print(max_val)
+        if max_val >= 0.8:
+            img_without_mark = img[:-h, :]
 
             cv2.imwrite(output_path, img_without_mark)
+
+            return True
+        
+        return False
     
     def download(self, pages: Pages, fn: any, headers=None, cookies=None):
         pages = DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)
+        marks = ['mark.jpg', 'mark2.jpg', 'mark3.jpg']
         for page in pages.files:
-            self.removeMark(page, os.path.join(Path(__file__).parent,'mark.jpg'), page)
+            for mark in marks:
+                if self.removeMark(page, os.path.join(Path(__file__).parent, mark), page):
+                    break

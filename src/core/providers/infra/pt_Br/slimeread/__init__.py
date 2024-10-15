@@ -22,7 +22,7 @@ class SlimeReadProvider(Base):
         ua = UserAgent()
         user = ua.chrome
         self.headers = {'origin': 'slimeread.com','referer': f'{self.base}', 'User-Agent': user}
-        self.cdns = ['https://cdn2.slimeread.com/', 'https://cdn.slimeread.com/', 'https://black.slimeread.com/']
+        self.cdns = ['https://cdn2.slimeread.com/', 'https://cdn.slimeread.com/', 'https://black.slimeread.com/', 'https://objects.slimeread.com/']
     
     def getMangas(self) -> List[Manga]:
         pass
@@ -98,6 +98,8 @@ class SlimeReadProvider(Base):
             if(data['btcu_image'] != 'folders/pagina_inicial.png' and data['btcu_image'] != 'folders/pagina_final.png'):
                 if data['btcu_provider_host'] == 5:
                     cdn_selected = self.cdns[2]
+                elif data['btcu_provider_host'] == 3:
+                    cdn_selected = self.cdns[3]
                 else:
                     cdn_selected = self.cdns[1]
                 list.append(f'{cdn_selected}{data['btcu_image']}')

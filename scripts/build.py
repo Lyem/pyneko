@@ -22,6 +22,7 @@ def install():
         '--collect-all=nodriver',
         '--collect-all=bs4',
         '--collect-all=httpx',
+        '--collect-all=cv2',
         '--collect-all=fake_useragent',
         '--collect-all=pillow_avif',
         f'--icon=assets/icon.ico',

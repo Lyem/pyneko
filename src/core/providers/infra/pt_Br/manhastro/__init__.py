@@ -46,9 +46,22 @@ class SussyScanProvider(WordPressMadara):
 
         return Pages(ch.id, ch.number, ch.name, decoded_links)
     
+    def adjust_template_size(self, template, img):
+        h_img, w_img = img.shape[:2]
+        h_template, w_template = template.shape[:2]
+
+        if h_template > h_img or w_template > w_img:
+            scale_h = h_img / h_template
+            scale_w = w_img / w_template
+            scale = min(scale_h, scale_w)
+            template = cv2.resize(template, (int(w_template * scale), int(h_template * scale)))
+
+        return template
+    
     def removeMark(self, img_path, template_path, output_path):
         img = cv2.imread(img_path)
         template = cv2.imread(template_path)
+        template = self.adjust_template_size(template, img)
 
         h, w = template.shape[:2]
 

@@ -70,7 +70,7 @@ class ManhastroProvider(WordPressMadara):
         result = cv2.matchTemplate(img_cropped, template, cv2.TM_CCOEFF_NORMED)
 
         _, max_val, _, max_loc = cv2.minMaxLoc(result)
-        print(max_val)
+        
         if max_val >= 0.8:
             img_without_mark = img[:-h, :]
 

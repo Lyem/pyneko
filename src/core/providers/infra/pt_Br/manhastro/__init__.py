@@ -1,9 +1,13 @@
-from core.providers.infra.template.wordpress_madara import WordPressMadara
+import os
+import cv2
+import base64
+from pathlib import Path
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin
 from core.__seedwork.infra.http import Http
 from core.providers.domain.entities import Chapter, Pages
-from urllib.parse import urljoin
-from bs4 import BeautifulSoup
-import base64
+from core.download.application.use_cases import DownloadUseCase
+from core.providers.infra.template.wordpress_madara import WordPressMadara
 
 class SussyScanProvider(WordPressMadara):
     name = 'Manhastro'
@@ -41,3 +45,24 @@ class SussyScanProvider(WordPressMadara):
         decoded_links = list(map(lambda image: base64.b64decode(image).decode('utf-8'), image_links))
 
         return Pages(ch.id, ch.number, ch.name, decoded_links)
+    
+    def removeMark(self, img_path, template_path, output_path):
+        img = cv2.imread(img_path)
+        template = cv2.imread(template_path)
+
+        h, w = template.shape[:2]
+
+        result = cv2.matchTemplate(img, template, cv2.TM_CCOEFF_NORMED)
+
+        _, max_val, _, max_loc = cv2.minMaxLoc(result)
+
+        if max_val >= 0.8:
+            x, y = max_loc
+            img_without_mark = img[:y, :]
+
+            cv2.imwrite(output_path, img_without_mark)
+    
+    def download(self, pages: Pages, fn: any, headers=None, cookies=None):
+        pages = DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)
+        for page in pages.files:
+            self.removeMark(page, os.path.join(Path(__file__).parent,'mark.jpg'), page)

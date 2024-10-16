@@ -1,12 +1,13 @@
+import tldextract
+import cloudscraper
+from time import sleep
+from os import makedirs
+from httpx import get, post
+from tinydb import TinyDB, where
+from platformdirs import user_data_path
+from core.config.request_data import RequestData
 from core.__seedwork.infra.http.contract.http import Http, Response
 from core.cloudflare.application.use_cases import IsCloudflareBlockingUseCase, BypassCloudflareUseCase, BypassCloudflareNoCapchaUseCase, BypassCloudflareNoCapchaFeachUseCase, IsCloudflareBlockingTimeOutUseCase
-from tinydb import TinyDB, where, Query
-from platformdirs import user_data_path
-from httpx import get, post
-import tldextract
-from core.config.request_data import RequestData
-from os import makedirs
-from time import sleep
 
 data_path = user_data_path('pyneko')
 db_path = data_path / 'request.json'
@@ -42,7 +43,9 @@ class HttpxService(Http):
             if response.status_code == 403:
                 if IsCloudflareBlockingUseCase().execute(response.text):
                     if(url.endswith('.zip') or url.endswith('.jpg') or url.endswith('.avif') or url.endswith('.png')):
-                        content = BypassCloudflareNoCapchaFeachUseCase().execute(f'https://{domain}', url)
+                        scraper = cloudscraper.create_scraper()
+                        content = scraper.get(url).content
+                        # content = BypassCloudflareNoCapchaFeachUseCase().execute(f'https://{domain}', url)
                         return Response(200, 'a', content, url)
                     if(count == 1):
                         request_data = db.search(where('domain') == domain)
@@ -63,7 +66,9 @@ class HttpxService(Http):
                         else:
                             sleep(30)
                 else:
-                    content = BypassCloudflareNoCapchaFeachUseCase().execute(f'https://{domain}', url)
+                    scraper = cloudscraper.create_scraper()
+                    content = scraper.get(url).content
+                    # content = BypassCloudflareNoCapchaFeachUseCase().execute(f'https://{domain}', url)
                     return Response(200, 'a', content, url)
             elif status not in range(200, 299) and not 403 and not 429:
                 sleep(1)

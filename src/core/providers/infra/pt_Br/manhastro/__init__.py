@@ -82,7 +82,7 @@ class ManhastroProvider(WordPressMadara):
     
     def download(self, pages: Pages, fn: any, headers=None, cookies=None):
         pages = DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)
-        marks = ['mark.jpg', 'mark2.jpg', 'mark3.jpg']
+        marks = ['mark.jpg', 'mark2.jpg', 'mark3.jpg', 'mark4.jpg']
         for page in pages.files:
             for mark in marks:
                 if self.removeMark(page, os.path.join(Path(__file__).parent, mark), page):

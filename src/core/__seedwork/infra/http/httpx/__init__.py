@@ -7,7 +7,7 @@ from tinydb import TinyDB, where
 from platformdirs import user_data_path
 from core.config.request_data import RequestData
 from core.__seedwork.infra.http.contract.http import Http, Response
-from core.cloudflare.application.use_cases import IsCloudflareBlockingUseCase, BypassCloudflareUseCase, BypassCloudflareNoCapchaUseCase, BypassCloudflareNoCapchaFeachUseCase, IsCloudflareBlockingTimeOutUseCase
+from core.cloudflare.application.use_cases import IsCloudflareBlockingUseCase, BypassCloudflareUseCase, BypassCloudflareNoCapchaUseCase, BypassCloudflareNoCapchaFeachUseCase, IsCloudflareBlockingTimeOutUseCase, IsCloudflareEnableCookies
 
 data_path = user_data_path('pyneko')
 db_path = data_path / 'request.json'
@@ -45,12 +45,12 @@ class HttpxService(Http):
                     if(url.endswith('.zip') or url.endswith('.jpg') or url.endswith('.avif') or url.endswith('.png')):
                         scraper = cloudscraper.create_scraper(    
                             browser={
-                                'browser': 'firefox',
+                                'browser': 'chrome',
                                 'platform': 'windows',
                                 'mobile': False
                             }
                         )
-                        content = scraper.get(url).content
+                        content = scraper.get(url, headers=headers, cookies=cookies, params=params).content
                         # content = BypassCloudflareNoCapchaFeachUseCase().execute(f'https://{domain}', url)
                         return Response(200, 'a', content, url)
                     if(count == 1):
@@ -74,13 +74,14 @@ class HttpxService(Http):
                 else:
                     scraper = cloudscraper.create_scraper(    
                         browser={
-                            'browser': 'firefox',
+                            'browser': 'chrome',
                             'platform': 'windows',
                             'mobile': False
                         }
                     )
-                    content = scraper.get(url).content
-                    # content = BypassCloudflareNoCapchaFeachUseCase().execute(f'https://{domain}', url)
+                    content = scraper.get(url, headers=headers, cookies=cookies, params=params).content
+                    if IsCloudflareEnableCookies().execute(content):
+                        content = BypassCloudflareNoCapchaFeachUseCase().execute(f'https://{domain}', url)
                     return Response(200, 'a', content, url)
             elif status not in range(200, 299) and not 403 and not 429:
                 sleep(1)

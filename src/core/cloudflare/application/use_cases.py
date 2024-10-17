@@ -11,6 +11,10 @@ class IsCloudflareBlockingTimeOutUseCase(UseCase):
     def execute(self, html: str) -> bool:
         return Cloudflare().is_cloudflare_time_out(html)
 
+class IsCloudflareEnableCookies(UseCase):
+    def execute(self, html: str) -> bool:
+        return Cloudflare().is_cloudflare_enable_cookies(html)
+
 class BypassCloudflareUseCase(UseCase):
     def execute(self, url: str) -> Request:
         return Cloudflare().bypass_cloudflare(url)

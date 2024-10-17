@@ -35,6 +35,15 @@ class Cloudflare(BypassRepository):
             return True
         
         return False
+    
+    def is_cloudflare_enable_cookies(self, html: str) -> bool:
+        soup = BeautifulSoup(html, 'html.parser')
+
+        alert = soup.select_one('div#cookie-alert')
+        if alert:
+            return True
+        
+        return False
 
     def bypass_cloudflare(self, url: str) -> Request:
         headers={}

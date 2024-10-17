@@ -13,7 +13,7 @@ class NineMangasProvider(Base):
     lang = 'pt_Br'
     domain = 'br.ninemanga.com'
 
-    def __init(self) -> None:
+    def __init__(self) -> None:
         self.base = 'https://br.ninemanga.com'
         
     def getMangas(self) -> List[Manga]:

@@ -43,7 +43,13 @@ class HttpxService(Http):
             if response.status_code == 403:
                 if IsCloudflareBlockingUseCase().execute(response.text):
                     if(url.endswith('.zip') or url.endswith('.jpg') or url.endswith('.avif') or url.endswith('.png')):
-                        scraper = cloudscraper.create_scraper()
+                        scraper = cloudscraper.create_scraper(    
+                            browser={
+                                'browser': 'firefox',
+                                'platform': 'windows',
+                                'mobile': False
+                            }
+                        )
                         content = scraper.get(url).content
                         # content = BypassCloudflareNoCapchaFeachUseCase().execute(f'https://{domain}', url)
                         return Response(200, 'a', content, url)
@@ -66,7 +72,13 @@ class HttpxService(Http):
                         else:
                             sleep(30)
                 else:
-                    scraper = cloudscraper.create_scraper()
+                    scraper = cloudscraper.create_scraper(    
+                        browser={
+                            'browser': 'firefox',
+                            'platform': 'windows',
+                            'mobile': False
+                        }
+                    )
                     content = scraper.get(url).content
                     # content = BypassCloudflareNoCapchaFeachUseCase().execute(f'https://{domain}', url)
                     return Response(200, 'a', content, url)

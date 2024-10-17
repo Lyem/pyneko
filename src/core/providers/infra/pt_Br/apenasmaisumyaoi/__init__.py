@@ -8,8 +8,6 @@ import re
 
 class ApenasMaisUmYaoiProvider(WordPressMadara):
     name = 'Apenas mais um yaoi'
-    icon = 'https://i.imgur.com/ycuyRsy.png'
-    icon_hash = 'T3mBA4AkUz9sptRplgCb9VU7iHiQiYc'
     lang = 'pt-Br'
     domain = 'apenasmaisumyaoi.com'
 

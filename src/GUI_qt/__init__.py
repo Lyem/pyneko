@@ -1,5 +1,7 @@
 import os
 import sys
+import json
+import subprocess
 from PyQt6 import uic
 from clipman import init, get
 from tldextract import extract
@@ -7,10 +9,12 @@ from GUI_qt.logs import LogWindow
 from GUI_qt.version import version
 from GUI_qt.websites import WebSiteOpener
 from GUI_qt.new_version import NewVersion
+from GUI_qt.config import get_config, update_lang
 from core.providers.domain.chapter_entity import Chapter
 from GUI_qt.git import update_providers, get_last_version
 from GUI_qt.load_providers import import_classes_recursively, base_path
-from PyQt6.QtCore import QRunnable, QThreadPool, pyqtSignal, QObject
+from PyQt6.QtCore import QRunnable, QThreadPool, pyqtSignal, QObject, QLocale
+from core.config.img_conf import get_config as get_img_config, update_img, update_save
 from core.providers.application.use_cases import ProviderMangaUseCase, ProviderGetChaptersUseCase, ProviderGetPagesUseCase, ProviderDownloadUseCase
 from PyQt6.QtWidgets import QApplication, QMessageBox, QSpacerItem, QSizePolicy, QApplication, QGroupBox, QVBoxLayout, QHBoxLayout, QLabel, QProgressBar, QWidget
 
@@ -61,6 +65,12 @@ class MangaDownloaderApp:
         self.window.link.clicked.connect(self.manga_by_link)
         self.window.invert.clicked.connect(self.invert_chapters)
         self.window.search.textChanged.connect(self.filter_chapters)
+        self.window.path.textChanged.connect(self.setPath)
+        self.window.config.clicked.connect(self.open_config)
+        self.window.open_folder.clicked.connect(self.open_folder)
+        self.window.config_back.clicked.connect(self.open_home)
+        self.window.langs.currentTextChanged.connect(self.langChanged)
+        self.window.format_img.currentTextChanged.connect(self.imgFormatChanged)
         self.log_window = None
         self.websites_window = None
 
@@ -68,6 +78,10 @@ class MangaDownloaderApp:
 
         self.pool = QThreadPool.globalInstance()
         self.pool.setMaxThreadCount(self.max_concurrent_downloads)
+
+        self.langChanged()
+        self.imgFormatChanged()
+        self.setPath()
     
     def run(self):
         sys.exit(self.app.exec())
@@ -95,6 +109,11 @@ class MangaDownloaderApp:
                 if ch.id == chapter.id:
                     chapter_ui.download.setEnabled(False)
             chapter_ui.download.clicked.connect(lambda _, ch=chapter, download_button=chapter_ui.download: self.chapter_download_button_clicked(ch, download_button))
+            config = get_config()
+            translations = {}
+            with open(os.path.join(self.assets, 'translations.json'), 'r', encoding='utf-8') as file:
+                translations = json.load(file)
+            chapter_ui.download.setText(translations[config.lang]['download'])
             self.window.verticalChapter.addWidget(chapter_ui)
         self.window.verticalChapter.addItem(self.vertical_spacer)
     
@@ -137,9 +156,14 @@ class MangaDownloaderApp:
                     self.window.pages.setCurrentIndex(0)
                     QMessageBox.critical(None, "Erro", str(e))
         if provider_find == False:
+            config = get_config()
+            translations = {}
+            with open(os.path.join(self.assets, 'translations.json'), 'r', encoding='utf-8') as file:
+                translations = json.load(file)
+            translate = translations[config.lang]
             msg = QMessageBox()
-            msg.setWindowTitle("Erro")
-            msg.setText(f"Nenhum provedor para <span style='color:red;'>{domain}</span> foi encontrado.")
+            msg.setWindowTitle(translate['error'])
+            msg.setText(f"{translate['404_provider']} <span style='color:red;'>{domain}</span> {translate['404_provider2']}")
             msg.exec()
     
     def download_all_chapters(self):
@@ -209,6 +233,65 @@ class MangaDownloaderApp:
                         layout.removeItem(item)
                 layout.addItem(QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))
     
+    def imgFormatChanged(self, img=None):
+        if not img:
+            data = get_img_config()
+            self.window.format_img.setCurrentText(data.img)
+        else:
+            update_img(img)
+    
+    def setPath(self):
+        path = self.window.path.text()
+        if not path:
+            data = get_img_config()
+            self.window.path.setText(data.save)
+        else:
+            update_save(path)
+    
+    def open_folder(self):
+        path = get_img_config().save
+        if sys.platform.startswith('win'):
+            os.startfile(path)
+        elif sys.platform.startswith('darwin'):
+            subprocess.Popen(['open', path])
+        else:
+            subprocess.Popen(['xdg-open', path])
+
+    def langChanged(self, lang=None):
+        translations = {}
+        with open(os.path.join(self.assets, 'translations.json'), 'r', encoding='utf-8') as file:
+            translations = json.load(file)
+
+        language = lang
+        if not lang:
+            config = get_config()
+            if not config:
+                language = QLocale.system().name()
+                update_lang(language)
+            else:
+                language = config.lang
+            if language not in translations:
+                language = 'en'
+            self.window.langs.setCurrentText(language)
+        else:
+            update_lang(language)
+
+        translation = translations[language]
+
+        self.window.websites.setText(translation['websites'])
+        self.window.link.setText(translation['paste'])
+        self.window.downloadAll.setText(translation['download_all'])
+        self.window.invert.setText(translation['invert'])
+        self.window.search.setText(translation['search_caps'])
+        self.window.progress.setText(translation['progress'])
+        self.window.label.setText(translation['loading'])
+        self.window.config.setText(translation['config'])
+        self.window.config_back.setText(translation['back'])
+        self.window.language_label.setText(translation['language'])
+        self.window.img_format.setText(translation['format'])
+        self.window.open_folder.setText(translation['open_folder'])
+        self.window.path_label.setText(translation['path_label'])
+    
     def open_progress_window(self):
         if self.window.progress_scroll.isHidden():
             self.window.progress_scroll.show()
@@ -220,6 +303,12 @@ class MangaDownloaderApp:
             self.log_window = LogWindow()      
         self.log_window.show()
     
+    def open_config(self):
+        self.window.pages.setCurrentIndex(2)
+    
+    def open_home(self):
+        self.window.pages.setCurrentIndex(0)
+
     def open_websites(self):
         if self.websites_window is None:
             self.websites_window = WebSiteOpener(self.providers)
@@ -239,5 +328,10 @@ if __name__ == "__main__":
         app = MangaDownloaderApp()
         app.run()
     except Exception as e:
+        config = get_config()
+        translations = {}
+        with open(os.path.join(os.path.join(os.path.join(base_path(), 'GUI_qt'), 'assets'), 'translations.json'), 'r', encoding='utf-8') as file:
+            translations = json.load(file)
         new = QApplication(sys.argv)
-        QMessageBox.critical(None, "Erro", f"A aplicação encontrou o seguinte erro e precisa ser fechada: {str(e)}")
+        translate = translations[config.lang]
+        QMessageBox.critical(None, translate['error'], f"{translate['app_error']} {str(e)}")

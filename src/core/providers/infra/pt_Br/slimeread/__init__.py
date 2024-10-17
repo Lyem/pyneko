@@ -11,8 +11,6 @@ from core.providers.domain.entities import Chapter, Pages, Manga
 
 class SlimeReadProvider(Base):
     name = 'Slime Read'
-    icon = 'https://i.imgur.com/QRjE79s.png'
-    icon_hash = 'd/iFDQIoqraAa360R1NPCZWlHiugekWiJw'
     lang = 'pt-Br'
     domain = 'slimeread.com'
 
@@ -23,9 +21,6 @@ class SlimeReadProvider(Base):
         user = ua.chrome
         self.headers = {'origin': 'slimeread.com','referer': f'{self.base}', 'User-Agent': user}
         self.cdns = ['https://cdn2.slimeread.com/', 'https://cdn.slimeread.com/', 'https://black.slimeread.com/', 'https://objects.slimeread.com/']
-    
-    def getMangas(self) -> List[Manga]:
-        pass
     
     def getManga(self, link: str) -> Manga:
         id = link.split('/')[4]

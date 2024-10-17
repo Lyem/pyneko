@@ -2,8 +2,6 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 
 class YanpFansubProvider(WordPressMadara):
     name = 'Yanp fansub'
-    icon = 'https://i.imgur.com/ycuyRsy.png'
-    icon_hash = 'T3mBA4AkUz9sptRplgCb9VU7iHiQiYc'
     lang = 'pt-Br'
     domain = 'trisalyanp.com'
 

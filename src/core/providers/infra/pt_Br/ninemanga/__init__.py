@@ -8,16 +8,11 @@ from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
 
 class NineMangasProvider(Base):
     name = 'Nine Mangas'
-    icon = 'https://i.imgur.com/ycuyRsy.png'
-    icon_hash = 'T3mBA4AkUz9sptRplgCb9VU7iHiQiYc'
     lang = 'pt_Br'
     domain = 'br.ninemanga.com'
 
     def __init__(self) -> None:
         self.base = 'https://br.ninemanga.com'
-        
-    def getMangas(self) -> List[Manga]:
-        pass
     
     def getManga(self, link: str) -> Manga:
         response = Http.get(link)

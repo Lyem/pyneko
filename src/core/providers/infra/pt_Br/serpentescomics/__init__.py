@@ -5,8 +5,6 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 
 class SerpentesComicsProvider(WordPressMadara):
     name = 'Serpentes Comics'
-    icon = 'https://i.imgur.com/ycuyRsy.png'
-    icon_hash = 'T3mBA4AkUz9sptRplgCb9VU7iHiQiYc'
     lang = 'pt_Br'
     domain = 'serpentescomics.com.br'
 

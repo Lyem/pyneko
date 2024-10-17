@@ -2,8 +2,6 @@ from core.providers.infra.template.manga_reader_cms import MangaReaderCms
 
 class TsundokuProvider(MangaReaderCms):
     name = 'Tsundokus'
-    icon = 'https://i.imgur.com/QRjE79s.png'
-    icon_hash = 'd/iFDQIoqraAa360R1NPCZWlHiugekWiJw'
     lang = 'pt-Br'
     domain = 'tsundoku.com.br'
 

@@ -1,15 +1,10 @@
-import json
 from typing import List
-import unicodedata
-from bs4 import BeautifulSoup
 from core.__seedwork.infra.http import Http
 from core.providers.infra.template.base import Base
 from core.providers.domain.entities import Chapter, Pages, Manga
 
 class YugenProvider(Base):
     name = 'Yugen mangas'
-    icon = 'https://i.imgur.com/QRjE79s.png'
-    icon_hash = 'd/iFDQIoqraAa360R1NPCZWlHiugekWiJw'
     lang = 'pt-Br'
     domain = 'yugenmangasbr.voblog.xyz'
 
@@ -18,9 +13,6 @@ class YugenProvider(Base):
         self.cdn = 'https://media.yugenweb.com/'
         self.api = 'https://api.yugenweb.com/'
         self.headers = {'referer': f'{self.base}'}
-    
-    def getMangas(self) -> List[Manga]:
-        pass
 
     def getManga(self, link: str) -> Manga:
         if link.endswith('/'):

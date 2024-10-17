@@ -5,14 +5,9 @@ from core.download.application.use_cases import DownloadUseCase
 
 class Base(ProviderRepository):
     name = ''
-    icon = 'https://i.imgur.com/EvOBEp6.png'
-    icon_hash = 'AAiCBQAjpQ1HiXl0aQt+p9kgJ0iFeYDKVw'
     lang = ''
     domain = ''
 
-    def getMangas() -> List[Manga]:
-        raise NotImplementedError()
-    
     def getManga(link: str) -> Manga:
         raise NotImplementedError()
 

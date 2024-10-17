@@ -2,8 +2,6 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 
 class FlowerMangasProvider(WordPressMadara):
     name = 'Flower mangas'
-    icon = 'https://i.imgur.com/ycuyRsy.png'
-    icon_hash = 'T3mBA4AkUz9sptRplgCb9VU7iHiQiYc'
     lang = 'pt-Br'
     domain = 'flowermangas.com'
 

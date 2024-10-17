@@ -6,27 +6,12 @@ from core.providers.domain.entities import Chapter, Pages, Manga
 
 class ModeScanlatorProvider(Base):
     name = 'Mode Scanlator'
-    icon = 'https://i.imgur.com/EvOBEp6.png'
-    icon_hash = 'AAiCBQAjpQ1HiXl0aQt+p9kgJ0iFeYDKVw'
     lang = 'pt-Br'
     domain = 'site.modescanlator.net'
 
     def __init__(self) -> None:
         self.api = 'https://api.modescanlator.net'
         self.reader = 'https://site.modescanlator.net/series/'
-    
-    def getMangas(self) -> List[Manga]:
-        response = Http.get(f'{self.api}/query?adult=true&page=1')
-        data = response.json()
-        page = 1
-        mangas = []
-        while data['meta']['next_page_url'] != None:
-            response = Http.get(f'{self.api}/query?adult=true&page={page}')
-            data = response.json()
-            for manga in data['data']:
-                mangas.append(Manga(manga['id'], manga['title']))
-            page += 1
-        return mangas
     
     def getManga(self, link: str) -> Manga:
         if link.endswith('/'):

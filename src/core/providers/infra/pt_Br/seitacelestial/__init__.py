@@ -6,8 +6,6 @@ from core.providers.infra.template.manga_reader_cms import MangaReaderCms
 
 class SeitaCelestialProvider(MangaReaderCms):
     name = 'Seita Celestial'
-    icon = 'https://i.imgur.com/QRjE79s.png'
-    icon_hash = 'd/iFDQIoqraAa360R1NPCZWlHiugekWiJw'
     lang = 'pt-Br'
     domain = 'seitacelestial.com'
 

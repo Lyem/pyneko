@@ -6,8 +6,6 @@ from core.providers.domain.entities import Pages
 
 class MoonLoversScanProvider(WordPressMadara):
     name = 'Moon lovers scan'
-    icon = 'https://i.imgur.com/ycuyRsy.png'
-    icon_hash = 'T3mBA4AkUz9sptRplgCb9VU7iHiQiYc'
     lang = 'pt-Br'
     domain = 'moonloversscan.com.br'
 

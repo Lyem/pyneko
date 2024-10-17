@@ -10,8 +10,6 @@ from core.cloudflare.application.use_cases import IsCloudflareBlockingUseCase
 
 class MiniTwoScanProvider(WordPressMadara):
     name = 'MiniTwo Scan'
-    icon = 'https://i.imgur.com/ycuyRsy.png'
-    icon_hash = 'T3mBA4AkUz9sptRplgCb9VU7iHiQiYc'
     lang = 'pt_Br'
     domain = 'minitwoscan.com'
 

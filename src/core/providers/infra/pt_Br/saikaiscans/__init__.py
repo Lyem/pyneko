@@ -8,16 +8,11 @@ from core.providers.domain.entities import Chapter, Pages, Manga
 
 class SaikaiScansProvider(Base):
     name = 'Saikai Scans'
-    icon = 'https://i.imgur.com/ycuyRsy.png'
-    icon_hash = 'T3mBA4AkUz9sptRplgCb9VU7iHiQiYc'
     lang = 'pt_Br'
     domain = 'saikaiscans.net'
 
     def __init__(self) -> None:
         self.url = 'https://saikaiscans.net/'
-        
-    def getMangas(self) -> List[Manga]:
-        pass
     
     def getManga(self, link: str) -> Manga:
         response = Http.get(link)

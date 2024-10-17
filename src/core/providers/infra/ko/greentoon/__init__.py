@@ -1,5 +1,3 @@
-import re
-import json
 from typing import List
 from bs4 import BeautifulSoup
 from core.__seedwork.infra.http import Http
@@ -9,17 +7,12 @@ from core.providers.domain.entities import Chapter, Pages, Manga
 
 class GreentoonProvider(Base):
     name = 'greentoon'
-    icon = 'https://i.imgur.com/QRjE79s.png'
-    icon_hash = 'd/iFDQIoqraAa360R1NPCZWlHiugekWiJw'
     lang = 'mult'
     domain = 'greentoon.net'
 
     def __init__(self) -> None:
         self.base = 'https://greentoon.net'
         self.headers = {'referer': f'{self.base}'}
-    
-    def getMangas(self) -> List[Manga]:
-        pass
     
     def getManga(self, link: str) -> Manga:
         response = Http.get(link, headers=self.headers)

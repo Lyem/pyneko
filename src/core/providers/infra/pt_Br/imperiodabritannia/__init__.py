@@ -1,15 +1,12 @@
+from urllib.parse import urljoin
 from fake_useragent import UserAgent
+from core.__seedwork.infra.http import Http
 from core.providers.domain.entities import Pages
 from core.download.application.use_cases import DownloadUseCase
 from core.providers.infra.template.wordpress_madara import WordPressMadara
-from core.__seedwork.infra.http import Http
-from core.providers.domain.entities import Pages
-from urllib.parse import urljoin
 
 class ImperiodabritanniaProvider(WordPressMadara):
     name = 'Imperio da britannia'
-    icon = 'https://i.imgur.com/ycuyRsy.png'
-    icon_hash = 'T3mBA4AkUz9sptRplgCb9VU7iHiQiYc'
     lang = 'pt-Br'
     domain = 'imperiodabritannia.com'
 

@@ -8,17 +8,12 @@ from core.providers.domain.entities import Chapter, Pages, Manga
 
 class BatotoProvider(Base):
     name = 'Batoto'
-    icon = 'https://i.imgur.com/QRjE79s.png'
-    icon_hash = 'd/iFDQIoqraAa360R1NPCZWlHiugekWiJw'
     lang = 'mult'
     domain = 'bato.to'
 
     def __init__(self) -> None:
         self.base = 'https://bato.to'
         self.headers = {'referer': f'{self.base}'}
-    
-    def getMangas(self) -> List[Manga]:
-        pass
     
     def getManga(self, link: str) -> Manga:
         response = Http.get(link, headers=self.headers)

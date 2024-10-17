@@ -25,11 +25,6 @@ class MangaReaderCms(Base):
     def get_relative_link(self, element):
         return element['href']
 
-    def getMangas(self) -> List[Manga]:
-        response = Http.get(self.url + self.path + 'changeMangaList?type=text', headers={'X-Requested-With': 'XMLHttpRequest'})
-        data = self.fetch_dom(response, self.query_mangas)
-        return [Manga(id=self.get_relative_link(element), name=element.text.strip()) for element in data]
-
     def getManga(self, link: str) -> Manga:
         response = Http.get(link)
         uri = urlparse(link)

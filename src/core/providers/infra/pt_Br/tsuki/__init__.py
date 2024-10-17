@@ -1,7 +1,5 @@
-import re
 import os
 from typing import List
-from fake_useragent import UserAgent
 from core.__seedwork.infra.http import Http
 from core.providers.infra.template.base import Base
 from core.download.application.use_cases import DownloadUseCase
@@ -9,28 +7,13 @@ from core.providers.domain.entities import Chapter, Pages, Manga
 
 class TsukiProvider(Base):
     name = 'Tsuki Mangas'
-    icon = 'https://i.imgur.com/QRjE79s.png'
-    icon_hash = 'd/iFDQIoqraAa360R1NPCZWlHiugekWiJw'
     lang = 'pt-Br'
     domain = 'tsuki-mangas.com'
 
     def __init__(self) -> None:
         self.base = 'https://tsuki-mangas.com'
-        ua = UserAgent()
-        user = ua.random
         self.headers = {'referer': f'{self.base}'}
         self.cdns = ['https://cdn.tsuki-mangas.com/tsuki', 'https://cdn1.tsuki-mangas.com/imgs', 'https://cdn2.tsuki-mangas.com']
-    
-    def getMangas(self) -> List[Manga]:
-        list = []
-        response = Http.get(f'{self.base}/api/v3/mangas?page=1', headers=self.headers).json()
-        last_page = response['lastPage']
-        for page in range(1, last_page):
-            response = Http.get(f'{self.base}/api/v3/mangas?page={page}', headers=self.headers).json()
-            for manga in response['data']:
-                list.append(Manga(manga['id'], manga['title']))
-
-        return list
     
     def getManga(self, link: str) -> Manga:
         id = link.split('/')[4]

@@ -8,8 +8,6 @@ from urllib.parse import urljoin
 
 class NorteRoseProvider(WordPressMadara):
     name = 'Norte rose'
-    icon = 'https://i.imgur.com/ycuyRsy.png'
-    icon_hash = 'T3mBA4AkUz9sptRplgCb9VU7iHiQiYc'
     lang = 'pt-Br'
     domain = 'norterose.com.br'
 

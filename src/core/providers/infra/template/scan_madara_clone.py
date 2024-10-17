@@ -10,6 +10,7 @@ from pathlib import Path
 from zipfile import ZipFile
 from bs4 import BeautifulSoup
 from core.__seedwork.infra.http import Http
+from core.config.img_conf import get_config
 from core.providers.infra.template.base import Base
 from core.providers.domain.entities import Chapter, Pages, Manga
 from core.download.domain.dowload_entity import Chapter as DChapter
@@ -19,15 +20,6 @@ class ScanMadaraClone(Base):
 
     def __init__(self):
         self.url = None
-    
-    def getMangas(self) -> List[Manga]:
-        response = Http.get(f'{self.url}/todas-as-obras')
-        soup = BeautifulSoup(response.content, 'html.parser')
-        tags = soup.find_all('a', class_='titulo__comic__allcomics')
-        list = []
-        for tag in tags:
-            list.append(Manga(id=tag.get('href'), name=tag.get_text()))
-        return list
     
     def getManga(self, link: str) -> Manga:
         response = Http.get(link)
@@ -65,9 +57,12 @@ class ScanMadaraClone(Base):
     def download(self, pages: Pages, fn: any, headers=None, cookies=None):
         title = (pages.name[:20]) if len(pages.name) > 20 else pages.name
         title = re.sub('[^a-zA-Z0-9&_áàâãéèêíïóôõöúçñÁÀÂÃÉÈÊÍÏÓÔÕÖÚÇÑ-]', '', title)
-        path = os.path.join(os.getcwd(), 'mangas',
+        config = get_config()
+        img_path = config.save
+        path = os.path.join(img_path,
                             str(title), str(pages.number))
         os.makedirs(path, exist_ok=True)
+        img_format = config.img
         files = []
         page_number = 0
         for i, page in enumerate(pages.pages):
@@ -89,12 +84,12 @@ class ScanMadaraClone(Base):
                                 icc = img.info.get('icc_profile')
                                 if img.mode in ("RGBA", "P"):
                                     img = img.convert("RGB")
-                                file = os.path.join(path, f"%03d.jpg" % page_number)
+                                file = os.path.join(path, f"%03d{img_format}" % page_number)
                                 files.append(file)
                                 img.save(file, quality=80, dpi=(72, 72), icc_profile=icc)
                             except:
                                 if response.status == 200:
-                                    file = os.path.join(path, f"%03d.jpg" % page_number)
+                                    file = os.path.join(path, f"%03d{img_format}" % page_number)
                                     files.append(file)
                                     Path(file).write_bytes(content)
 

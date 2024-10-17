@@ -6,8 +6,6 @@ from core.providers.domain.entities import Pages
 
 class WinterSunScanProvider(WordPressMadara):
     name = 'Winter sun scan'
-    icon = 'https://i.imgur.com/ycuyRsy.png'
-    icon_hash = 'T3mBA4AkUz9sptRplgCb9VU7iHiQiYc'
     lang = 'pt-Br'
     domain = 'wintersunscan.xyz'
 

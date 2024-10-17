@@ -6,30 +6,11 @@ from core.providers.domain.entities import Chapter, Pages, Manga
 
 class StarLightScanProvider(Base):
     name = 'Star Ligth Scan'
-    icon = 'https://i.imgur.com/QRjE79s.png'
-    icon_hash = 'd/iFDQIoqraAa360R1NPCZWlHiugekWiJw'
     lang = 'pt-Br'
     domain = 'starligthscan.com'
 
     def __init__(self) -> None:
         self.base = 'https://starligthscan.com'
-    
-    def getMangas(self) -> List[Manga]:
-        list = []
-        n = 0
-        while True:
-            n += 1
-            response = Http.get(f'{self.base}/mangas/?page-current={n}')
-            soup = BeautifulSoup(response.content, 'html.parser')
-            mangas = soup.select_one('#allMangasList').select('a')
-            for manga in mangas:
-                text = manga.get_text(strip=True)
-                href = manga.get('href')
-                list.append(Manga(href, text))
-            button = soup.select_one('footer.base__horizontalList.base__horizontalList--center').select('a')[1]
-            if button.has_attr('disabled'):
-                break
-        return list
     
     def getManga(self, link: str) -> Manga:
         response = Http.get(link)

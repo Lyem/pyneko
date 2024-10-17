@@ -4,14 +4,8 @@ from .entities import Chapter, Pages, Manga
 
 class ProviderRepository(ABC):
     name: str
-    icon: str
-    icon_hash: str
     lang: str
     domain: str
-
-    @abstractmethod
-    def getMangas() -> List[Manga]:
-        raise NotImplementedError()
     
     @abstractmethod
     def getManga(link: str) -> Manga:

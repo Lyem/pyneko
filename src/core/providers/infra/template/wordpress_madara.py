@@ -19,18 +19,6 @@ class WordPressMadara(Base):
         self.query_title_for_uri = 'head meta[property="og:title"]'
         self.query_placeholder = '[id^="manga-chapters-holder"][data-id]'
 
-    def getMangas(self) -> List[Manga]:
-        manga_list = []
-        page = 0
-        while True:
-            mangas = self._get_mangas_from_page(page)
-            if mangas:
-                manga_list.extend(mangas)
-                page += 1
-            else:
-                break
-        return manga_list
-
     def getManga(self, link: str) -> Manga:
         response = Http.get(link)
         soup = BeautifulSoup(response.content, 'html.parser')

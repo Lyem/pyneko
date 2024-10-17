@@ -8,8 +8,6 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 
 class HikariScanProvider(WordPressMadara):
     name = 'Hikari Scan'
-    icon = 'https://i.imgur.com/QRjE79s.png'
-    icon_hash = 'd/iFDQIoqraAa360R1NPCZWlHiugekWiJw'
     lang = 'pt-Br'
     domain = 'hikariscan.org'
 

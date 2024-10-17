@@ -23,6 +23,7 @@ def install():
         '--collect-all=bs4',
         '--collect-all=httpx',
         '--collect-all=cv2',
+        '--collect-all=cloudscraper',
         '--collect-all=fake_useragent',
         '--collect-all=pillow_avif',
         f'--icon=assets/icon.ico',

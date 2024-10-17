@@ -1,5 +1,8 @@
 import os
+import json
 from PyQt6.QtGui import QIcon
+from PyQt6.QtCore import QLocale
+from GUI_qt.config import get_config
 from GUI_qt.load_providers import base_path
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QListWidget, QLineEdit
 import webbrowser
@@ -24,16 +27,31 @@ class WebSiteOpener(QWidget):
         layout.addWidget(self.listWidget)
 
         self.search_bar = QLineEdit(self)
-        self.search_bar.setPlaceholderText("Buscar site...")
         self.search_bar.textChanged.connect(self.filter_sites)
         layout.addWidget(self.search_bar)
 
         self.listWidget.itemClicked.connect(self.openSite)
 
         self.setLayout(layout)
-        self.setWindowTitle(f'Lista de Sites Suportados | {len(websites)}')
         self.resize(300, 200)
         self.setWindowIcon(QIcon(os.path.join(assets, 'icon.ico')))
+
+        translations = {}
+        with open(os.path.join(assets, 'translations.json'), 'r', encoding='utf-8') as file:
+            translations = json.load(file)
+
+        config = get_config()
+        if not config:
+            language = QLocale.system().name()
+        else:
+            language = config.lang
+        if language not in translations:
+            language = 'en'
+
+        translation = translations[language]
+
+        self.setWindowTitle(f'{translation['list_title']} {len(websites)}')
+        self.search_bar.setPlaceholderText(translation['list_search'])
     
     def filter_sites(self):
         text = self.search_bar.text().lower()

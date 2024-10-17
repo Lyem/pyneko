@@ -3,6 +3,7 @@ import os
 import math
 from PIL import Image
 from io import BytesIO
+from core.config.img_conf import get_config
 from core.__seedwork.infra.http import Http
 from core.providers.domain.page_entity import Pages
 from core.download.domain.dowload_entity import Chapter
@@ -14,8 +15,11 @@ class PillowDownloadRepository(DownloadRepository):
     def download(self, pages: Pages, fn=None, headers=None, cookies=None) -> Chapter:
         title = (pages.name[:20]) if len(pages.name) > 20 else pages.name
         title = re.sub('[^a-zA-Z0-9&_áàâãéèêíïóôõöúçñÁÀÂÃÉÈÊÍÏÓÔÕÖÚÇÑ-]', '', title)
-        path = os.path.join(os.getcwd(), 'mangas', str(title), str(pages.number))
+        config = get_config()
+        img_path = config.save
+        path = os.path.join(img_path, str(title), str(pages.number))
         os.makedirs(path, exist_ok=True)
+        img_format = config.img
 
         response = Http.get(pages.pages[0], headers=headers, cookies=cookies)
 
@@ -29,12 +33,12 @@ class PillowDownloadRepository(DownloadRepository):
                 icc = img.info.get('icc_profile')
                 if img.mode in ("RGBA", "P"):
                     img = img.convert("RGB")
-                file = os.path.join(path, f"%03d.jpg" % page_number)
+                file = os.path.join(path, f"%03d{img_format}" % page_number)
                 files.append(file)
                 img.save(file, quality=80, dpi=(72, 72), icc_profile=icc)
             except:
                 if response.status == 200:
-                    file = os.path.join(path, f"%03d.jpg" % page_number)
+                    file = os.path.join(path, f"%03d{img_format}" % page_number)
                     files.append(file)
                     with open(file, 'wb') as archive:
                         archive.write(response.content)

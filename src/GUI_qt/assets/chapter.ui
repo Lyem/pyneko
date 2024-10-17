@@ -18,14 +18,20 @@
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QPushButton" name="download">
-       <property name="maximumSize">
+       <property name="minimumSize">
         <size>
          <width>50</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>70</width>
          <height>16777215</height>
         </size>
        </property>
        <property name="text">
-        <string>baixar</string>
+        <string>download</string>
        </property>
       </widget>
      </item>

@@ -19,7 +19,10 @@
         "404_provider": "No provider for",
         "404_provider2": "was found.",
         "open_folder": "Open folder",
-        "path_label": "Set the path of the files:"
+        "path_label": "Set the path of the files:",
+        "updates": "Checking for updates...",
+        "new_version": "New version",
+        "new_version_description": "Do you want to download the new version available?"
     },
     "pt_BR": {
         "websites": "Sites",
@@ -41,6 +44,9 @@
         "404_provider": "Nenhum provedor para",
         "404_provider2": "foi encontrado.",
         "open_folder": "Abrir a pasta",
-        "path_label": "Defina o caminho dos arquivos:"
+        "path_label": "Defina o caminho dos arquivos:",
+        "updates": "Verificando atualizações...",
+        "new_version": "Nova versão",
+        "new_version_description": "Deseja baixar a nova versão disponivel?"
     }
 }

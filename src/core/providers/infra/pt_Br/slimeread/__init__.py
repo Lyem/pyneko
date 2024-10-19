@@ -75,7 +75,12 @@ class SlimeReadProvider(Base):
         soup = BeautifulSoup(page, 'html.parser')
         title = soup.select_one('p.text-3xl')
         for chapter in array:
-            list.append(Chapter(f'{id}/{chapter['btc_cap']}', int(chapter['btc_cap']) + 1, title.get_text()))
+            value = chapter['btc_cap'] + 1
+            if value.is_integer():
+                formatted_cap = f"{int(value)}"
+            else:
+                formatted_cap = f"{value:.1f}" 
+            list.append(Chapter(f'{id}/{chapter['btc_cap']}', formatted_cap, title.get_text()))
         return list
 
     def getPages(self, ch: Chapter) -> Pages:

@@ -1,6 +1,7 @@
 import os
 import pillow_avif
 from PIL import Image as pil
+pil.Image.MAX_IMAGE_PIXELS = 933120000
 
 class ImageHandler:
     def load(self, files: list[str]) -> list[pil.Image]:

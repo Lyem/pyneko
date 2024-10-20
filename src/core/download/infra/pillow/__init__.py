@@ -1,6 +1,8 @@
 import re
 import os
+import cv2
 import math
+import numpy as np
 import pillow_avif
 from PIL import Image
 from io import BytesIO
@@ -39,10 +41,12 @@ class PillowDownloadRepository(DownloadRepository):
                 img.save(file, quality=100, dpi=(72, 72), icc_profile=icc)
             except:
                 if response.status == 200:
+                    image_data = np.asarray(bytearray(response.content), dtype=np.uint8)
+                    image = cv2.imdecode(image_data, cv2.IMREAD_COLOR)
+                    if image is None:
+                        print(f"[Download Image]: Error image %03d{img_format}"  % page_number)
                     file = os.path.join(path, f"%03d{img_format}" % page_number)
-                    files.append(file)
-                    with open(file, 'wb') as archive:
-                        archive.write(response.content)
+                    cv2.imwrite(file, image)
             if fn != None:
                 fn(math.ceil(i * 100)/len(pages.pages))
             page_number += 1

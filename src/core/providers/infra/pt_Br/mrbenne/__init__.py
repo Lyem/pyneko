@@ -3,7 +3,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class MrYaoiFansubProvider(WordPressMadara):
     name = 'Mrbenne'
     lang = 'pt-Br'
-    domain = 'mrbenne.com'
+    domain = ['mrbenne.com']
 
     def __init__(self):
         self.url = 'https://mrbenne.com'

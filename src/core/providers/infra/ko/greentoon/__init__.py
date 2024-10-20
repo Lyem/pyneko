@@ -8,7 +8,7 @@ from core.providers.domain.entities import Chapter, Pages, Manga
 class GreentoonProvider(Base):
     name = 'greentoon'
     lang = 'mult'
-    domain = 'greentoon.net'
+    domain = ['greentoon.net']
 
     def __init__(self) -> None:
         self.base = 'https://greentoon.net'
@@ -47,4 +47,4 @@ class GreentoonProvider(Base):
             headers = headers | self.headers
         else:
             headers = self.headers
-        DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)
+        return  DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)

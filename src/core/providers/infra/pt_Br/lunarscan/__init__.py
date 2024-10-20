@@ -3,7 +3,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class LunarScanProvider(WordPressMadara):
     name = 'Lunar scan'
     lang = 'pt-Br'
-    domain = 'lunarscan.com.br'
+    domain = ['lunarscan.com.br']
 
     def __init__(self):
         self.url = 'https://lunarscan.com.br'

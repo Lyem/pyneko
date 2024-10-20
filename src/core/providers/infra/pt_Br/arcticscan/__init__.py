@@ -3,7 +3,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class ArcticScanProvider(WordPressMadara):
     name = 'Arctic Scan'
     lang = 'pt_Br'
-    domain = 'arcticscan.top'
+    domain = ['arcticscan.top']
 
     def __init__(self):
         self.url = 'https://arcticscan.top/'

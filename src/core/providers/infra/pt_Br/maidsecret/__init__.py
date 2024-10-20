@@ -3,7 +3,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class MaidScansSecretProvider(WordPressMadara):
     name = 'Maidscans secret'
     lang = 'pt-Br'
-    domain = 'maidsecret.com'
+    domain = ['maidsecret.com']
 
     def __init__(self):
         self.url = 'https://maidsecret.com'

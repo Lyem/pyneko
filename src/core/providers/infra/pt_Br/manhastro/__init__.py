@@ -12,7 +12,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class ManhastroProvider(WordPressMadara):
     name = 'Manhastro'
     lang = 'pt-Br'
-    domain = 'manhastro.com'
+    domain = ['manhastro.com']
 
     def __init__(self):
         self.url = 'https://manhastro.com/'
@@ -85,3 +85,4 @@ class ManhastroProvider(WordPressMadara):
             for mark in marks:
                 if self.removeMark(page, os.path.join(Path(__file__).parent, mark), page):
                     break
+        return  pages

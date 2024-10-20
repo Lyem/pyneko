@@ -3,7 +3,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class TatakaeScanProvider(WordPressMadara):
     name = 'Tatakae scan'
     lang = 'pt-Br'
-    domain = 'tatakaescan.com'
+    domain = ['tatakaescan.com']
 
     def __init__(self):
         self.url = 'https://tatakaescan.com'

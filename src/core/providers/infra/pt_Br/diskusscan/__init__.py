@@ -8,7 +8,7 @@ from core.providers.infra.template.manga_reader_cms import MangaReaderCms
 class DiskusScanProvider(MangaReaderCms):
     name = 'Diskus Scan'
     lang = 'pt-Br'
-    domain = 'diskusscan.com'
+    domain = ['diskusscan.com']
 
     def __init__(self):
         super().__init__()

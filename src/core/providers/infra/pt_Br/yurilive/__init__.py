@@ -3,7 +3,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class YuriLiveProvider(WordPressMadara):
     name = 'Yuri live'
     lang = 'pt-Br'
-    domain = 'yuri.live'
+    domain = ['yuri.live']
 
     def __init__(self):
         self.url = 'https://yuri.live/'

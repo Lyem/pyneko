@@ -3,7 +3,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class YanpFansubProvider(WordPressMadara):
     name = 'Yanp fansub'
     lang = 'pt-Br'
-    domain = 'trisalyanp.com'
+    domain = ['trisalyanp.com']
 
     def __init__(self):
         self.url = 'https://trisalyanp.com/'

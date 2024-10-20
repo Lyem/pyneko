@@ -3,7 +3,7 @@ from core.providers.infra.template.manga_reader_cms import MangaReaderCms
 class SilencescanProvider(MangaReaderCms):
     name = 'Silence scan'
     lang = 'pt-Br'
-    domain = 'silencescan.com.br'
+    domain = ['silencescan.com.br']
 
     def __init__(self):
         super().__init__()

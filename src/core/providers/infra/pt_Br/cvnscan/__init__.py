@@ -3,7 +3,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class CvnScanProvider(WordPressMadara):
     name = 'cvn scan'
     lang = 'pt-Br'
-    domain = 'cvnscan.com'
+    domain = ['cvnscan.com']
 
     def __init__(self):
         self.url = 'https://cvnscan.com'

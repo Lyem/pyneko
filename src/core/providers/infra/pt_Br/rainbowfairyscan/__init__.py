@@ -3,7 +3,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class RainbowFairyScanProvider(WordPressMadara):
     name = 'Rainbow Fairy Scan'
     lang = 'pt-Br'
-    domain = 'rainbowfairyscan.com'
+    domain = ['rainbowfairyscan.com']
 
     def __init__(self):
         self.url = 'https://rainbowfairyscan.com'

@@ -3,7 +3,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class HianatoScanProvider(WordPressMadara):
     name = 'Hianato Scan'
     lang = 'pt_Br'
-    domain = 'hianatoscan.top'
+    domain = ['hianatoscan.top']
 
     def __init__(self):
         self.url = 'https://hianatoscan.top/'

@@ -3,7 +3,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class GoofFansubProvider(WordPressMadara):
     name = 'Goof Fansub'
     lang = 'pt-Br'
-    domain = 'gooffansub.com'
+    domain = ['gooffansub.com']
 
     def __init__(self):
         self.url = 'https://gooffansub.com'

@@ -3,7 +3,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class DianxiatradsProvider(WordPressMadara):
     name = 'Dianxia Trads'
     lang = 'pt-Br'
-    domain = 'dianxiatrads.com'
+    domain = ['dianxiatrads.com']
 
     def __init__(self):
         self.url = 'https://dianxiatrads.com'

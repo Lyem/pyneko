@@ -7,7 +7,7 @@ from core.providers.infra.template.manga_reader_cms import MangaReaderCms
 class SeitaCelestialProvider(MangaReaderCms):
     name = 'Seita Celestial'
     lang = 'pt-Br'
-    domain = 'seitacelestial.com'
+    domain = ['seitacelestial.com']
 
     def __init__(self):
         super().__init__()

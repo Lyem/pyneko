@@ -3,7 +3,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class ValkyrieScanProvider(WordPressMadara):
     name = 'Valkyrie scan'
     lang = 'pt-Br'
-    domain = 'valkyriescan.com'
+    domain = ['valkyriescan.com']
 
     def __init__(self):
         self.url = 'https://valkyriescan.com'

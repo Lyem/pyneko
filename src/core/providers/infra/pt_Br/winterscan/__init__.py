@@ -3,7 +3,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class WinterScanProvider(WordPressMadara):
     name = 'Winter scan'
     lang = 'pt-Br'
-    domain = 'winterscan.com'
+    domain = ['winterscan.com']
 
     def __init__(self):
         self.url = 'https://winterscan.com'

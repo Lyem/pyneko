@@ -3,7 +3,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class NeroxusProvider(WordPressMadara):
     name = 'Neroxus'
     lang = 'pt-Br'
-    domain = 'neroxus.com.br'
+    domain = ['neroxus.com.br']
 
     def __init__(self):
         self.url = 'https://neroxus.com.br'

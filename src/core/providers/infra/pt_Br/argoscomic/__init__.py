@@ -3,7 +3,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class ArgosComicProvider(WordPressMadara):
     name = 'Argos Comic'
     lang = 'pt_Br'
-    domain = 'argoscomic.com'
+    domain = ['argoscomic.com']
 
     def __init__(self):
         self.url = 'https://argoscomic.com/'

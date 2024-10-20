@@ -3,7 +3,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class KakuseiProjectProvider(WordPressMadara):
     name = 'Kakusei project'
     lang = 'pt-Br'
-    domain = 'kakuseiproject.com'
+    domain = ['kakuseiproject.com']
 
     def __init__(self):
         self.url = 'https://kakuseiproject.com'

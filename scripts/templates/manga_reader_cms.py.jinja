@@ -3,7 +3,7 @@ from core.providers.infra.template.manga_reader_cms import MangaReaderCms
 class {{class}}Provider(MangaReaderCms):
     name = '{{ name }}'
     lang = '{{lang}}'
-    domain = '{{domain}}'
+    domain = ['{{domain}}']
 
     def __init__(self):
         super().__init__()

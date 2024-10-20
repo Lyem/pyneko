@@ -9,7 +9,7 @@ from core.providers.domain.entities import Chapter, Pages, Manga
 class SaikaiScansProvider(Base):
     name = 'Saikai Scans'
     lang = 'pt_Br'
-    domain = 'saikaiscans.net'
+    domain = ['saikaiscans.net']
 
     def __init__(self) -> None:
         self.url = 'https://saikaiscans.net/'

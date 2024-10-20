@@ -7,7 +7,7 @@ from core.providers.domain.entities import Chapter, Pages, Manga
 class ModeScanlatorProvider(Base):
     name = 'Mode Scanlator'
     lang = 'pt-Br'
-    domain = 'site.modescanlator.net'
+    domain = ['site.modescanlator.net']
 
     def __init__(self) -> None:
         self.api = 'https://api.modescanlator.net'

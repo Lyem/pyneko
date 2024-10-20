@@ -6,7 +6,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class SerpentesComicsProvider(WordPressMadara):
     name = 'Serpentes Comics'
     lang = 'pt_Br'
-    domain = 'serpentescomics.com.br'
+    domain = ['serpentescomics.com.br']
 
     def __init__(self):
         self.url = 'https://serpentescomics.com.br'
@@ -31,4 +31,4 @@ class SerpentesComicsProvider(WordPressMadara):
             headers = headers | self.headers
         else:
             headers = self.headers
-        DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)
+        return DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)

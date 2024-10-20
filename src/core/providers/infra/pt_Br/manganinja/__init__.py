@@ -3,7 +3,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class MangaNinjaProvider(WordPressMadara):
     name = 'Manga ninja'
     lang = 'pt-Br'
-    domain = 'manganinja.com'
+    domain = ['manganinja.com']
 
     def __init__(self):
         self.url = 'https://manganinja.com'

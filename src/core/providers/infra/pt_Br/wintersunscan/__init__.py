@@ -7,7 +7,7 @@ from core.providers.domain.entities import Pages
 class WinterSunScanProvider(WordPressMadara):
     name = 'Winter sun scan'
     lang = 'pt-Br'
-    domain = 'wintersunscan.xyz'
+    domain = ['wintersunscan.xyz']
 
     def __init__(self):
         self.url = 'https://wintersunscan.xyz'
@@ -26,7 +26,7 @@ class WinterSunScanProvider(WordPressMadara):
             headers = headers | {'Referer': 'https://wintersunscan.xyz/lixo'}
         else:
             headers = {'Referer': 'https://wintersunscan.xyz/lixo'}
-        DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)
+        return DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)
     
     def _get_chapters_ajax(self, manga_id):
         uri = urljoin(self.url, f'{manga_id}ajax/chapters/')

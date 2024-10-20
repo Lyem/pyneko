@@ -3,7 +3,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class SussyScanProvider(WordPressMadara):
     name = 'Sussy scan'
     lang = 'pt-Br'
-    domain = 'oldi.sussytoons.com'
+    domain = ['oldi.sussytoons.com']
 
     def __init__(self):
         self.url = 'https://oldi.sussytoons.com'

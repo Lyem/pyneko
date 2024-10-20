@@ -3,7 +3,7 @@ from core.providers.infra.template.scan_madara_clone import ScanMadaraClone
 class {{class}}Provider(ScanMadaraClone):
     name = '{{ name }}'
     lang = '{{lang}}'
-    domain = '{{domain}}'
+    domain = ['{{domain}}']
 
     def __init__(self):
         self.url = '{{link}}'   

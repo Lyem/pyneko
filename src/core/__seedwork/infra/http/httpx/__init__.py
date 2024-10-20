@@ -41,6 +41,7 @@ class HttpxService(Http):
             # print(url)
 
             if response.status_code == 403:
+                print(f"<stroke style='color:#add8e6;'>[REQUEST]:</stroke> <span style='color:#add8e6;'>GET</span> <span style='color:red;'>{status}</span> <a href='#'>{url}</a>")
                 if IsCloudflareBlockingUseCase().execute(response.text):
                     if(url.endswith('.zip') or url.endswith('.jpg') or url.endswith('.avif') or url.endswith('.png')):
                         scraper = cloudscraper.create_scraper(    
@@ -84,10 +85,13 @@ class HttpxService(Http):
                         content = BypassCloudflareNoCapchaFeachUseCase().execute(f'https://{domain}', url)
                     return Response(200, 'a', content, url)
             elif status not in range(200, 299) and not 403 and not 429:
+                print(f"<stroke style='color:#add8e6;'>[REQUEST]:</stroke> <span style='color:#add8e6;'>GET</span> <span style='color:red;'>{status}</span> <a href='#'>{url}</a>")
                 sleep(1)
             elif status == 429:
+                print(f"<stroke style='color:#add8e6;'>[REQUEST]:</stroke> <span style='color:#add8e6;'>GET</span> <span style='color:#FFFF00;'>{status}</span> <a href='#'>{url}</a>")
                 sleep(60)                
             elif status == 301 and 'Location' in response.headers or status == 302 and 'Location' in response.headers:
+                print(f"<stroke style='color:#add8e6;'>[REQUEST]:</stroke> <span style='color:#add8e6;'>GET</span> <span style='color:#add8e6;'>{status}</span> <a href='#'>{url}</a>")
                 location = response.headers['Location']
                 if(location.startswith('https://')):
                     new_url = location
@@ -96,6 +100,7 @@ class HttpxService(Http):
                 response = get(new_url, params=params, headers=headers, cookies=cookies, timeout=None, **kwargs)
                 status = response.status_code
             if status in range(200, 299) or status == 404:
+                print(f"<stroke style='color:#add8e6;'>[REQUEST]:</stroke> <span style='color:#add8e6;'>GET</span> <span style='color:green;'>{status}</span> <a href='#'>{url}</a>")
                 return Response(response.status_code, response.text, response.content, url)
 
         raise Exception(f"Failed to fetch the URL STATUS: {status}")
@@ -124,6 +129,7 @@ class HttpxService(Http):
             status = response.status_code
 
             if response.status_code == 403:
+                print(f"<stroke style='color:#add8e6;'>[REQUEST] POST:</stroke> <span style='color:#add8e6;'>POST</span> <span style='color:#FFFF00;'>{status}</span> <a href='#'>{url}</a>")
                 if IsCloudflareBlockingUseCase().execute(response.text):
                     data = BypassCloudflareUseCase().execute(f'https://{domain}')
                     response = post(url, data=data, json=json, headers=headers, cookies=cookies, **kwargs)
@@ -131,10 +137,13 @@ class HttpxService(Http):
                         data = BypassCloudflareUseCase().execute(url)
                     db.insert(RequestData(domain=domain, headers=data.user_agent, cookies=data.cloudflare_cookie_value).as_dict())
             elif status not in range(200, 299) and not 403 and not 429:
+                print(f"<stroke style='color:#add8e6;'>[REQUEST] POST:</stroke> <span style='color:#add8e6;'>POST</span> <span style='color:red;'>{status}</span> <a href='#'>{url}</a>")
                 sleep(1)
             elif status == 429:
+                print(f"<stroke style='color:#add8e6;'>[REQUEST] POST:</stroke> <span style='color:#add8e6;'>POST</span> <span style='color:#FFFF00;'>{status}</span> <a href='#'>{url}</a>")
                 sleep(60)
             else:
+                print(f"<stroke style='color:#add8e6;'>[REQUEST] POST:</stroke> <span style='color:#add8e6;'>POST</span> <span style='color:green;'>{status}</span> <a href='#'>{url}</a>")
                 return Response(response.status_code, response.text, response.content, url)
 
         raise Exception("Failed to fetch the URL")

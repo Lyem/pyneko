@@ -3,7 +3,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class HentaiTecaProvider(WordPressMadara):
     name = 'Hentai teca'
     lang = 'pt-Br'
-    domain = 'hentaiteca.net'
+    domain = ['hentaiteca.net']
 
     def __init__(self):
         self.url = 'https://hentaiteca.net'

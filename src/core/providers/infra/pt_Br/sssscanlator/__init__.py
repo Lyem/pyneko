@@ -3,7 +3,7 @@ from core.providers.infra.template.manga_reader_cms import MangaReaderCms
 class SssScanlatorProvider(MangaReaderCms):
     name = 'Sss Scanlator'
     lang = 'pt-Br'
-    domain = 'sssscanlator.com.br'
+    domain = ['sssscanlator.com.br']
 
     def __init__(self):
         super().__init__()

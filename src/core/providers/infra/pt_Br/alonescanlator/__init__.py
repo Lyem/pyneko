@@ -3,7 +3,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class AloneScanlatorProvider(WordPressMadara):
     name = 'Alone Scanlator'
     lang = 'pt-Br'
-    domain = 'alonescanlator.com.br'
+    domain = ['alonescanlator.com.br']
 
     def __init__(self):
         self.url = 'https://alonescanlator.com.br'

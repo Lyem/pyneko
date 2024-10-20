@@ -3,7 +3,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class FayScanProvider(WordPressMadara):
     name = 'Fay scans'
     lang = 'pt-Br'
-    domain = 'fayscans.net'
+    domain = ['fayscans.net']
 
     def __init__(self):
         self.url = 'https://fayscans.net'

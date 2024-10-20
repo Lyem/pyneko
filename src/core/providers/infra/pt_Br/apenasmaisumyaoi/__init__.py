@@ -9,7 +9,7 @@ import re
 class ApenasMaisUmYaoiProvider(WordPressMadara):
     name = 'Apenas mais um yaoi'
     lang = 'pt-Br'
-    domain = 'apenasmaisumyaoi.com'
+    domain = ['apenasmaisumyaoi.com']
 
     def __init__(self):
         self.url = 'https://apenasmaisumyaoi.com'

@@ -9,7 +9,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class HikariScanProvider(WordPressMadara):
     name = 'Hikari Scan'
     lang = 'pt-Br'
-    domain = 'hikariscan.org'
+    domain = ['hikariscan.org']
 
     def __init__(self):
         super().__init__()

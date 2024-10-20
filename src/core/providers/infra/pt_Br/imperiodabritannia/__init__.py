@@ -8,7 +8,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class ImperiodabritanniaProvider(WordPressMadara):
     name = 'Imperio da britannia'
     lang = 'pt-Br'
-    domain = 'imperiodabritannia.com'
+    domain = ['imperiodabritannia.com']
 
     def __init__(self):
         self.url = 'https://imperiodabritannia.com/'
@@ -31,7 +31,7 @@ class ImperiodabritanniaProvider(WordPressMadara):
             headers = headers | self.headers
         else:
             headers = self.headers
-        DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)
+        return DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)
     
     def _get_chapters_ajax(self, manga_id):
         uri = urljoin(self.url, f'{manga_id}ajax/chapters/')

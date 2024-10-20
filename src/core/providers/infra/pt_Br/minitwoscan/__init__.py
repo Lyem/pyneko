@@ -11,7 +11,7 @@ from core.cloudflare.application.use_cases import IsCloudflareBlockingUseCase
 class MiniTwoScanProvider(WordPressMadara):
     name = 'MiniTwo Scan'
     lang = 'pt_Br'
-    domain = 'minitwoscan.com'
+    domain = ['minitwoscan.com']
 
     def __init__(self):
         self.url = 'https://minitwoscan.com'

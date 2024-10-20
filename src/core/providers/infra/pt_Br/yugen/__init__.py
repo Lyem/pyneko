@@ -6,7 +6,7 @@ from core.providers.domain.entities import Chapter, Pages, Manga
 class YugenProvider(Base):
     name = 'Yugen mangas'
     lang = 'pt-Br'
-    domain = 'yugenmangasbr.voblog.xyz'
+    domain = ['yugenmangasbr.voblog.xyz']
 
     def __init__(self) -> None:
         self.base = 'https://yugenmangasbr.voblog.xyz'

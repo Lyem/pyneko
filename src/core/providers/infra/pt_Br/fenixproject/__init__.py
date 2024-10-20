@@ -3,7 +3,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class FenixProjectProvider(WordPressMadara):
     name = 'Fenix Project'
     lang = 'pt-Br'
-    domain = 'fenixproject.xyz'
+    domain = ['fenixproject.xyz']
 
     def __init__(self):
         self.url = 'https://fenixproject.xyz'

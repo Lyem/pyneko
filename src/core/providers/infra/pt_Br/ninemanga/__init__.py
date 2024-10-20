@@ -9,7 +9,7 @@ from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
 class NineMangasProvider(Base):
     name = 'Nine Mangas'
     lang = 'pt_Br'
-    domain = 'br.ninemanga.com'
+    domain = ['br.ninemanga.com']
 
     def __init__(self) -> None:
         self.base = 'https://br.ninemanga.com'

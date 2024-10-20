@@ -3,7 +3,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class PassaMaoScanProvider(WordPressMadara):
     name = 'Passa mão scan'
     lang = 'pt-Br'
-    domain = 'passamaoscan.com'
+    domain = ['passamaoscan.com']
 
     def __init__(self):
         self.url = 'https://passamaoscan.com'

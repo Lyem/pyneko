@@ -6,7 +6,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class AstrumScanProvider(WordPressMadara):
     name = 'Astrum scans'
     lang = 'pt-Br'
-    domain = 'astrumscans.xyz'
+    domain = ['astrumscans.xyz']
 
     def __init__(self):
         self.url = 'https://astrumscans.xyz'
@@ -29,4 +29,4 @@ class AstrumScanProvider(WordPressMadara):
             headers = headers | self.headers
         else:
             headers = self.headers
-        DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)
+        return DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)

@@ -8,7 +8,7 @@ from core.providers.domain.entities import Chapter, Pages, Manga
 class TsukiProvider(Base):
     name = 'Tsuki Mangas'
     lang = 'pt-Br'
-    domain = 'tsuki-mangas.com'
+    domain = ['tsuki-mangas.com']
 
     def __init__(self) -> None:
         self.base = 'https://tsuki-mangas.com'
@@ -51,5 +51,5 @@ class TsukiProvider(Base):
             headers = headers | self.headers
         else:
             headers = self.headers
-        DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)
+        return DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)
 

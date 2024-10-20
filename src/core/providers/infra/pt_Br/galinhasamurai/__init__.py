@@ -6,7 +6,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class GalinhaSamuraiProvider(WordPressMadara):
     name = 'Galinha Samurai'
     lang = 'pt-Br'
-    domain = 'galinhasamurai.com'
+    domain = ['galinhasamurai.com']
 
     def __init__(self):
         self.url = 'https://galinhasamurai.com'
@@ -28,4 +28,4 @@ class GalinhaSamuraiProvider(WordPressMadara):
             headers = headers | self.headers
         else:
             headers = self.headers
-        DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)
+        return DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)

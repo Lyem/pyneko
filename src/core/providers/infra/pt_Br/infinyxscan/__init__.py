@@ -6,7 +6,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class InfinyxScanProvider(WordPressMadara):
     name = 'Infinyx Scan'
     lang = 'pt_Br'
-    domain = 'infinyxscan.cloud'
+    domain = ['infinyxscan.cloud']
 
     def __init__(self):
         self.url = 'https://infinyxscan.cloud'
@@ -29,4 +29,4 @@ class InfinyxScanProvider(WordPressMadara):
             headers = headers | self.headers
         else:
             headers = self.headers
-        DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)
+        return DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)

@@ -3,7 +3,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class NoIndexScanProvider(WordPressMadara):
     name = 'No index scan'
     lang = 'pt-Br'
-    domain = 'noindexscan.com'
+    domain = ['noindexscan.com']
 
     def __init__(self):
         self.url = 'https://noindexscan.com'

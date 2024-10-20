@@ -3,7 +3,7 @@ from core.providers.infra.template.manga_reader_cms import MangaReaderCms
 class TsundokuProvider(MangaReaderCms):
     name = 'Tsundokus'
     lang = 'pt-Br'
-    domain = 'tsundoku.com.br'
+    domain = ['tsundoku.com.br']
 
     def __init__(self):
         super().__init__()

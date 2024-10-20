@@ -6,7 +6,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class AtemporalProvider(WordPressMadara):
     name = 'Atemporal'
     lang = 'pt_Br'
-    domain = 'atemporal.cloud'
+    domain = ['atemporal.cloud']
 
     def __init__(self):
         self.url = 'https://atemporal.cloud'
@@ -30,4 +30,4 @@ class AtemporalProvider(WordPressMadara):
             headers = headers | self.headers
         else:
             headers = self.headers
-        DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)
+        return DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)

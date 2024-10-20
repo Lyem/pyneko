@@ -3,7 +3,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class ReMangsProvider(WordPressMadara):
     name = 'Remangas'
     lang = 'pt-Br'
-    domain = 'remangas.net'
+    domain = ['remangas.net']
 
     def __init__(self):
         self.url = 'https://remangas.net'

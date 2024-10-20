@@ -3,7 +3,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class EuphoriaScanProvider(WordPressMadara):
     name = 'Euphoria scan'
     lang = 'pt-Br'
-    domain = 'euphoriascan.com'
+    domain = ['euphoriascan.com']
 
     def __init__(self):
         self.url = 'https://euphoriascan.com'

@@ -9,7 +9,7 @@ from urllib.parse import urljoin
 class NorteRoseProvider(WordPressMadara):
     name = 'Norte rose'
     lang = 'pt-Br'
-    domain = 'norterose.com.br'
+    domain = ['norterose.com.br']
 
     def __init__(self):
         self.url = 'https://norterose.com.br'
@@ -32,7 +32,7 @@ class NorteRoseProvider(WordPressMadara):
             headers = headers | self.headers
         else:
             headers = self.headers
-        DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)
+        return DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)
     
     def _get_chapters_ajax(self, manga_id):
         uri = urljoin(self.url, f'{manga_id}ajax/chapters/')

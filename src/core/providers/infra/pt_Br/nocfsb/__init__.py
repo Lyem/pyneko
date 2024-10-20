@@ -3,7 +3,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class NocturneFansubProvider(WordPressMadara):
     name = 'Nocturne fansub'
     lang = 'pt-Br'
-    domain = 'nocfsb.com'
+    domain = ['nocfsb.com']
 
     def __init__(self):
         self.url = 'https://nocfsb.com'

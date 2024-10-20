@@ -3,7 +3,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class XXXYaoiProvider(WordPressMadara):
     name = '3xyaoi'
     lang = 'pt-Br'
-    domain = '3xyaoi.com'
+    domain = ['3xyaoi.com']
 
     def __init__(self):
         self.url = 'https://3xyaoi.com'

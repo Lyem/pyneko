@@ -3,7 +3,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class DreamScanProvider(WordPressMadara):
     name = 'Dream scan'
     lang = 'pt-Br'
-    domain = 'dreamscan.com.br'
+    domain = ['dreamscan.com.br']
 
     def __init__(self):
         self.url = 'https://dreamscan.com.br'

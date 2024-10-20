@@ -8,7 +8,7 @@ from core.providers.infra.template.manga_reader_cms import MangaReaderCms
 class GuildaTierDrawProvider(MangaReaderCms):
     name = 'Guilda Tier draw'
     lang = 'pt-Br'
-    domain = 'www.guildatierdraw.top'
+    domain = ['www.guildatierdraw.top']
 
     def __init__(self):
         super().__init__()

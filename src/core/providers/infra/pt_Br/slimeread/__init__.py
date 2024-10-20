@@ -12,7 +12,7 @@ from core.providers.domain.entities import Chapter, Pages, Manga
 class SlimeReadProvider(Base):
     name = 'Slime Read'
     lang = 'pt-Br'
-    domain = 'slimeread.com'
+    domain = ['slimeread.com']
 
     def __init__(self) -> None:
         self.base = 'https://slimeread.com'
@@ -110,7 +110,7 @@ class SlimeReadProvider(Base):
             headers = headers | self.headers
         else:
             headers = self.headers
-        DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)
+        return DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)
 
 if __name__ == "__main__":
     manga = SlimeReadProvider().getManga('https://slimeread.com/manga/545/a-caixa-de-joias-da-princesa')

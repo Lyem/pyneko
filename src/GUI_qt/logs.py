@@ -51,8 +51,11 @@ class LogWindow(QWidget):
         self.log_output.clear()
 
     def write_log(self, text: str):
-        text = text + '<br>'
-        self.log_output.insertHtml(text)
+        if "[no-render]" in text:
+            self.log_output.append(text)
+        else:
+            text = text + '<br>'
+            self.log_output.insertHtml(text)
         if self.scroll_at_bottom:
             self.log_output.moveCursor(QTextCursor.MoveOperation.End)
     

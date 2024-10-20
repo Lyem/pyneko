@@ -1,6 +1,7 @@
 import re
 import os
 import math
+import pillow_avif
 from PIL import Image
 from io import BytesIO
 from core.config.img_conf import get_config
@@ -35,7 +36,7 @@ class PillowDownloadRepository(DownloadRepository):
                     img = img.convert("RGB")
                 file = os.path.join(path, f"%03d{img_format}" % page_number)
                 files.append(file)
-                img.save(file, quality=80, dpi=(72, 72), icc_profile=icc)
+                img.save(file, quality=100, dpi=(72, 72), icc_profile=icc)
             except:
                 if response.status == 200:
                     file = os.path.join(path, f"%03d{img_format}" % page_number)

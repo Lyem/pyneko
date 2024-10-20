@@ -1,6 +1,6 @@
-# Pyneko
+# Pyneko  
 
-Manga downloader for Linux, Windows, and MacOS based on [hakuneko](https://github.com/manga-download/hakuneko). This project incorporates code from the SmartStitch program for its image slicing capabilities, enabling efficient and seamless manga downloads.
+A cross-platform manga downloader for **Linux, Windows, and MacOS**, based on [HakuNeko](https://github.com/manga-download/hakuneko). It incorporates code from **SmartStitch** for advanced image slicing and utilizes **waifu2x** for image upscaling, ensuring fast and seamless downloads.
 
 <a href="https://github.com/Lyem/pyneko/releases">
     <img src="https://img.shields.io/github/downloads/Lyem/pyneko/total" />
@@ -10,65 +10,31 @@ Manga downloader for Linux, Windows, and MacOS based on [hakuneko](https://githu
 
 [![](https://dcbadge.limes.pink/api/server/EYm6svnw5b)](https://discord.gg/EYm6svnw5b)
 
-## Installation
-
+## Installation & Usage  
 ```bash
-poetry install
+poetry install    # Install dependencies  
+poetry run start  # Start the application  
+poetry run build  # Build the project  
+poetry run clean  # Clean __pycache__  
+poetry run new    # Create a new provider  
 ```
 
-## Start
+## Dependencies  
 
-```bash
-poetry run start
-```
+🌎 **Global**: Chrome  
 
-## Build
+🐧 **Linux/BSD**:  
+  - **KDE**: Native support (requires `dbus`, `klipper`, and `dbus-python`, usually pre-installed).  
+  - **X11**: Install `xsel` or `xclip`  
+    ```bash
+    sudo zypper install xsel  # or  
+    sudo zypper install xclip  
+    ```  
+  - **Wayland**: Install `wl-clipboard`  
+    ```bash
+    sudo zypper install wl-clipboard  
+    ```
 
-```bash
-poetry run build
-```
-
-## Clean `__pycache__`
-
-```bash
-poetry run clean
-```
-
-## Create a New Provider
-
-```bash
-poetry run new
-```
-
-## Dependencies
-
-🌎 **Global**
-
-- Chrome
-
-🐧 **On Linux/BSD**
-
-- **KDE (any display server)**  
-  Native support. No additional dependencies are needed.  
-  All dependencies listed below are typically installed by default in KDE distributions. The minimum requirements are `dbus`, `klipper` (now built-in in KDE), and `dbus-python`.
-
-- **X11**  
-  Install the `xsel` or `xclip` package.  
-  Example: 
-  ```bash
-  sudo zypper install xsel
-  ```
-  OR
-  ```bash
-  sudo zypper install xclip
-  ```
-
-- **Wayland**  
-  Install the `wl-clipboard` package.  
-  Example: 
-  ```bash
-  sudo zypper install wl-clipboard
-  ```
 
 ## Credits
 
@@ -79,7 +45,3 @@ This project uses code from the [SmartStitch](https://github.com/MechTechnology/
 Check out our awesome sponsors!
 
 <a href="https://github.com/Benjigx"><img src="https://github.com/Benjigx.png" width="80px" alt="Benjigx" /></a>&nbsp;&nbsp;
-
----
-
-Agora você pode copiar e colar esse texto! Se precisar de mais alguma alteração, é só avisar.

@@ -4,11 +4,10 @@ A cross-platform manga downloader for **Linux, Windows, and MacOS**, based on [H
 
 <a href="https://github.com/Lyem/pyneko/releases">
     <img src="https://img.shields.io/github/downloads/Lyem/pyneko/total" />
+</a>&nbsp;&nbsp;
+<a href="https://discord.gg/EYm6svnw5b">
+<img alt="Discord" src="https://img.shields.io/discord/1263906403953672344?label=Discord&labelColor=5864f2&color=545454&cacheSeconds=36000"/>
 </a>
-
-## Support
-
-[![](https://dcbadge.limes.pink/api/server/EYm6svnw5b)](https://discord.gg/EYm6svnw5b)
 
 ## Installation & Usage  
 ```bash

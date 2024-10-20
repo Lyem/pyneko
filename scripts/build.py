@@ -4,7 +4,7 @@ from sys import platform
 import os
 
 is_posix = platform.startswith(("darwin", "cygwin", "linux", "linux2"))
-is_mac = platform.system().startswith('Darwin')
+is_mac = platform.startswith('Darwin')
 
 src_path = Path(__file__).resolve().parent.parent / 'src'
 path_to_main = str(src_path / 'GUI_qt' / '__init__.py')

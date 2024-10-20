@@ -8,16 +8,16 @@ from core.providers.infra.template.manga_reader_cms import MangaReaderCms
 class DiskusScanProvider(MangaReaderCms):
     name = 'Diskus Scan'
     lang = 'pt-Br'
-    domain = ['diskusscan.com']
+    domain = ['diskusscan.online']
 
     def __init__(self):
         super().__init__()
-        self.url = 'https://diskusscan.com'
+        self.url = 'https://diskusscan.online'
         self.path = '/'
 
         self.query_mangas = 'ul.manga-list li a'
         self.query_chapters = 'div#chapterlist ul li'
-        self.query_pages = 'img.ts-main-image.lazy'
+        self.query_pages = 'img.attachment-full.size-full'
         self.query_title_for_uri = 'h1.entry-title'
     
     # def getPageContent(self, domain: str, background = False) -> any:

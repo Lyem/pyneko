@@ -10,6 +10,8 @@ path_to_main = str(src_path / 'GUI_qt' / '__init__.py')
 
 separator = ':' if is_posix else ';'
 
+splash = 'splash.jpg' if is_posix else 'splash.png'
+
 os.environ['PYTHONPATH'] = str(src_path)
 
 def install():
@@ -24,9 +26,11 @@ def install():
         '--collect-all=httpx',
         '--collect-all=cv2',
         '--collect-all=cloudscraper',
+        '--collect-all=waifu2x-ncnn-py',
         '--collect-all=fake_useragent',
         '--collect-all=pillow_avif',
         f'--icon=assets/icon.ico',
+        f'--splash=assets/{splash}',
         '--exclude-module=tests',
         f'--add-data=src/core/providers/infra{separator}core/providers/infra',
         f'--add-data=src/core/__seedwork/infra{separator}core/__seedwork/infra',

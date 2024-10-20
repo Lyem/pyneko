@@ -6,7 +6,7 @@ from core.download.application.use_cases import DownloadUseCase
 class Base(ProviderRepository):
     name = ''
     lang = ''
-    domain = ''
+    domain = ['']
 
     def getManga(link: str) -> Manga:
         raise NotImplementedError()
@@ -18,4 +18,4 @@ class Base(ProviderRepository):
         raise NotImplementedError()
     
     def download(self, pages: Pages, fn: any, headers=None, cookies=None):
-        DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)
+        return DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)

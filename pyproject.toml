@@ -23,6 +23,7 @@ pillow-avif-plugin = "^1.4.3"
 dulwich = "^0.22.1"
 opencv-python-headless = "^4.10.0.84"
 cloudscraper = "^1.2.71"
+waifu2x-ncnn-py = "^2.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.1"

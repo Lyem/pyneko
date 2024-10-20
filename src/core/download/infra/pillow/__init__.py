@@ -37,8 +37,8 @@ class PillowDownloadRepository(DownloadRepository):
                 if img.mode in ("RGBA", "P"):
                     img = img.convert("RGB")
                 file = os.path.join(path, f"%03d{img_format}" % page_number)
-                files.append(file)
                 img.save(file, quality=100, dpi=(72, 72), icc_profile=icc)
+                files.append(file)
             except:
                 if response.status == 200:
                     image_data = np.asarray(bytearray(response.content), dtype=np.uint8)
@@ -47,6 +47,7 @@ class PillowDownloadRepository(DownloadRepository):
                         print(f"[Download Image]: Error image %03d{img_format}"  % page_number)
                     file = os.path.join(path, f"%03d{img_format}" % page_number)
                     cv2.imwrite(file, image)
+                    files.append(file)
             if fn != None:
                 fn(math.ceil(i * 100)/len(pages.pages))
             page_number += 1

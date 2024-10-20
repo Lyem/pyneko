@@ -1,0 +1,1 @@
+from core.slicer.infra.run import SmartStitch as Slicer

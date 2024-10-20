@@ -1,11 +1,11 @@
 import os
 import json
+import webbrowser
 from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import QLocale
 from GUI_qt.config import get_config
 from GUI_qt.load_providers import base_path
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QListWidget, QLineEdit
-import webbrowser
 
 current_dir = os.path.join(base_path(), 'GUI_qt')
 assets = os.path.join(current_dir, 'assets')

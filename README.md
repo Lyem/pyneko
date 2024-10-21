@@ -14,15 +14,6 @@ A cross-platform manga downloader for **Linux, Windows, and MacOS**, based on [H
 <img alt="Discord" src="https://img.shields.io/discord/1263906403953672344?label=Discord&labelColor=5864f2&color=545454&cacheSeconds=36000"/>
 </a>
 
-## Installation & Usage  
-```bash
-poetry install    # Install dependencies  
-poetry run start  # Start the application  
-poetry run build  # Build the project  
-poetry run clean  # Clean __pycache__  
-poetry run new    # Create a new provider  
-```
-
 ## Dependencies  
 
 🌎 **Global**: Chrome  
@@ -39,6 +30,15 @@ poetry run new    # Create a new provider
     sudo zypper install wl-clipboard  
     ```
 
+## Development Commands
+ 
+```bash
+poetry install    # Install dependencies  
+poetry run start  # Start the application  
+poetry run build  # Build the project  
+poetry run clean  # Clean __pycache__  
+poetry run new    # Create a new provider  
+```
 
 ## Credits
 

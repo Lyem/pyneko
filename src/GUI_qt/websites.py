@@ -65,4 +65,4 @@ class WebSiteOpener(QWidget):
     def openSite(self, item):
         for website in self.websites:
             if website.name == item.text():
-                webbrowser.open(website.domain)
+                webbrowser.open(f'https://{website.domain[0]}')

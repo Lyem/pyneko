@@ -135,6 +135,18 @@ class DownloadRunnable(QRunnable):
                 GroupImgsUseCase().execute(ch, update_progress_bar)
                 self.signals.progress_changed.emit(int(100))
         except Exception as e:
+            self.signals.color.emit("""
+                QProgressBar {
+                    text-align: center;
+                }
+                QProgressBar::chunk {
+                    background-color: red;
+                }
+                QProgressBar::text {
+                    color: #fff;
+                    font-weight: bold;
+                }
+            """)
             self.signals.download_error.emit(f'{self.ch.name} \n {self.ch.number} \n {str(e)}')
 
 class UpdateThread(QThread):

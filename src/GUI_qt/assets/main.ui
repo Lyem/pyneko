@@ -198,16 +198,95 @@
          </spacer>
         </item>
         <item>
-         <widget class="QLabel" name="label">
-          <property name="font">
-           <font>
-            <pointsize>20</pointsize>
-           </font>
+         <layout class="QVBoxLayout" name="verticalLayout_21">
+          <property name="rightMargin">
+           <number>0</number>
           </property>
-          <property name="text">
-           <string>Buscando obra...</string>
-          </property>
-         </widget>
+          <item>
+           <spacer name="verticalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_13">
+            <property name="topMargin">
+             <number>20</number>
+            </property>
+            <item>
+             <spacer name="horizontalSpacer_5">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QLabel" name="label">
+              <property name="font">
+               <font>
+                <pointsize>20</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>Buscando obra...</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_6">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QProgressBar" name="progressBar">
+            <property name="maximum">
+             <number>0</number>
+            </property>
+            <property name="value">
+             <number>0</number>
+            </property>
+            <property name="textVisible">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </item>
         <item>
          <spacer name="horizontalSpacer_3">
@@ -266,8 +345,8 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-282</y>
-             <width>779</width>
+             <y>0</y>
+             <width>446</width>
              <height>980</height>
             </rect>
            </property>

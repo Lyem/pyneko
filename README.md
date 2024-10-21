@@ -1,6 +1,10 @@
 # Pyneko  
+<div align="center">
+  <a href="https://github.com/Lyem/Pyneko">
+    <img width="450" src="https://i.imgur.com/RWMFT6o.png" />
+  </a>
+</div>
 
-![Imagem 1](https://i.imgur.com/RWMFT6o.png)
 A cross-platform manga downloader for **Linux, Windows, and MacOS**, based on [HakuNeko](https://github.com/manga-download/hakuneko). It incorporates code from **SmartStitch** for advanced image slicing and utilizes **waifu2x** for image upscaling, ensuring fast and seamless downloads.
 
 <a href="https://github.com/Lyem/pyneko/releases">

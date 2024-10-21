@@ -269,30 +269,29 @@ class MangaDownloaderApp:
         download_button.setEnabled(False)
 
         runnable = DownloadRunnable(ch, self.provider_selected)
-        self.pool.start(runnable)
         self.download_status.append((ch, self.provider_selected, runnable))
         self._load_progress()
     
     def _add_chapters(self):
-        for i in reversed(range(self.window.verticalChapter.count())):
-            widget = self.window.verticalChapter.itemAt(i).widget()
-            if widget is not None:
+        while self.window.verticalChapter.count():
+            item = self.window.verticalChapter.takeAt(0)
+            widget = item.widget()
+            if widget:
                 widget.deleteLater()
-        
-        self.window.verticalChapter.removeItem(self.vertical_spacer)
+        config = get_config()
+        with open(os.path.join(self.assets, 'translations.json'), 'r', encoding='utf-8') as file:
+            translations = json.load(file)
+        download_text = translations[config.lang]['download']
         for chapter in self.chapters:
             chapter_ui = uic.loadUi(os.path.join(self.assets, 'chapter.ui'))
             chapter_ui.numberLabel.setText(str(chapter.number))
-            for queue in self.download_status:
-                ch, _, _ = queue
-                if ch.id == chapter.id:
-                    chapter_ui.download.setEnabled(False)
-            chapter_ui.download.clicked.connect(lambda _, ch=chapter, download_button=chapter_ui.download: self.chapter_download_button_clicked(ch, download_button))
-            config = get_config()
-            translations = {}
-            with open(os.path.join(self.assets, 'translations.json'), 'r', encoding='utf-8') as file:
-                translations = json.load(file)
-            chapter_ui.download.setText(translations[config.lang]['download'])
+            if any(ch.id == chapter.id for ch, _, _ in self.download_status):
+                chapter_ui.download.setEnabled(False)
+
+            chapter_ui.download.clicked.connect(
+                lambda _, ch=chapter, btn=chapter_ui.download: self.chapter_download_button_clicked(ch, btn)
+            )
+            chapter_ui.download.setText(download_text)
             self.window.verticalChapter.addWidget(chapter_ui)
         self.window.verticalChapter.addItem(self.vertical_spacer)
     
@@ -353,28 +352,30 @@ class MangaDownloaderApp:
             msg.exec()
     
     def download_all_chapters(self):
-        if self.manga_id_selectd is not None:
-            chapters = ProviderGetChaptersUseCase(self.provider_selected).execute(self.manga_id_selectd)
-            for i in range(self.window.verticalChapter.count()):
-                chapter_ui = self.window.verticalChapter.itemAt(i).widget()
-                if isinstance(chapter_ui, QWidget):
-                    for ch in chapters:
-                        if str(ch.number) == chapter_ui.numberLabel.text():
-                            if chapter_ui.download.isEnabled():
-                                chapter_ui.download.setEnabled(False)
+        if self.manga_id_selectd is None:
+            return
 
-                                runnable = DownloadRunnable(ch, self.provider_selected)
-                                self.pool.start(runnable)
-                                self.download_status.append((ch, self.provider_selected, runnable))
-                                self._load_progress()
+        downloaded_chapter_ids = {ch.id for ch, *_ in self.download_status}
+
+        chapters_to_download = filter(
+            lambda chapter: chapter.id not in downloaded_chapter_ids, self.chapters
+        )
+
+        self.download_status.extend(
+            (chapter, self.provider_selected, DownloadRunnable(chapter, self.provider_selected))
+            for chapter in chapters_to_download
+        )
+
+        self._load_progress()
+        self._add_chapters()
     
     def _load_progress(self):
         for download in self.download_status:
             ch, provider, runnable = download
-            
+
             groupbox = self.window.findChild(QGroupBox, f'groupboxprovider{provider.name}')
             layout = self.window.findChild(QVBoxLayout, f"layoutprovider{provider.name}")
-            if groupbox == None: 
+            if groupbox is None: 
                 groupbox = QGroupBox()
                 groupbox.setTitle(provider.name)
                 groupbox.setObjectName(f'groupboxprovider{provider.name}')
@@ -382,10 +383,10 @@ class MangaDownloaderApp:
                 layout.setObjectName(f"layoutprovider{provider.name}")
                 groupbox.setLayout(layout)
                 self.window.verticalProgress.addWidget(groupbox)
-            
+
             groupbox2 = self.window.findChild(QGroupBox, f'groupboxmedia{ch.name}')
             layout2 = self.window.findChild(QVBoxLayout, f"layoutmedia{ch.name}")
-            if groupbox2 == None:
+            if groupbox2 is None:
                 groupbox2 = QGroupBox()
                 groupbox2.setTitle(ch.name)
                 groupbox2.setObjectName(f'groupboxmedia{ch.name}')
@@ -393,33 +394,32 @@ class MangaDownloaderApp:
                 layout2.setObjectName(f"layoutmedia{ch.name}")
                 groupbox2.setLayout(layout2)
                 layout.addWidget(groupbox2)
-            
+
             layout_item = self.window.findChild(QHBoxLayout, f'chaptermedia{ch.name}{ch.id}{provider.name}')
             if layout_item is None:
                 layout_item = QHBoxLayout()
                 layout_item.setObjectName(f'chaptermedia{ch.name}{ch.id}{provider.name}')
                 widget = QWidget()
                 widget.setLayout(layout_item)
+
                 label_layout = QVBoxLayout()
-                empty_label = QLabel(" ")  # Label com texto vazio
+                empty_label = QLabel(" ")
                 label_layout.addWidget(empty_label)
                 label = QLabel()
                 label.setText(str(ch.number))
                 label_layout.addWidget(label)
                 layout_item.addLayout(label_layout)
+
                 progress_layout = QVBoxLayout()
                 download_label = QLabel(" ")
                 progress_layout.addWidget(download_label)
                 progress_bar = QProgressBar()
-                def update_progress_bar(value):
-                    progress_bar.setValue(value)
-                runnable.signals.progress_changed.connect(update_progress_bar)
-                def update_progress_bar_color(value):
-                    progress_bar.setStyleSheet(value)
-                runnable.signals.color.connect(update_progress_bar_color)
-                def update_progress_bar_label(value):
-                    download_label.setText(value)
-                runnable.signals.name.connect(update_progress_bar_label)
+
+                runnable.signals.progress_changed.connect(lambda value, pb=progress_bar: pb.setValue(value))
+                runnable.signals.color.connect(lambda value, pb=progress_bar: pb.setStyleSheet(value))
+                runnable.signals.name.connect(lambda value, lbl=download_label: lbl.setText(value))
+                self.pool.start(runnable)
+
                 progress_layout.addWidget(progress_bar)
                 layout_item.addLayout(progress_layout)
                 layout2.addWidget(widget)
@@ -427,7 +427,7 @@ class MangaDownloaderApp:
         for child in self.window.findChildren(QWidget):
             layout = child.layout()
             if layout and layout.objectName().startswith('layoutmedia'):
-                for i in range(layout.count()):
+                for i in reversed(range(layout.count())):
                     item = layout.itemAt(i)
                     if isinstance(item, QSpacerItem):
                         layout.removeItem(item)
@@ -569,7 +569,7 @@ class MangaDownloaderApp:
         self.window.link.setText(translation['paste'])
         self.window.downloadAll.setText(translation['download_all'])
         self.window.invert.setText(translation['invert'])
-        self.window.search.setText(translation['search_caps'])
+        self.window.search.setPlaceholderText(translation['search_caps'])
         self.window.progress.setText(translation['progress'])
         self.window.label.setText(translation['loading'])
         self.window.config.setText(translation['config'])

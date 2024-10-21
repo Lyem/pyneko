@@ -44,6 +44,7 @@ from core.config.img_conf import (
 
 class WorkerSignals(QObject):
     progress_changed = pyqtSignal(int)
+    download_error = pyqtSignal(str)
     color = pyqtSignal(str)
     name = pyqtSignal(str)
 
@@ -134,7 +135,7 @@ class DownloadRunnable(QRunnable):
                 GroupImgsUseCase().execute(ch, update_progress_bar)
                 self.signals.progress_changed.emit(int(100))
         except Exception as e:
-            QMessageBox.critical(None, "Erro", f"Falha no download {str(e)}")
+            self.signals.download_error.emit(f'{self.ch.name} \n {self.ch.number} \n {str(e)}')
 
 class UpdateThread(QThread):
     finished = pyqtSignal()
@@ -418,6 +419,7 @@ class MangaDownloaderApp:
                 runnable.signals.progress_changed.connect(lambda value, pb=progress_bar: pb.setValue(value))
                 runnable.signals.color.connect(lambda value, pb=progress_bar: pb.setStyleSheet(value))
                 runnable.signals.name.connect(lambda value, lbl=download_label: lbl.setText(value))
+                runnable.signals.download_error.connect(lambda value, error=QMessageBox: error.critical(None, "Error", f"{str(value)}"))
                 self.pool.start(runnable)
 
                 progress_layout.addWidget(progress_bar)

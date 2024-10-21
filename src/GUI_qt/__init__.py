@@ -304,7 +304,7 @@ class MangaDownloaderApp:
         self._add_chapters()
     
     def invert_chapters(self):
-        self.chapters.reverse()
+        self.chapters = self.chapters[::-1]
         self._add_chapters()
     
     def manga_by_link(self):

@@ -63,90 +63,58 @@ class DownloadRunnable(QRunnable):
             conf = get_config()
             pages = ProviderGetPagesUseCase(self.provider).execute(self.ch)
             translations = {}
+            
             with open(os.path.join(self.assets, 'translations.json'), 'r', encoding='utf-8') as file:
                 translations = json.load(file)
+            
             language = conf.lang
             if language not in translations:
                 language = 'en'
+            
             translation = translations[language]
             self.signals.name.emit(translation['downloading'])
-            self.signals.color.emit("""
-                QProgressBar {
-                    text-align: center;
-                }
-                QProgressBar::chunk {
-                    background-color: #32CD32
-                }
-                QProgressBar::text {
-                    color: #fff;
-                    font-weight: bold;
-                }
-            """)
+            
+            def set_progress_bar_style(color):
+                self.signals.color.emit(f"""
+                    QProgressBar {{
+                        text-align: center;
+                    }}
+                    QProgressBar::chunk {{
+                        background-color: {color};
+                    }}
+                    QProgressBar::text {{
+                        color: #fff;
+                        font-weight: bold;
+                    }}
+                """)
+
+            set_progress_bar_style("#32CD32")
             def update_progress_bar(value):
                 self.signals.progress_changed.emit(int(value))
+            
             ch = ProviderDownloadUseCase(self.provider).execute(pages=pages, fn=update_progress_bar)
-            if(img_conf.slice):
+            
+            if img_conf.slice:
                 self.signals.name.emit(translation['slicing'])
-                self.signals.progress_changed.emit(int(0))
-                self.signals.color.emit("""
-                    QProgressBar {
-                        text-align: center;
-                    }
-                    QProgressBar::chunk {
-                        background-color: #0080FF
-                    }
-                    QProgressBar::text {
-                        color: #fff;
-                        font-weight: bold;
-                    }
-                """)
+                self.signals.progress_changed.emit(0)
+                set_progress_bar_style("#0080FF")
                 ch = SlicerUseCase().execute(ch, update_progress_bar)
-            if(img_conf.waifu2x):
+            
+            if img_conf.waifu2x:
                 self.signals.name.emit(translation['upscaling'])
-                self.signals.progress_changed.emit(int(0))
-                self.signals.color.emit("""
-                    QProgressBar {
-                        text-align: center;
-                    }
-                    QProgressBar::chunk {
-                        background-color: #800080;
-                    }
-                    QProgressBar::text {
-                        color: #fff;
-                        font-weight: bold;
-                    }
-                """)
+                self.signals.progress_changed.emit(0)
+                set_progress_bar_style("#800080")
                 ch = Waifu2xUseCase().execute(ch, update_progress_bar)
-            if(img_conf.group):
+            
+            if img_conf.group:
                 self.signals.name.emit(translation['grouping'])
-                self.signals.progress_changed.emit(int(0))
-                self.signals.color.emit("""
-                    QProgressBar {
-                        text-align: center;
-                    }
-                    QProgressBar::chunk {
-                        background-color: #FFA500;
-                    }
-                    QProgressBar::text {
-                        color: #fff;
-                        font-weight: bold;
-                    }
-                """)
+                self.signals.progress_changed.emit(0)
+                set_progress_bar_style("#FFA500")
                 GroupImgsUseCase().execute(ch, update_progress_bar)
-                self.signals.progress_changed.emit(int(100))
+                self.signals.progress_changed.emit(100)
+        
         except Exception as e:
-            self.signals.color.emit("""
-                QProgressBar {
-                    text-align: center;
-                }
-                QProgressBar::chunk {
-                    background-color: red;
-                }
-                QProgressBar::text {
-                    color: #fff;
-                    font-weight: bold;
-                }
-            """)
+            set_progress_bar_style("red")
             self.signals.download_error.emit(f'{self.ch.name} \n {self.ch.number} \n {str(e)}')
 
 class UpdateThread(QThread):

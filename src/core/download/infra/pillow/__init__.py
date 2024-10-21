@@ -32,7 +32,6 @@ class PillowDownloadRepository(DownloadRepository):
             response = Http.get(page, headers=headers, cookies=cookies)
             try:
                 img = Image.open(BytesIO(response.content))
-                img.verify()
                 icc = img.info.get('icc_profile')
                 if img.mode in ("RGBA", "P"):
                     img = img.convert("RGB")

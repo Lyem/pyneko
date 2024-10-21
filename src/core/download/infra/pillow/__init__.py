@@ -1,9 +1,6 @@
 import re
 import os
-import cv2
 import math
-import numpy as np
-import pillow_avif
 from PIL import Image
 from io import BytesIO
 from core.config.img_conf import get_config

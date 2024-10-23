@@ -8,7 +8,7 @@ from core.providers.infra.template.manga_reader_cms import MangaReaderCms
 class YaoiFanClubProvider(MangaReaderCms):
     name = 'Yaoi fanclub'
     lang = 'pt-Br'
-    domain = ['yaoifanclub.com']
+    domain = ['www.yaoifanclub.com']
 
     def __init__(self):
         super().__init__()

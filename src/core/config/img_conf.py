@@ -87,10 +87,7 @@ def update_scan_line_step(scan_line_step: int) -> None:
 
 def update_automatic_width(automatic_width: bool) -> None:
     config = get_config()
-    print(automatic_width)
     db.update(Config(img=config.img, save=config.save, slice=config.slice, detection_type=config.detection_type, custom_width=config.custom_width, split_height=config.split_height, detection_senstivity=config.detection_senstivity, ignorable_pixels=config.ignorable_pixels, scan_line_step=config.scan_line_step, waifu2x=config.waifu2x, waifu2x_model=config.waifu2x_model, waifu2x_gpuid=config.waifu2x_gpuid, waifu2x_threads=config.waifu2x_threads, waifu2x_noise=config.waifu2x_noise, waifu2x_scale=config.waifu2x_scale, waifu2x_tilesize=config.waifu2x_tilesize, automatic_width=automatic_width, group_format=config.group_format, group=config.group).as_dict(),  doc_ids=[db.all()[0].doc_id])
-    teste = get_config()
-    print(teste.automatic_width)
 
 def update_waifu2x(waifu2x: bool) -> None:
     config = get_config()

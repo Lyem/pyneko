@@ -144,39 +144,50 @@ class Cloudflare(BypassRepository):
             request_data = db.search(where('domain') == onlydomain)
             if(len(request_data) > 0):
                 re = RequestData.from_dict(request_data[0])
-                await page.evaluate(f'document.cookie = "cf_clearance={re.cookies['cf_clearance']}; path=/; max-age=3600; secure; samesite=strict";')
-                await page.reload()
+                if(re.cookies):
+                    await page.evaluate(f'document.cookie = "cf_clearance={re.cookies['cf_clearance']}; path=/; max-age=3600; secure; samesite=strict";')
+                    await page.reload()
+                    cloudflare = False
             while(True):
-                page_content = await page.get_content()
-                fetch_content = await page.evaluate(f'''
-                    fetch("{url}")''' + '''.then(response => response.arrayBuffer()).then(buffer => {
-                        let binary = '';
-                        let bytes = new Uint8Array(buffer);
-                        let len = bytes.byteLength;
-                        for (let i = 0; i < len; i++) {
-                            binary += String.fromCharCode(bytes[i]);
-                        }
-                        return btoa(binary);
-                    });
-                ''', await_promise=True)
-                if self.is_cloudflare_blocking(page_content):
-                    cloudflare = True
-                    sleep(1)
-                else:
-                    if cloudflare:
-                        request_data = db.search(where('domain') == onlydomain)
-                        if(len(request_data) > 0):
-                            db.remove(where('domain') == onlydomain)
-                        agent = await page.evaluate('navigator.userAgent')
-                        headers = { 'user-agent': agent }
-                        cookiesB = await browser.cookies.get_all()
-                        cookies={}
-                        for cookie in cookiesB:
-                            if(cookie.name == 'cf_clearance'):
-                                cookies = {'cf_clearance': cookie.value}
-                        db.insert(RequestData(domain=onlydomain, headers=headers, cookies=cookies).as_dict())
-                    content = base64.b64decode(fetch_content)
-                    break
+                try:
+                    page = await browser.get(domain)
+                    page_content = await page.get_content()
+                    soup = BeautifulSoup(page_content, 'html.parser')
+                    head = soup.find('head')
+                    if self.is_cloudflare_blocking(page_content):
+                        cloudflare = True
+                        sleep(1)
+                    elif head and not head.contents:
+                        content = None
+                        break
+                    else:
+                        fetch_content = await page.evaluate(f'''
+                            fetch("{url}")''' + '''.then(response => response.arrayBuffer()).then(buffer => {
+                                let binary = '';
+                                let bytes = new Uint8Array(buffer);
+                                let len = bytes.byteLength;
+                                for (let i = 0; i < len; i++) {
+                                    binary += String.fromCharCode(bytes[i]);
+                                }
+                                return btoa(binary);
+                            });
+                        ''', await_promise=True)
+                        if cloudflare:
+                            request_data = db.search(where('domain') == onlydomain)
+                            if(len(request_data) > 0):
+                                db.remove(where('domain') == onlydomain)
+                            agent = await page.evaluate('navigator.userAgent')
+                            headers = { 'user-agent': agent }
+                            cookiesB = await browser.cookies.get_all()
+                            cookies={}
+                            for cookie in cookiesB:
+                                if(cookie.name == 'cf_clearance'):
+                                    cookies = {'cf_clearance': cookie.value}
+                            db.insert(RequestData(domain=onlydomain, headers=headers, cookies=cookies).as_dict())
+                        content = base64.b64decode(fetch_content)
+                        break
+                except Exception as e:
+                    print(e)
             browser.stop()
         uc.loop().run_until_complete(get_cloudflare_cookie())
         return content

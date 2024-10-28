@@ -1,1 +1,1 @@
-from core.__seedwork.infra.http.httpx import HttpxService as Http
+from core.__seedwork.infra.http.http import HttpService as Http

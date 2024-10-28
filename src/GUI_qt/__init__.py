@@ -4,6 +4,7 @@ import sys
 import json
 import subprocess
 from PyQt6 import uic
+from typing import List
 from clipman import init, get
 from tldextract import extract
 from GUI_qt.logs import LogWindow
@@ -11,7 +12,7 @@ from GUI_qt.version import version
 from GUI_qt.loading import LoadingWindow
 from GUI_qt.websites import WebSiteOpener
 from GUI_qt.new_version import NewVersion
-from core.providers.domain.chapter_entity import Chapter
+from core.providers.domain.entities import Chapter, Manga
 from GUI_qt.git import update_providers, get_last_version
 from core.slicer.application.use_cases import SlicerUseCase
 from core.waifu2x.application.use_cases import Waifu2xUseCase
@@ -128,6 +129,34 @@ class UpdateThread(QThread):
                 NewVersion()
         self.finished.emit()
 
+class MangaTaskSignals(QObject):
+    finished = pyqtSignal(Manga)
+
+class MangaTask(QRunnable):
+    def __init__(self, provider, link):
+        super().__init__()
+        self.provider = provider
+        self.link = link
+        self.signal = MangaTaskSignals()
+
+    def run(self):
+        manga = ProviderMangaUseCase(self.provider).execute(self.link)
+        self.signal.finished.emit(manga)
+
+class ChaptersTaskSignals(QObject):
+    finished = pyqtSignal(object)
+
+class ChaptersTask(QRunnable):
+    def __init__(self, provider, id):
+        super().__init__()
+        self.provider = provider
+        self.id = id
+        self.signal = ChaptersTaskSignals()
+
+    def run(self):
+        chapters = ProviderGetChaptersUseCase(self.provider).execute(self.id)
+        self.signal.finished.emit(chapters)
+
 class MangaDownloaderApp:
     def __init__(self):
         self.provider_selected = None
@@ -241,6 +270,8 @@ class MangaDownloaderApp:
         self.pool = QThreadPool.globalInstance()
         self.pool.setMaxThreadCount(conf.max_download)
         self.window.simul_qtd.setValue(conf.max_download)
+        self.pool2 = QThreadPool()
+        self.pool2.setMaxThreadCount(1)
 
     
     def run(self):
@@ -288,6 +319,19 @@ class MangaDownloaderApp:
         self.chapters = self.chapters[::-1]
         self._add_chapters()
     
+    def set_chapter(self, chapters: List[Chapter]):
+        self.chapters = chapters
+        self.all_chapters = chapters
+        self._add_chapters()
+        self.window.pages.setCurrentIndex(0)
+
+    def set_title(self, manga: Manga):
+        self.manga_id_selectd = manga.id
+        self.window.setWindowTitle(f'PyNeko | {manga.name} | {self.provider_selected.name}')
+        chapter_task = ChaptersTask(self.provider_selected, manga.id)
+        chapter_task.signal.finished.connect(self.set_chapter)
+        self.pool2.start(chapter_task)
+    
     def manga_by_link(self):
         link = get()
         extract_info = extract(link)
@@ -301,18 +345,12 @@ class MangaDownloaderApp:
                 def run():
                     try:
                         nonlocal provider_find
-                        self.window.pages.setCurrentIndex(1)
-                        QApplication.processEvents()
                         self.provider_selected = provider
                         provider_find = True
-                        manga = ProviderMangaUseCase(provider).execute(link)
-                        self.manga_id_selectd = manga.id
-                        self.window.setWindowTitle(f'PyNeko | {manga.name} | {provider.name}')
-                        chapters = ProviderGetChaptersUseCase(provider).execute(manga.id)
-                        self.chapters = chapters
-                        self.all_chapters = chapters
-                        self._add_chapters()
-                        self.window.pages.setCurrentIndex(0)
+                        self.window.pages.setCurrentIndex(1)
+                        manga_task = MangaTask(provider, link)
+                        manga_task.signal.finished.connect(self.set_title)
+                        self.pool2.start(manga_task)
                     except Exception as e:
                         self.window.pages.setCurrentIndex(0)
                         QMessageBox.critical(None, "Erro", str(e))

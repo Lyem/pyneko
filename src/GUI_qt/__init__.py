@@ -639,6 +639,10 @@ class MangaDownloaderApp:
 if __name__ == "__main__":
     try:
 
+        if os.environ.get('PYNEKOENV') == 'dev':
+            from jurigged import watch
+            watch(str(base_path()))
+
         try:
             import pyi_splash # type: ignore
             pyi_splash.close()

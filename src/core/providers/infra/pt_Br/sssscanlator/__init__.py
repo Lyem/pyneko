@@ -1,18 +1,17 @@
 import re
-import json
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin
 from core.__seedwork.infra.http import Http
 from core.providers.domain.entities import Chapter, Pages
 from core.providers.infra.template.manga_reader_cms import MangaReaderCms
 class SssScanlatorProvider(MangaReaderCms):
     name = 'Sss Scanlator'
     lang = 'pt-Br'
-    domain = ['sssscanlator.com.br']
+    domain = ['ssstoons.com']
 
     def __init__(self):
         super().__init__()
-        self.url = 'https://sssscanlator.com.br'
+        self.url = 'https://ssstoons.com'
         self.path = '/'
 
         self.query_mangas = 'ul.manga-list li a'
@@ -34,5 +33,5 @@ class SssScanlatorProvider(MangaReaderCms):
                     images_str = match.group(1).replace('\\/', '/')
                     images = [img.strip().strip('"') for img in images_str.split(',')]
                     list = images
-                break  
+                break
         return Pages(ch.id, ch.number, ch.name, list)

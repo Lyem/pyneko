@@ -23,7 +23,6 @@ args = [
     '--collect-all=PyQt6',
     '--collect-all=nodriver',
     '--collect-all=bs4',
-    '--collect-all=httpx',
     '--collect-all=cv2',
     '--collect-all=cloudscraper',
     '--collect-all=waifu2x-ncnn-py',

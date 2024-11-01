@@ -29,7 +29,6 @@ args = [
     '--collect-all=pillow_avif',
     f'--icon=assets/icon.ico',
     '--exclude-module=tests',
-    '--exclude-module=waifu2x_ncnn_vulkan_wrapper',
     f'--add-data=src/core/providers/infra{separator}core/providers/infra',
     f'--add-data=src/core/__seedwork/infra{separator}core/__seedwork/infra',
     f'--add-data=src/core/cloudflare{separator}core/cloudflare',

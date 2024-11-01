@@ -1,14 +1,12 @@
+import sqlite3
+from os import makedirs
 from pathlib import Path
-from tinydb import TinyDB
-from os import makedirs, remove
-from PyQt6.QtCore import QLocale
 from platformdirs import user_config_dir
 from dataclasses import dataclass, asdict
 
 config_path = user_config_dir('pyneko')
-db_path = Path(config_path) / 'ui.json'
+db_path = Path(config_path) / 'ui.db'
 makedirs(config_path, exist_ok=True)
-db = TinyDB(db_path)
 
 @dataclass
 class Config:
@@ -19,38 +17,62 @@ class Config:
 
     def as_dict(self):
         return asdict(self)
-    
+
     @classmethod
     def from_dict(cls, data):
-        return Config(**data)
+        return cls(**data)
 
-def get_config() -> Config | None:
-    data = db.all()
-    if len(data) == 0:
-        return None
-    return Config.from_dict(data[0])
+def init_db():
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute('''CREATE TABLE IF NOT EXISTS config (
+                        lang TEXT,
+                        progress INTEGER,
+                        max_download INTEGER,
+                        log INTEGER
+                      )''')
+    conn.commit()
+    conn.close()
 
 def init(lang: str) -> None:
-    db.insert(Config(lang=lang, progress=False, max_download=3, log=False).as_dict())
+    init_db()
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute('INSERT INTO config VALUES (?, ?, ?, ?)',
+                   (lang, 0, 3, 0))
+    conn.commit()
+    conn.close()
+
+def get_config() -> Config | None:
+    init_db()
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM config LIMIT 1')
+    row = cursor.fetchone()
+    conn.close()
+    if row is None:
+        return None
+    return Config(lang=row[0], progress=bool(row[1]), max_download=row[2], log=bool(row[3]))
+
+def update_config_field(field: str, value):
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute(f'UPDATE config SET {field} = ? WHERE rowid = 1', (int(value) if isinstance(value, bool) else value,))
+    conn.commit()
+    conn.close()
 
 def update_max_download(max_download: int):
-    data = get_config()
-    db.update(Config(lang=data.lang, progress=data.progress, max_download=max_download, log=data.log).as_dict(),  doc_ids=[db.all()[0].doc_id])
+    update_config_field('max_download', max_download)
 
 def update_progress(progress: bool):
-    data = get_config()
-    db.update(Config(lang=data.lang, progress=progress, max_download=data.max_download, log=data.log).as_dict(),  doc_ids=[db.all()[0].doc_id])
+    update_config_field('progress', progress)
 
 def update_log(log: bool):
-    data = get_config()
-    db.update(Config(lang=data.lang, progress=data.progress, max_download=data.max_download, log=log).as_dict(),  doc_ids=[db.all()[0].doc_id])
+    update_config_field('log', log)
 
 def update_lang(lang: str) -> None:
     data = get_config()
-    
     if not data:
         init(lang=lang)
         return None
-
-    db.update(Config(lang=lang, progress=data.progress, max_download=data.max_download, log=data.log).as_dict(),  doc_ids=[db.all()[0].doc_id])
-
+    update_config_field('lang', lang)

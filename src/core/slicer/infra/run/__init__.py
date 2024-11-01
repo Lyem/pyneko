@@ -50,7 +50,7 @@ class SmartStitch():
             slice_points = detector.run(
                 combined_img,
                 conf.split_height,
-                sensitivity=conf.detection_senstivity,
+                sensitivity=conf.detection_sensitivity,
                 ignorable_pixels=conf.ignorable_pixels,
                 scan_step=conf.scan_line_step,
             )
@@ -74,7 +74,7 @@ class SmartStitch():
         slice_points = detector.run(
             combined_img,
             conf.split_height,
-            sensitivity=conf.detection_senstivity,
+            sensitivity=conf.detection_sensitivity,
             ignorable_pixels=conf.ignorable_pixels,
             scan_step=conf.scan_line_step,
         )

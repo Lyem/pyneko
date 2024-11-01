@@ -26,7 +26,7 @@ from core.config.img_conf import (
     update_img, update_save, 
     update_automatic_width, 
     update_custom_width, 
-    update_detection_senstivity, 
+    update_detection_sensitivity, 
     update_detection_type, 
     update_group, 
     update_group_format, 
@@ -216,7 +216,7 @@ class MangaDownloaderApp:
         self.window.group_imgs_combo.setCurrentText(data.group_format)
         self.window.slicer_height.setValue(data.split_height)
         self.window.slicer_width_spin.setValue(data.custom_width)
-        self.window.slicer_detection_sensivity.setValue(data.detection_senstivity)
+        self.window.slicer_detection_sensivity.setValue(data.detection_sensitivity)
         self.window.slicer_scan_line.setValue(data.scan_line_step)
         self.window.slicer_ignorable_margin.setValue(data.ignorable_pixels)
         if(data.automatic_width):
@@ -500,7 +500,7 @@ class MangaDownloaderApp:
     
     def setSlicerDetectionSensivity(self):
         sensivity = int(self.window.slicer_detection_sensivity.text())
-        update_detection_senstivity(sensivity)
+        update_detection_sensitivity(sensivity)
     
     def setSlicerScanLine(self):
         scan_line = int(self.window.slicer_scan_line.text())

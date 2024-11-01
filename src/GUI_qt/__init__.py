@@ -15,7 +15,6 @@ from GUI_qt.new_version import NewVersion
 from core.providers.domain.entities import Chapter, Manga
 from GUI_qt.git import update_providers, get_last_version
 from core.slicer.application.use_cases import SlicerUseCase
-from core.waifu2x.application.use_cases import Waifu2xUseCase
 from core.group_imgs.application.use_cases import GroupImgsUseCase
 from GUI_qt.load_providers import import_classes_recursively, base_path
 from PyQt6.QtCore import QRunnable, QThreadPool, pyqtSignal, QObject, QLocale, QThread
@@ -34,13 +33,7 @@ from core.config.img_conf import (
     update_ignorable_pixels, 
     update_scan_line_step, 
     update_slice, 
-    update_split_height, 
-    update_waifu2x, 
-    update_waifu2x_gpuid, 
-    update_waifu2x_model, 
-    update_waifu2x_noise, 
-    update_waifu2x_threads, 
-    update_waifu2x_scale
+    update_split_height,
 )
 
 class WorkerSignals(QObject):
@@ -100,12 +93,6 @@ class DownloadRunnable(QRunnable):
                 self.signals.progress_changed.emit(0)
                 set_progress_bar_style("#0080FF")
                 ch = SlicerUseCase().execute(ch, update_progress_bar)
-            
-            if img_conf.waifu2x:
-                self.signals.name.emit(translation['upscaling'])
-                self.signals.progress_changed.emit(0)
-                set_progress_bar_style("#800080")
-                ch = Waifu2xUseCase().execute(ch, update_progress_bar)
             
             if img_conf.group:
                 self.signals.name.emit(translation['grouping'])
@@ -187,19 +174,13 @@ class MangaDownloaderApp:
         self.window.dev_check.stateChanged.connect(self.toogle_log)
         self.window.group_imgs.toggled.connect(self.toogle_group_img)
         self.window.slicer_box.toggled.connect(self.toogle_group_slice)
-        self.window.waifu2x_box.toggled.connect(self.toogle_group_waifu)
         self.window.config.clicked.connect(self.open_config)
         self.window.open_folder.clicked.connect(self.open_folder)
         self.window.config_back.clicked.connect(self.open_home)
         self.window.langs.currentTextChanged.connect(self.langChanged)
         self.window.format_img.currentTextChanged.connect(self.imgFormatChanged)
         self.window.group_imgs_combo.currentTextChanged.connect(self.groupImgsComboChanged)
-        self.window.waifu2x_model_select.currentTextChanged.connect(self.groupModelComboChanged)
         self.window.slicer_width_select.currentTextChanged.connect(self.groupSlicerWidthComboChanged)
-        self.window.waifu2x_scale_spin.textChanged.connect(self.setWaifuScale)
-        self.window.waifu2x_noise_spin.textChanged.connect(self.setWaifuNoise)
-        self.window.waifu2x_threads_spin.textChanged.connect(self.setWaifuThreads)
-        self.window.waifu2x_gpu_id_spin.textChanged.connect(self.setWaifuGpuId)
         self.window.slicer_height.textChanged.connect(self.setSlicerHeight)
         self.window.slicer_width_spin.textChanged.connect(self.setSlicerWidth)
         self.window.slicer_detector_select.currentTextChanged.connect(self.groupDetectionTypeChanged)
@@ -232,15 +213,9 @@ class MangaDownloaderApp:
         data = get_img_config()
         self.window.group_imgs.setChecked(data.group)
         self.window.slicer_box.setChecked(data.slice)
-        self.window.waifu2x_box.setChecked(data.waifu2x)
         self.window.group_imgs_combo.setCurrentText(data.group_format)
-        self.window.waifu2x_model_select.setCurrentText(data.waifu2x_model)
         self.window.slicer_height.setValue(data.split_height)
         self.window.slicer_width_spin.setValue(data.custom_width)
-        self.window.waifu2x_scale_spin.setValue(data.waifu2x_scale)
-        self.window.waifu2x_noise_spin.setValue(data.waifu2x_noise)
-        self.window.waifu2x_threads_spin.setValue(data.waifu2x_threads)
-        self.window.waifu2x_gpu_id_spin.setValue(data.waifu2x_gpuid)
         self.window.slicer_detection_sensivity.setValue(data.detection_senstivity)
         self.window.slicer_scan_line.setValue(data.scan_line_step)
         self.window.slicer_ignorable_margin.setValue(data.ignorable_pixels)
@@ -464,10 +439,6 @@ class MangaDownloaderApp:
         if img:
             update_group_format(img)
     
-    def groupModelComboChanged(self, model=None):
-        if model:
-            update_waifu2x_model(model)
-    
     def groupDetectionTypeChanged(self, model=None):
         if not self.initial_data:
             if model:
@@ -518,22 +489,6 @@ class MangaDownloaderApp:
         max_qtd = int(self.window.simul_qtd.text())
         update_max_download(max_qtd)
         self.pool.setMaxThreadCount(max_qtd)
-    
-    def setWaifuScale(self):
-        scale_qtd = int(self.window.waifu2x_scale_spin.text())
-        update_waifu2x_scale(scale_qtd)
-    
-    def setWaifuNoise(self):
-        noise_qtd = int(self.window.waifu2x_noise_spin.text())
-        update_waifu2x_noise(noise_qtd)
-    
-    def setWaifuThreads(self):
-        threads_qtd = int(self.window.waifu2x_threads_spin.text())
-        update_waifu2x_threads(threads_qtd)
-
-    def setWaifuGpuId(self):
-        gpu_id_qtd = int(self.window.waifu2x_gpu_id_spin.text())
-        update_waifu2x_gpuid(gpu_id_qtd)
     
     def setSlicerHeight(self):
         slicer_height = int(self.window.slicer_height.text())
@@ -607,10 +562,6 @@ class MangaDownloaderApp:
         self.window.slicer_width_label.setText(translation['width_enforcement_type'])
         self.window.slicer_width_spin_label.setText(translation['width_custom'])
         self.window.slicer_detector_label.setText(translation['detector_type'])
-        self.window.waifu2x_model.setText(translation['model'])
-        self.window.waifu2x_scale_label.setText(translation['scale'])
-        self.window.waifu2x_noise_label.setText(translation['noise'])
-        self.window.waifu2x_threads_label.setText(translation['threads'])
         self.window.slicer_width_select.clear()
         self.window.slicer_width_select.addItems([
             translation['no_enforcement'], 
@@ -633,10 +584,6 @@ class MangaDownloaderApp:
     def toogle_group_slice(self, checked):
         if not self.initial_data:
             update_slice(checked)
-    
-    def toogle_group_waifu(self, checked):
-        if not self.initial_data:
-            update_waifu2x(checked)
     
     def toogle_log(self):
         if not self.init_log:

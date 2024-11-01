@@ -116,5 +116,3 @@ def update_group_format(group_format: str) -> None:
 
 def update_group(group: bool) -> None:
     update_config_field('group_flag', int(group))
-
-print(get_config())

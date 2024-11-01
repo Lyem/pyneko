@@ -1,3 +1,4 @@
+import shutil
 import zipfile
 import pillow_avif
 from PIL import Image
@@ -19,3 +20,7 @@ class GroupImages():
             with zipfile.ZipFile(path, 'w') as zipf:
                 for img in ch.files:
                     zipf.write(img)
+        
+        if conf.group_replace_original_files:
+            path = str(Path.joinpath(Path(ch.files[0]).parent.parent, f'{ch.number}'))
+            shutil.rmtree(path)

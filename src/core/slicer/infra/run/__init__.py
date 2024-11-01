@@ -81,9 +81,13 @@ class SmartStitch():
         files = []
         img_iteration = 1
         imgs = img_manipulator.slice(combined_img, slice_points)
+        path = str(Path.joinpath(Path(ch.files[0]).parent.parent, f'{ch.number} [stitched]'))
+        if conf.slice_replace_original_files:
+            path = str(Path.joinpath(Path(ch.files[0]).parent.parent, f'{ch.number}'))
+            shutil.rmtree(path)
         for i, img in enumerate(imgs):
             filename=img_handler.save(
-                str(Path.joinpath(Path(ch.files[0]).parent.parent, f'{ch.number} [stitched]')),
+                path,
                 img,
                 img_iteration,
                 img_format=conf.img,
@@ -91,7 +95,7 @@ class SmartStitch():
             )
             if fn != None:
                 fn(80 + (math.ceil(i * 50)/len(ch.files)))
-            files.append(str(Path.joinpath(Path(ch.files[0]).parent.parent, f'{ch.number} [stitched]', filename)))
+            files.append(str(Path.joinpath(Path(path), filename)))
             img_iteration += 1
         
         shutil.rmtree(Path.joinpath(Path(tempfile.gettempdir()), 'pyneko', Path(ch.files[0]).parent.parent.name, f'{ch.number} [stitched]'))

@@ -40,6 +40,7 @@
         "scan_line_step": "Scan Line Step [1-25 in pixels]:",
         "ignore_horizontal_margins": "Ignorable Horizontal Margins [in pixels]:",
         "group_images": "Group Images (PDF/ZIP):",
+        "overwrite": "Overwrite",
         "downloading": "Downloading:",
         "slicing": "Slicing:",
         "grouping": "Grouping:"
@@ -85,6 +86,7 @@
         "scan_line_step": "Linha de Varredura [1-25 em pixels]:",
         "ignore_horizontal_margins": "Margens Horizontais Ignoráveis [em pixels]:",
         "group_images": "Agrupar Imagens (PDF/ZIP):",
+        "overwrite": "Sobrescrever",
         "downloading": "Baixando:",
         "slicing": "Fatiando:",
         "grouping": "Agrupando:"
@@ -130,6 +132,7 @@
         "scan_line_step": "Paso de línea de escaneo [1-25 en píxeles]:",
         "ignore_horizontal_margins": "Margenes horizontales ignorables [en píxeles]:",
         "group_images": "Agrupar imágenes (PDF/ZIP):",
+        "overwrite": "Sobrescribir",
         "downloading": "Descargando:",
         "slicing": "Cortando:",
         "grouping": "Agrupando:"
@@ -175,6 +178,7 @@
         "scan_line_step": "Pas de ligne de balayage [1-25 en pixels]:",
         "ignore_horizontal_margins": "Marges horizontales ignorables [en pixels]:",
         "group_images": "Grouper les images (PDF/ZIP):",
+        "overwrite": "Écraser",
         "downloading": "Téléchargement:",
         "slicing": "Découpe:",
         "grouping": "Regroupement:"
@@ -220,6 +224,7 @@
         "scan_line_step": "Scanlinien-Schritt [1-25 in Pixel]:",
         "ignore_horizontal_margins": "Ignorierbare horizontale Ränder [in Pixel]:",
         "group_images": "Bilder gruppieren (PDF/ZIP):",
+        "overwrite": "Überschreiben",
         "downloading": "Herunterladen:",
         "slicing": "Schneiden:",
         "grouping": "Gruppieren:"
@@ -265,6 +270,7 @@
         "scan_line_step": "Passo di scansione [1-25 in pixel]:",
         "ignore_horizontal_margins": "Margini orizzontali ignorabili [in pixel]:",
         "group_images": "Raggruppa immagini (PDF/ZIP):",
+        "overwrite": "Sovrascrivere",
         "downloading": "Scaricamento:",
         "slicing": "Taglio:",
         "grouping": "Raggruppamento:"
@@ -310,6 +316,7 @@
         "scan_line_step": "スキャンラインステップ [1-25 ピクセル]:",
         "ignore_horizontal_margins": "無視可能な水平マージン [ピクセル単位]:",
         "group_images": "画像をグループ化 (PDF/ZIP):",
+        "overwrite": "上書き",
         "downloading": "ダウンロード中:",
         "slicing": "スライス中:",
         "grouping": "グループ化中:"
@@ -355,6 +362,7 @@
         "scan_line_step": "扫描线步长 [1-25 像素]:",
         "ignore_horizontal_margins": "可忽略的水平边距 [以像素为单位]:",
         "group_images": "分组图像 (PDF/ZIP):",
+        "overwrite": "覆盖",
         "downloading": "下载中:",
         "slicing": "切片中:",
         "grouping": "分组中:"
@@ -400,6 +408,7 @@
         "scan_line_step": "Шаг линии сканирования [1-25 пикселей]:",
         "ignore_horizontal_margins": "Игнорируемые горизонтальные поля [в пикселях]:",
         "group_images": "Группировать изображения (PDF/ZIP):",
+        "overwrite": "Перезаписать",
         "downloading": "Загрузка:",
         "slicing": "Нарезка:",
         "grouping": "Группировка:"
@@ -445,6 +454,7 @@
         "scan_line_step": "خطوة المسح الضوئي [1-25 بالبكسل]:",
         "ignore_horizontal_margins": "الهوامش الأفقية القابلة للتجاهل [بالبكسل]:",
         "group_images": "تجميع الصور (PDF/ZIP):",
+        "overwrite": "الكتابة فوق",
         "downloading": "جارٍ التحميل:",
         "slicing": "جارٍ التقطيع:",
         "grouping": "جارٍ التجميع:"

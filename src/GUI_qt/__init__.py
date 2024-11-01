@@ -34,6 +34,8 @@ from core.config.img_conf import (
     update_scan_line_step, 
     update_slice, 
     update_split_height,
+    update_slice_replace_original_files,
+    update_group_replace_original_files
 )
 
 class WorkerSignals(QObject):
@@ -173,6 +175,8 @@ class MangaDownloaderApp:
         self.window.simul_qtd.textChanged.connect(self.setMaxDownload)
         self.window.dev_check.stateChanged.connect(self.toogle_log)
         self.window.group_imgs.toggled.connect(self.toogle_group_img)
+        self.window.replacegroupcheckBox.toggled.connect(self.toogle_group_replace)
+        self.window.replaceslicecheckBox.toggled.connect(self.toogle_slice_replace)
         self.window.slicer_box.toggled.connect(self.toogle_group_slice)
         self.window.config.clicked.connect(self.open_config)
         self.window.open_folder.clicked.connect(self.open_folder)
@@ -213,6 +217,8 @@ class MangaDownloaderApp:
         data = get_img_config()
         self.window.group_imgs.setChecked(data.group)
         self.window.slicer_box.setChecked(data.slice)
+        self.window.replaceslicecheckBox.setChecked(data.slice_replace_original_files)
+        self.window.replacegroupcheckBox.setChecked(data.group_replace_original_files)
         self.window.group_imgs_combo.setCurrentText(data.group_format)
         self.window.slicer_height.setValue(data.split_height)
         self.window.slicer_width_spin.setValue(data.custom_width)
@@ -576,6 +582,8 @@ class MangaDownloaderApp:
         self.window.slicer_detection_sensivity_label.setText(translation['detection_sensitivity'])
         self.window.slicer_scan_line_label.setText(translation['scan_line_step'])
         self.window.slicer_ignorable_margin_label.setText(translation['ignore_horizontal_margins'])
+        self.window.replaceslicecheckBox.setText(translation['overwrite'])
+        self.window.replacegroupcheckBox.setText(translation['overwrite'])
     
     def toogle_group_img(self, checked):
         if not self.initial_data:
@@ -584,6 +592,14 @@ class MangaDownloaderApp:
     def toogle_group_slice(self, checked):
         if not self.initial_data:
             update_slice(checked)
+    
+    def toogle_group_replace(self, checked):
+        if not self.initial_data:
+            update_group_replace_original_files(checked)
+    
+    def toogle_slice_replace(self, checked):
+        if not self.initial_data:
+            update_slice_replace_original_files(checked)
     
     def toogle_log(self):
         if not self.init_log:

@@ -345,9 +345,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-350</y>
+             <y>-13</y>
              <width>779</width>
-             <height>822</height>
+             <height>838</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -558,6 +558,13 @@
                    </item>
                   </widget>
                  </item>
+                 <item>
+                  <widget class="QCheckBox" name="replacegroupcheckBox">
+                   <property name="text">
+                    <string>Sobreescrever</string>
+                   </property>
+                  </widget>
+                 </item>
                 </layout>
                </widget>
               </item>
@@ -763,6 +770,13 @@
                    </property>
                   </widget>
                  </item>
+                 <item>
+                  <widget class="QCheckBox" name="replaceslicecheckBox">
+                   <property name="text">
+                    <string>Sobreescrever</string>
+                   </property>
+                  </widget>
+                 </item>
                 </layout>
                </widget>
               </item>
@@ -795,6 +809,9 @@
               </item>
               <item>
                <spacer name="verticalSpacer">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
                 <property name="sizeHint" stdset="0">
                  <size>
                   <width>20</width>

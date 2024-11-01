@@ -107,9 +107,8 @@ class HttpService(Http):
             count += 1
 
             request_data = get_request(domain)
-
-            if(len(request_data) > 0):
-                re = RequestData.from_dict(request_data[0])
+            if(request_data):
+                re = request_data
                 if headers != None: headers = headers | re.headers
                 else: headers = re.headers
                 if cookies != None: cookies = cookies | re.cookies

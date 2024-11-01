@@ -26,7 +26,7 @@ class SmartStitch():
         else:
             width_enforce_mode = WIDTH_ENFORCEMENT.NONE
         files = []
-        continue_index = 0
+        continue_index = -1
         img_iteration = 1
         while continue_index < len(ch.files) - 1:
             group_height = 0

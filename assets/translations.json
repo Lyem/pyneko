@@ -1,0 +1,20 @@
+{
+    "en": {
+        "select_template": "Choose the template: ",
+        "enter_language": "Enter the language code: ",
+        "enter_domain": "Enter the site domain: ",
+        "enter_class": "Enter the provider class: ",
+        "enter_name": "Enter the provider name: ",
+        "enter_value": "Enter the value for {var}: ",
+        "success_message": "Template created successfully"
+    },
+    "pt": {
+        "select_template": "Escolha o template: ",
+        "enter_language": "Qual o codigo da língua?: ",
+        "enter_domain": "Qual o domínio do site?: ",
+        "enter_class": "Qual a classe do provider?: ",
+        "enter_name": "Qual o nome do provider?: ",
+        "enter_value": "Digite o valor para {var}: ",
+        "success_message": "Template criado com sucesso"
+    }
+}

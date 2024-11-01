@@ -25,7 +25,6 @@ args = [
     '--collect-all=bs4',
     '--collect-all=cv2',
     '--collect-all=cloudscraper',
-    '--collect-all=waifu2x_ncnn_py',
     '--collect-all=fake_useragent',
     '--collect-all=pillow_avif',
     f'--icon=assets/icon.ico',

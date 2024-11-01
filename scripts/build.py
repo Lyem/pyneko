@@ -26,6 +26,7 @@ args = [
     '--collect-all=cv2',
     '--collect-all=cloudscraper',
     '--collect-all=waifu2x_ncnn_py',
+    '--hidden-import=waifu2x_ncnn_vulkan_wrapper',
     '--collect-all=fake_useragent',
     '--collect-all=pillow_avif',
     f'--icon=assets/icon.ico',

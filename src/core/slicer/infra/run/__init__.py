@@ -31,14 +31,14 @@ class SmartStitch():
         while continue_index < len(ch.files) - 1:
             group_height = 0
             img_objs = []
-            for i in range(continue_index, len(ch.files)):
+            for i in range(continue_index + 1, len(ch.files)):
                 img = pil.open(ch.files[i])
                 img_objs.append(img)
                 width, height = img.size
                 group_height += height
                 if group_height >= 5 * conf.split_height or i == len(ch.files) - 1:
                     if continue_index < len(ch.files) - 1:
-                        continue_index = i + 1
+                        continue_index = i
                     if i == len(ch.files):
                         continue_index = len(ch.files) - 1
                     break

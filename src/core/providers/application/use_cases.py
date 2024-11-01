@@ -1,4 +1,5 @@
 from typing import List
+from core.download.domain.dowload_entity import Chapter as ChapterDw
 from core.__seedwork.application.use_cases import UseCase
 from core.providers.domain.entities import Chapter, Pages, Manga
 from core.providers.domain.provider_repository import ProviderRepository
@@ -29,5 +30,5 @@ class ProviderDownloadUseCase(UseCase):
     def __init__(self, provider: ProviderRepository) -> None:
         self.provider = provider
 
-    def execute(self, pages: Pages, fn: any) -> None:
+    def execute(self, pages: Pages, fn: any) -> ChapterDw:
         return self.provider().download(pages=pages, fn=fn)

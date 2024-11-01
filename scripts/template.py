@@ -1,8 +1,8 @@
 import os
 import json
 import locale
+import tldextract
 from pathlib import Path
-from tldextract import extract
 from jinja2 import Environment, FileSystemLoader
 
 def load_translations():
@@ -45,15 +45,19 @@ def generate():
     template = env.get_template(selected_template['template'])
     variables = {}
     variables['lang'] = input(get_message('enter_language', lang))
-    variables['domain'] = input(get_message('enter_domain', lang))
+    extract = tldextract.extract(input(get_message('enter_domain', lang)))
+    if extract.subdomain:
+        domain = f"{extract.subdomain}.{extract.domain}.{extract.suffix}"
+    else:
+        domain = f"{extract.domain}.{extract.suffix}"
+    variables['domain'] = domain
     variables['class'] = input(get_message('enter_class', lang))
     variables['name'] = input(get_message('enter_name', lang))
     for var in selected_template['variables']:
         user_value = input(get_message('enter_value', lang).format(var=var["name"]))
         variables[var['value']] = user_value
     template_content = template.render(variables)
-    extract_info = extract(variables['domain'])
-    folder = os.path.join(providers, variables['lang'], extract_info.domain)
+    folder = os.path.join(providers, variables['lang'], extract.domain)
     os.makedirs(folder, exist_ok=True)
     with open(os.path.join(folder, '__init__.py'), 'w') as f:
         f.write(template_content)

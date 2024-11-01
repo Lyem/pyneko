@@ -120,6 +120,7 @@ class UpdateThread(QThread):
 
 class MangaTaskSignals(QObject):
     finished = pyqtSignal(Manga)
+    error = pyqtSignal(str)
 
 class MangaTask(QRunnable):
     def __init__(self, provider, link):
@@ -129,11 +130,16 @@ class MangaTask(QRunnable):
         self.signal = MangaTaskSignals()
 
     def run(self):
-        manga = ProviderMangaUseCase(self.provider).execute(self.link)
-        self.signal.finished.emit(manga)
+        try:
+            manga = ProviderMangaUseCase(self.provider).execute(self.link)
+            self.signal.finished.emit(manga)
+        except Exception as e:
+            self.signal.error.emit(str(e))
+        
 
 class ChaptersTaskSignals(QObject):
     finished = pyqtSignal(object)
+    error = pyqtSignal(str)
 
 class ChaptersTask(QRunnable):
     def __init__(self, provider, id):
@@ -143,8 +149,11 @@ class ChaptersTask(QRunnable):
         self.signal = ChaptersTaskSignals()
 
     def run(self):
-        chapters = ProviderGetChaptersUseCase(self.provider).execute(self.id)
-        self.signal.finished.emit(chapters)
+        try:
+            chapters = ProviderGetChaptersUseCase(self.provider).execute(self.id)
+            self.signal.finished.emit(chapters)
+        except Exception as e:
+            self.signal.error.emit(str(e))
 
 class MangaDownloaderApp:
     def __init__(self):
@@ -311,7 +320,12 @@ class MangaDownloaderApp:
         self.window.setWindowTitle(f'PyNeko | {manga.name} | {self.provider_selected.name}')
         chapter_task = ChaptersTask(self.provider_selected, manga.id)
         chapter_task.signal.finished.connect(self.set_chapter)
+        chapter_task.signal.error.connect(self._manga_by_link_error)
         self.pool2.start(chapter_task)
+    
+    def _manga_by_link_error(self, msg: str):
+        self.window.pages.setCurrentIndex(0)
+        QMessageBox.critical(None, "Erro", str(msg))
     
     def manga_by_link(self):
         link = get()
@@ -324,17 +338,14 @@ class MangaDownloaderApp:
         for provider in self.providers:
             for provider_domain in provider.domain:
                 def run():
-                    try:
-                        nonlocal provider_find
-                        self.provider_selected = provider
-                        provider_find = True
-                        self.window.pages.setCurrentIndex(1)
-                        manga_task = MangaTask(provider, link)
-                        manga_task.signal.finished.connect(self.set_title)
-                        self.pool2.start(manga_task)
-                    except Exception as e:
-                        self.window.pages.setCurrentIndex(0)
-                        QMessageBox.critical(None, "Erro", str(e))
+                    nonlocal provider_find
+                    self.provider_selected = provider
+                    provider_find = True
+                    self.window.pages.setCurrentIndex(1)
+                    manga_task = MangaTask(provider, link)
+                    manga_task.signal.finished.connect(self.set_title)
+                    manga_task.signal.error.connect(self._manga_by_link_error)
+                    self.pool2.start(manga_task)
                 if isinstance(provider_domain, re.Pattern):
                     if provider_domain.match(domain):
                         run()

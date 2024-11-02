@@ -1,8 +1,8 @@
 from core.providers.infra.template.wordpress_madara import WordPressMadara
 
-class CvnScanProvider(WordPressMadara):
-    name = 'cvn scan'
-    lang = 'pt-Br'
+class CoverScanProvider(WordPressMadara):
+    name = 'Cover Scan'
+    lang = 'pt_Br'
     domain = ['cvnscan.com']
 
     def __init__(self):

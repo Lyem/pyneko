@@ -3,10 +3,10 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class MaidScansProvider(WordPressMadara):
     name = 'Maid scans'
     lang = 'pt-Br'
-    domain = ['maidscans.com']
+    domain = ['empreguetes.site']
 
     def __init__(self):
-        self.url = 'https://maidscans.com'
+        self.url = 'https://empreguetes.site/'
 
         self.path = ''
         

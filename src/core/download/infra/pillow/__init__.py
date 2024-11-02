@@ -14,7 +14,7 @@ class PillowDownloadRepository(DownloadRepository):
 
     def download(self, pages: Pages, fn=None, headers=None, cookies=None) -> Chapter:
         title = (pages.name[:20]) if len(pages.name) > 20 else pages.name
-        title = re.sub('[^a-zA-Z0-9&_áàâãéèêíïóôõöúçñÁÀÂÃÉÈÊÍÏÓÔÕÖÚÇÑ-]', '', title)
+        title = re.sub(r'[^\w&áàâãéèêíïóôõöúçñÁÀÂÃÉÈÊÍÏÓÔÕÖÚÇÑ-가-힣一-龯ぁ-ん]', '', title)
         config = get_config()
         img_path = config.save
         path = os.path.join(img_path, str(title), str(pages.number))

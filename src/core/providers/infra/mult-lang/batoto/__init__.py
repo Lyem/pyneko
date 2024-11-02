@@ -9,7 +9,7 @@ from core.providers.domain.entities import Chapter, Pages, Manga
 class BatotoProvider(Base):
     name = 'Batoto'
     lang = 'mult'
-    domain = ['wto.to', 'bato.to', 'battwo.com']
+    domain = ['wto.to', 'bato.to', 'battwo.com', 'batotoo.com']
 
     def __init__(self) -> None:
         self.base = 'https://wto.to'

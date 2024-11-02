@@ -9,7 +9,8 @@ from core.cloudflare.application.use_cases import (
     BypassCloudflareNoCapchaUseCase, 
     BypassCloudflareNoCapchaFeachUseCase, 
     IsCloudflareBlockingTimeOutUseCase, 
-    IsCloudflareEnableCookies
+    IsCloudflareEnableCookies,
+    IsCloudflareBlockingBadGateway
 )
 
 class HttpService(Http):
@@ -55,17 +56,22 @@ class HttpService(Http):
                         if(request_data):
                             delete_request(domain)
                         data = BypassCloudflareUseCase().execute(f'https://{domain}')
-                        insert_request(RequestData(domain=domain, headers=data.user_agent, cookies=data.cloudflare_cookie_value))
+                        if(data.cloudflare_cookie_value):
+                            insert_request(RequestData(domain=domain, headers=data.user_agent, cookies=data.cloudflare_cookie_value))
+                        else:
+                            content = BypassCloudflareNoCapchaUseCase().execute(url)
+                            if content and not IsCloudflareBlockingBadGateway().execute(content):
+                                return Response(200, 'a', content, url)
                 elif IsCloudflareEnableCookies().execute(response.text):
                     content = BypassCloudflareNoCapchaFeachUseCase().execute(f'https://{domain}', url)
                     if content:
                         return Response(200, 'a', content, url)
                 else:
-                        content = BypassCloudflareNoCapchaUseCase().execute(url)
-                        if(not IsCloudflareBlockingTimeOutUseCase().execute(content)):
-                            return Response(200, content, content, url)
-                        else:
-                            sleep(30)
+                    content = BypassCloudflareNoCapchaUseCase().execute(url)
+                    if(not IsCloudflareBlockingTimeOutUseCase().execute(content)):
+                        return Response(200, content, content, url)
+                    else:
+                        sleep(30)
             elif status not in range(200, 299) and not 403 and not 429:
                 print(f"<stroke style='color:#add8e6;'>[REQUEST]:</stroke> <span style='color:#add8e6;'>GET</span> <span style='color:red;'>{status}</span> <a href='#'>{url}</a>")
                 sleep(1)

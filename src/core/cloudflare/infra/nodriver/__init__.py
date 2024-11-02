@@ -31,6 +31,15 @@ class Cloudflare(BypassRepository):
         
         return False
     
+    def is_cloudflare_bad_gatway(self, html: str) -> bool:
+        soup = BeautifulSoup(html, 'html.parser')
+
+        title = soup.title.string if soup.title else ""
+        if "Bad gateway" in title:
+            return True
+        
+        return False
+        
     def is_cloudflare_enable_cookies(self, html: str) -> bool:
         soup = BeautifulSoup(html, 'html.parser')
 

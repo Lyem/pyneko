@@ -127,7 +127,8 @@ class NewTokiProvider(Base):
                 break
         try:
             soup = BeautifulSoup(content, 'html.parser')
-            imgs = soup.select('p > img')
+            div = soup.select('div.view-padding')[1]
+            imgs = div.select('img')
             pattern = r'https://img[^\s"]+'
             imgs = re.findall(pattern, str(imgs))
             for img in imgs:

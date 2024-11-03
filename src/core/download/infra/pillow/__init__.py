@@ -14,7 +14,7 @@ Image.MAX_IMAGE_PIXELS = 933120000
 class PillowDownloadRepository(DownloadRepository):
 
     def download(self, pages: Pages, fn=None, headers=None, cookies=None) -> Chapter:
-        title = sanitize_folder_name(title)
+        title = sanitize_folder_name(pages.name)
         config = get_config()
         img_path = config.save
         path = os.path.join(img_path, str(title), str(sanitize_folder_name(pages.number)))

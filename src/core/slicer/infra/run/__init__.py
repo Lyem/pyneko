@@ -11,7 +11,7 @@ from core.slicer.infra.detectors import select_detector
 from core.download.domain.dowload_entity import Chapter
 from core.slicer.infra.utils.constants import WIDTH_ENFORCEMENT
 from core.slicer.infra.services import ImageHandler, ImageManipulator
-import tempfile
+from core.__seedwork.infra.utils.saniteze_folder import sanitize_folder_name
 
 class SmartStitch():
     def run(self, ch: Chapter, fn = None) -> Chapter:
@@ -57,13 +57,13 @@ class SmartStitch():
             imgs = img_manipulator.slice(combined_img, slice_points)
             for img in imgs:
                 filename=img_handler.save(
-                    str(Path.joinpath(Path(tempfile.gettempdir()), 'pyneko', Path(ch.files[0]).parent.parent.name, f'{ch.number} [stitched]')),
+                    str(Path.joinpath(Path(tempfile.gettempdir()), 'pyneko', Path(ch.files[0]).parent.parent.name, f'{sanitize_folder_name(ch.number)} [stitched]')),
                     img,
                     img_iteration,
                     img_format=conf.img,
                     quality=100,
                 )
-                files.append(str(Path.joinpath(Path(tempfile.gettempdir()), 'pyneko', Path(ch.files[0]).parent.parent.name, f'{ch.number} [stitched]', filename)))
+                files.append(str(Path.joinpath(Path(tempfile.gettempdir()), 'pyneko', Path(ch.files[0]).parent.parent.name, f'{sanitize_folder_name(ch.number)} [stitched]', filename)))
                 img_iteration += 1
 
             if fn != None:
@@ -81,9 +81,9 @@ class SmartStitch():
         files = []
         img_iteration = 1
         imgs = img_manipulator.slice(combined_img, slice_points)
-        path = str(Path.joinpath(Path(ch.files[0]).parent.parent, f'{ch.number} [stitched]'))
+        path = str(Path.joinpath(Path(ch.files[0]).parent.parent, f'{sanitize_folder_name(ch.number)} [stitched]'))
         if conf.slice_replace_original_files:
-            path = str(Path.joinpath(Path(ch.files[0]).parent.parent, f'{ch.number}'))
+            path = str(Path.joinpath(Path(ch.files[0]).parent.parent, f'{sanitize_folder_name(ch.number)}'))
             shutil.rmtree(path)
         for i, img in enumerate(imgs):
             filename=img_handler.save(
@@ -98,7 +98,7 @@ class SmartStitch():
             files.append(str(Path.joinpath(Path(path), filename)))
             img_iteration += 1
         
-        shutil.rmtree(Path.joinpath(Path(tempfile.gettempdir()), 'pyneko', Path(ch.files[0]).parent.parent.name, f'{ch.number} [stitched]'))
+        shutil.rmtree(Path.joinpath(Path(tempfile.gettempdir()), 'pyneko', Path(ch.files[0]).parent.parent.name, f'{sanitize_folder_name(ch.number)} [stitched]'))
 
         gc.collect()
 

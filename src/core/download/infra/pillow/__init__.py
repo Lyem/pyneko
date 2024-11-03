@@ -8,16 +8,16 @@ from core.__seedwork.infra.http import Http
 from core.providers.domain.page_entity import Pages
 from core.download.domain.dowload_entity import Chapter
 from core.download.domain.dowload_repository import DownloadRepository
+from core.__seedwork.infra.utils.saniteze_folder import sanitize_folder_name
 Image.MAX_IMAGE_PIXELS = 933120000
 
 class PillowDownloadRepository(DownloadRepository):
 
     def download(self, pages: Pages, fn=None, headers=None, cookies=None) -> Chapter:
-        title = (pages.name[:20]) if len(pages.name) > 20 else pages.name
-        title = re.sub(r'[^\w&áàâãéèêíïóôõöúçñÁÀÂÃÉÈÊÍÏÓÔÕÖÚÇÑ-가-힣一-龯ぁ-ん]', '', title)
+        title = sanitize_folder_name(title)
         config = get_config()
         img_path = config.save
-        path = os.path.join(img_path, str(title), str(pages.number))
+        path = os.path.join(img_path, str(title), str(sanitize_folder_name(pages.number)))
         os.makedirs(path, exist_ok=True)
         img_format = config.img
 

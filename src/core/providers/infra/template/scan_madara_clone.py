@@ -14,6 +14,7 @@ from core.config.img_conf import get_config
 from core.providers.infra.template.base import Base
 from core.providers.domain.entities import Chapter, Pages, Manga
 from core.download.domain.dowload_entity import Chapter as DChapter
+from core.__seedwork.infra.utils.saniteze_folder import sanitize_folder_name
 Image.MAX_IMAGE_PIXELS = 933120000
 
 class ScanMadaraClone(Base):
@@ -55,12 +56,11 @@ class ScanMadaraClone(Base):
         
     
     def download(self, pages: Pages, fn: any, headers=None, cookies=None):
-        title = (pages.name[:20]) if len(pages.name) > 20 else pages.name
-        title = re.sub(r'[^\w&áàâãéèêíïóôõöúçñÁÀÂÃÉÈÊÍÏÓÔÕÖÚÇÑ-가-힣一-龯ぁ-ん]', '', title)
+        title = sanitize_folder_name(pages.name)
         config = get_config()
         img_path = config.save
         path = os.path.join(img_path,
-                            str(title), str(pages.number))
+                            str(title), str(sanitize_folder_name(pages.number)))
         os.makedirs(path, exist_ok=True)
         img_format = config.img
         files = []

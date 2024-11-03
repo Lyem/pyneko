@@ -131,7 +131,11 @@ class NewTokiProvider(Base):
             imgs = div.select('img')
             pattern = r'https://img[^\s"]+'
             imgs = re.findall(pattern, str(imgs))
+            unique_urls = []
             for img in imgs:
+                if img not in unique_urls:
+                    unique_urls.append(img)
+            for img in unique_urls:
                 list.append(img)
         except Exception as e:
             print(e)

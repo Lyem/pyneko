@@ -20,19 +20,19 @@ from GUI_qt.load_providers import import_classes_recursively, base_path
 from PyQt6.QtCore import QRunnable, QThreadPool, pyqtSignal, QObject, QLocale, QThread
 from GUI_qt.config import get_config, update_lang, update_progress, update_max_download, update_log
 from core.providers.application.use_cases import ProviderMangaUseCase, ProviderGetChaptersUseCase, ProviderGetPagesUseCase, ProviderDownloadUseCase
-from PyQt6.QtWidgets import QApplication, QMessageBox, QSpacerItem, QSizePolicy, QApplication, QGroupBox, QVBoxLayout, QHBoxLayout, QLabel, QProgressBar, QWidget
+from PyQt6.QtWidgets import QApplication, QMessageBox, QSpacerItem, QSizePolicy, QApplication, QGroupBox, QVBoxLayout, QHBoxLayout, QLabel, QProgressBar, QFileDialog, QWidget
 from core.config.img_conf import (
-    get_config as get_img_config, 
-    update_img, update_save, 
-    update_automatic_width, 
-    update_custom_width, 
-    update_detection_sensitivity, 
-    update_detection_type, 
-    update_group, 
-    update_group_format, 
-    update_ignorable_pixels, 
-    update_scan_line_step, 
-    update_slice, 
+    get_config as get_img_config,
+    update_img, update_save,
+    update_automatic_width,
+    update_custom_width,
+    update_detection_sensitivity,
+    update_detection_type,
+    update_group,
+    update_group_format,
+    update_ignorable_pixels,
+    update_scan_line_step,
+    update_slice,
     update_split_height,
     update_slice_replace_original_files,
     update_group_replace_original_files
@@ -59,17 +59,17 @@ class DownloadRunnable(QRunnable):
             conf = get_config()
             pages = ProviderGetPagesUseCase(self.provider).execute(self.ch)
             translations = {}
-            
+
             with open(os.path.join(self.assets, 'translations.json'), 'r', encoding='utf-8') as file:
                 translations = json.load(file)
-            
+
             language = conf.lang
             if language not in translations:
                 language = 'en'
-            
+
             translation = translations[language]
             self.signals.name.emit(translation['downloading'])
-            
+
             def set_progress_bar_style(color):
                 self.signals.color.emit(f"""
                     QProgressBar {{
@@ -87,22 +87,22 @@ class DownloadRunnable(QRunnable):
             set_progress_bar_style("#32CD32")
             def update_progress_bar(value):
                 self.signals.progress_changed.emit(int(value))
-            
+
             ch = ProviderDownloadUseCase(self.provider).execute(pages=pages, fn=update_progress_bar)
-            
+
             if img_conf.slice:
                 self.signals.name.emit(translation['slicing'])
                 self.signals.progress_changed.emit(0)
                 set_progress_bar_style("#0080FF")
                 ch = SlicerUseCase().execute(ch, update_progress_bar)
-            
+
             if img_conf.group:
                 self.signals.name.emit(translation['grouping'])
                 self.signals.progress_changed.emit(0)
                 set_progress_bar_style("#FFA500")
                 GroupImgsUseCase().execute(ch, update_progress_bar)
                 self.signals.progress_changed.emit(100)
-        
+
         except Exception as e:
             set_progress_bar_style("red")
             self.signals.download_error.emit(f'{self.ch.name} \n {self.ch.number} \n {str(e)}')
@@ -135,7 +135,7 @@ class MangaTask(QRunnable):
             self.signal.finished.emit(manga)
         except Exception as e:
             self.signal.error.emit(str(e))
-        
+
 
 class ChaptersTaskSignals(QObject):
     finished = pyqtSignal(object)
@@ -180,7 +180,6 @@ class MangaDownloaderApp:
         self.window.link.clicked.connect(self.manga_by_link)
         self.window.invert.clicked.connect(self.invert_chapters)
         self.window.search.textChanged.connect(self.filter_chapters)
-        self.window.path.textChanged.connect(self.setPath)
         self.window.simul_qtd.textChanged.connect(self.setMaxDownload)
         self.window.dev_check.stateChanged.connect(self.toogle_log)
         self.window.group_imgs.toggled.connect(self.toogle_group_img)
@@ -200,6 +199,8 @@ class MangaDownloaderApp:
         self.window.slicer_detection_sensivity.textChanged.connect(self.setSlicerDetectionSensivity)
         self.window.slicer_scan_line.textChanged.connect(self.setSlicerScanLine)
         self.window.slicer_ignorable_margin.textChanged.connect(self.setSlicerIgnorableHorizontalMargin)
+        self.window.setSaveFolder.clicked.connect(self.setFolder)
+
 
         self.websites_window = None
 
@@ -208,12 +209,12 @@ class MangaDownloaderApp:
         self.initial_data = True
         self.langChanged()
         self.imgFormatChanged()
-        self.setPath()
         conf = get_config()
+        self.setFolder()
 
         if conf.progress:
             self.window.progress_scroll.show()
-        
+
         self.init_log = False
 
         if not conf.log and os.environ.get('PYNEKOENV') != 'dev':
@@ -222,7 +223,7 @@ class MangaDownloaderApp:
             self.init_log = True
             self.window.dev_check.setChecked(True)
             self.log_window = LogWindow()
-        
+
         data = get_img_config()
         self.window.group_imgs.setChecked(data.group)
         self.window.slicer_box.setChecked(data.slice)
@@ -256,24 +257,35 @@ class MangaDownloaderApp:
             self.window.slicer_ignorable_margin_label.hide()
             self.window.slicer_ignorable_margin.hide()
         self.initial_data = False
-        
+
         self.pool = QThreadPool.globalInstance()
         self.pool.setMaxThreadCount(conf.max_download)
         self.window.simul_qtd.setValue(conf.max_download)
         self.pool2 = QThreadPool()
         self.pool2.setMaxThreadCount(1)
 
-    
+
     def run(self):
         sys.exit(self.app.exec())
-    
+
+
+    def setFolder(self):
+        data = get_img_config()
+        if not self.initial_data:
+            folder_path = QFileDialog.getExistingDirectory(self.window, "Select Folder", data.save)
+            if folder_path:
+                update_save(folder_path)
+                self.window.path.setText(folder_path)
+        else:
+            self.window.path.setText(data.save)
+
     def chapter_download_button_clicked(self, ch: Chapter, download_button):
         download_button.setEnabled(False)
 
         runnable = DownloadRunnable(ch, self.provider_selected)
         self.download_status.append((ch, self.provider_selected, runnable))
         self._load_progress()
-    
+
     def _add_chapters(self):
         while self.window.verticalChapter.count():
             item = self.window.verticalChapter.takeAt(0)
@@ -296,7 +308,7 @@ class MangaDownloaderApp:
             chapter_ui.download.setText(download_text)
             self.window.verticalChapter.addWidget(chapter_ui)
         self.window.verticalChapter.addItem(self.vertical_spacer)
-    
+
     def filter_chapters(self):
         text = self.window.search.text()
         if(text != ''):
@@ -304,11 +316,11 @@ class MangaDownloaderApp:
         else:
             self.chapters = self.all_chapters
         self._add_chapters()
-    
+
     def invert_chapters(self):
         self.chapters = self.chapters[::-1]
         self._add_chapters()
-    
+
     def set_chapter(self, chapters: List[Chapter]):
         self.chapters = chapters
         self.all_chapters = chapters
@@ -322,11 +334,11 @@ class MangaDownloaderApp:
         chapter_task.signal.finished.connect(self.set_chapter)
         chapter_task.signal.error.connect(self._manga_by_link_error)
         self.pool2.start(chapter_task)
-    
+
     def _manga_by_link_error(self, msg: str):
         self.window.pages.setCurrentIndex(0)
         QMessageBox.critical(None, "Erro", str(msg))
-    
+
     def manga_by_link(self):
         link = get()
         extract_info = extract(link)
@@ -361,7 +373,7 @@ class MangaDownloaderApp:
             msg.setWindowTitle(translate['error'])
             msg.setText(f"{translate['404_provider']} <span style='color:red;'>{domain}</span> {translate['404_provider2']}")
             msg.exec()
-    
+
     def download_all_chapters(self):
         if self.manga_id_selectd is None:
             return
@@ -379,14 +391,14 @@ class MangaDownloaderApp:
 
         self._load_progress()
         self._add_chapters()
-    
+
     def _load_progress(self):
         for download in self.download_status:
             ch, provider, runnable = download
 
             groupbox = self.window.findChild(QGroupBox, f'groupboxprovider{provider.name}')
             layout = self.window.findChild(QVBoxLayout, f"layoutprovider{provider.name}")
-            if groupbox is None: 
+            if groupbox is None:
                 groupbox = QGroupBox()
                 groupbox.setTitle(provider.name)
                 groupbox.setObjectName(f'groupboxprovider{provider.name}')
@@ -444,18 +456,18 @@ class MangaDownloaderApp:
                     if isinstance(item, QSpacerItem):
                         layout.removeItem(item)
                 layout.addItem(QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))
-    
+
     def imgFormatChanged(self, img=None):
         if not img:
             data = get_img_config()
             self.window.format_img.setCurrentText(data.img)
         else:
             update_img(img)
-    
+
     def groupImgsComboChanged(self, img=None):
         if img:
             update_group_format(img)
-    
+
     def groupDetectionTypeChanged(self, model=None):
         if not self.initial_data:
             if model:
@@ -476,7 +488,7 @@ class MangaDownloaderApp:
                     self.window.slicer_scan_line.hide()
                     self.window.slicer_ignorable_margin_label.hide()
                     self.window.slicer_ignorable_margin.hide()
-    
+
     def groupSlicerWidthComboChanged(self, model=None):
         if not self.initial_data:
             if model:
@@ -493,20 +505,12 @@ class MangaDownloaderApp:
                     update_automatic_width(False)
                     self.window.slicer_width_spin_label.show()
                     self.window.slicer_width_spin.show()
-    
-    def setPath(self):
-        path = self.window.path.text()
-        if not path:
-            data = get_img_config()
-            self.window.path.setText(data.save)
-        else:
-            update_save(path)
 
     def setMaxDownload(self):
         max_qtd = int(self.window.simul_qtd.text())
         update_max_download(max_qtd)
         self.pool.setMaxThreadCount(max_qtd)
-    
+
     def setSlicerHeight(self):
         slicer_height = int(self.window.slicer_height.text())
         update_split_height(slicer_height)
@@ -514,11 +518,11 @@ class MangaDownloaderApp:
     def setSlicerWidth(self):
         slicer_width = int(self.window.slicer_width_spin.text())
         update_custom_width(slicer_width)
-    
+
     def setSlicerDetectionSensivity(self):
         sensivity = int(self.window.slicer_detection_sensivity.text())
         update_detection_sensitivity(sensivity)
-    
+
     def setSlicerScanLine(self):
         scan_line = int(self.window.slicer_scan_line.text())
         update_scan_line_step(scan_line)
@@ -526,7 +530,7 @@ class MangaDownloaderApp:
     def setSlicerIgnorableHorizontalMargin(self):
         margin = int(self.window.slicer_ignorable_margin.text())
         update_ignorable_pixels(margin)
-    
+
     def open_folder(self):
         path = get_img_config().save
         if sys.platform.startswith('win'):
@@ -581,37 +585,37 @@ class MangaDownloaderApp:
         self.window.slicer_detector_label.setText(translation['detector_type'])
         self.window.slicer_width_select.clear()
         self.window.slicer_width_select.addItems([
-            translation['no_enforcement'], 
-            translation['automatic_uniform_width'], 
+            translation['no_enforcement'],
+            translation['automatic_uniform_width'],
             translation['user_customized_width']
         ])
         self.window.slicer_detector_select.clear()
         self.window.slicer_detector_select.addItems([
-            translation['smart_pixel'], 
-            translation['direct_slicing'], 
+            translation['smart_pixel'],
+            translation['direct_slicing'],
         ])
         self.window.slicer_detection_sensivity_label.setText(translation['detection_sensitivity'])
         self.window.slicer_scan_line_label.setText(translation['scan_line_step'])
         self.window.slicer_ignorable_margin_label.setText(translation['ignore_horizontal_margins'])
         self.window.replaceslicecheckBox.setText(translation['overwrite'])
         self.window.replacegroupcheckBox.setText(translation['overwrite'])
-    
+
     def toogle_group_img(self, checked):
         if not self.initial_data:
             update_group(checked)
-    
+
     def toogle_group_slice(self, checked):
         if not self.initial_data:
             update_slice(checked)
-    
+
     def toogle_group_replace(self, checked):
         if not self.initial_data:
             update_group_replace_original_files(checked)
-    
+
     def toogle_slice_replace(self, checked):
         if not self.initial_data:
             update_slice_replace_original_files(checked)
-    
+
     def toogle_log(self):
         if not self.init_log:
             if self.window.logs.isHidden():
@@ -624,7 +628,7 @@ class MangaDownloaderApp:
                 update_log(False)
         else:
             self.init_log = False
-    
+
     def open_progress_window(self):
         if self.window.progress_scroll.isHidden():
             self.window.progress_scroll.show()
@@ -633,19 +637,19 @@ class MangaDownloaderApp:
             self.window.progress_scroll.hide()
             update_progress(False)
 
-    def open_log_window(self):    
+    def open_log_window(self):
         self.log_window.show()
-    
+
     def open_config(self):
         self.window.pages.setCurrentIndex(2)
-    
+
     def open_home(self):
         self.window.pages.setCurrentIndex(0)
 
     def open_websites(self):
         if self.websites_window is None:
             self.websites_window = WebSiteOpener(self.providers)
-        
+
         self.websites_window.show()
 
 if __name__ == "__main__":

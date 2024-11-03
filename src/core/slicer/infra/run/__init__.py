@@ -11,7 +11,7 @@ from core.slicer.infra.detectors import select_detector
 from core.download.domain.dowload_entity import Chapter
 from core.slicer.infra.utils.constants import WIDTH_ENFORCEMENT
 from core.slicer.infra.services import ImageHandler, ImageManipulator
-from core.__seedwork.infra.utils.saniteze_folder import sanitize_folder_name
+from core.__seedwork.infra.utils.sanitize_folder import sanitize_folder_name
 
 class SmartStitch():
     def run(self, ch: Chapter, fn = None) -> Chapter:

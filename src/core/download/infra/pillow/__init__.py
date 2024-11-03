@@ -8,7 +8,7 @@ from core.__seedwork.infra.http import Http
 from core.providers.domain.page_entity import Pages
 from core.download.domain.dowload_entity import Chapter
 from core.download.domain.dowload_repository import DownloadRepository
-from core.__seedwork.infra.utils.saniteze_folder import sanitize_folder_name
+from core.__seedwork.infra.utils.sanitize_folder import sanitize_folder_name
 Image.MAX_IMAGE_PIXELS = 933120000
 
 class PillowDownloadRepository(DownloadRepository):

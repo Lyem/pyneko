@@ -5,7 +5,7 @@ from PIL import Image
 from pathlib import Path
 from core.config.img_conf import get_config
 from core.download.domain.dowload_entity import Chapter
-from core.__seedwork.infra.utils.saniteze_folder import sanitize_folder_name
+from core.__seedwork.infra.utils.sanitize_folder import sanitize_folder_name
 Image.MAX_IMAGE_PIXELS = 933120000
 
 class GroupImages():

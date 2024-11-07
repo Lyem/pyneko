@@ -39,6 +39,15 @@ class Cloudflare(BypassRepository):
             return True
         
         return False
+    
+    def is_cloudflare_attention(self, html: str) -> bool:
+        soup = BeautifulSoup(html, 'html.parser')
+
+        title = soup.title.string if soup.title else ""
+        if "Attention Required! | Cloudflare" in title:
+            return True
+        
+        return False
         
     def is_cloudflare_enable_cookies(self, html: str) -> bool:
         soup = BeautifulSoup(html, 'html.parser')
@@ -55,13 +64,6 @@ class Cloudflare(BypassRepository):
         async def get_cloudflare_cookie():
             nonlocal headers, cookies
             browser = await uc.start(
-                browser_args=[
-                    '--window-size=600,600', 
-                    f'--app={url}',
-                    '--disable-extensions', 
-                    '--disable-popup-blocking'
-                    '--no-sandbox'
-                ],
                 browser_executable_path=find_chrome_executable(),
             )
             page = await browser.get(url)
@@ -89,12 +91,6 @@ class Cloudflare(BypassRepository):
             extract = tldextract.extract(url)
             onlydomain = f"{extract.domain}.{extract.suffix}"
             browser = await uc.start(
-                browser_args=[
-                    '--window-size=600,600', 
-                    f'--app={url}',
-                    '--disable-extensions', 
-                    '--disable-popup-blocking'
-                ],
                 browser_executable_path=None
             )
             page = await browser.get(url)
@@ -140,12 +136,6 @@ class Cloudflare(BypassRepository):
             extract = tldextract.extract(domain)
             onlydomain = f"{extract.domain}.{extract.suffix}"
             browser = await uc.start(
-                browser_args=[
-                    '--window-size=600,600', 
-                    f'--app={domain}',
-                    '--disable-extensions', 
-                    '--disable-popup-blocking'
-                ],
                 browser_executable_path=None,
                 headless=background
             )
@@ -172,6 +162,69 @@ class Cloudflare(BypassRepository):
                     else:
                         fetch_content = await page.evaluate(f'''
                             fetch("{url}")''' + '''.then(response => response.arrayBuffer()).then(buffer => {
+                                let binary = '';
+                                let bytes = new Uint8Array(buffer);
+                                let len = bytes.byteLength;
+                                for (let i = 0; i < len; i++) {
+                                    binary += String.fromCharCode(bytes[i]);
+                                }
+                                return btoa(binary);
+                            });
+                        ''', await_promise=True)
+                        if cloudflare:
+                            request_data = get_request(onlydomain)
+                            if(request_data):
+                                delete_request(onlydomain)
+                            agent = await page.evaluate('navigator.userAgent')
+                            headers = { 'user-agent': agent }
+                            cookiesB = await browser.cookies.get_all()
+                            cookies={}
+                            for cookie in cookiesB:
+                                if(cookie.name == 'cf_clearance'):
+                                    cookies = {'cf_clearance': cookie.value}
+                            insert_request(RequestData(domain=onlydomain, headers=headers, cookies=cookies))
+                        content = base64.b64decode(fetch_content)
+                        break
+                except Exception as e:
+                    print(e)
+            browser.stop()
+        uc.loop().run_until_complete(get_cloudflare_cookie())
+        return content
+
+    def bypass_cloudflare_no_capcha_post(self, domain: str, url: str, background = False) -> any:
+        content={}
+        async def get_cloudflare_cookie():
+            nonlocal content
+            cloudflare = False
+            extract = tldextract.extract(domain)
+            onlydomain = f"{extract.domain}.{extract.suffix}"
+            browser = await uc.start(
+                browser_executable_path=None,
+                headless=background
+            )
+            page = await browser.get(domain)
+            request_data = get_request(onlydomain)
+            if(request_data):
+                re = request_data
+                if(re.cookies):
+                    await page.evaluate(f'document.cookie = "cf_clearance={re.cookies['cf_clearance']}; path=/; max-age=3600; secure; samesite=strict";')
+                    await page.reload()
+                    cloudflare = False
+            while(True):
+                try:
+                    page = await browser.get(domain)
+                    page_content = await page.get_content()
+                    soup = BeautifulSoup(page_content, 'html.parser')
+                    head = soup.find('head')
+                    if self.is_cloudflare_blocking(page_content):
+                        cloudflare = True
+                        sleep(1)
+                    elif head and not head.contents:
+                        content = None
+                        break
+                    else:
+                        fetch_content = await page.evaluate(f'''
+                            fetch("{url}", {{method: "POST"}})''' + '''.then(response => response.arrayBuffer()).then(buffer => {
                                 let binary = '';
                                 let bytes = new Uint8Array(buffer);
                                 let len = bytes.byteLength;

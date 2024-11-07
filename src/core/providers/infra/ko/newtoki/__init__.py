@@ -18,8 +18,16 @@ class NewTokiProvider(Base):
     domain = [re.compile(r'^newtoki\d*\.com$')]
     
     def getManga(self, link: str) -> Manga:
+        content={}
         response = Http.get(link)
-        soup = BeautifulSoup(response.content, 'html.parser')
+        if self._is_capcha(response.content):
+            while(True):
+                content = self.bypass_capcha(link)
+                if content:
+                    break
+        else:
+            content = response.content
+        soup = BeautifulSoup(content, 'html.parser')
         title = soup.select_one('div.col-sm-8')
         title = title.select_one('div.view-content')
         title = title.select_one('span')
@@ -27,8 +35,16 @@ class NewTokiProvider(Base):
         return Manga(link, title)
 
     def getChapters(self, id: str) -> List[Chapter]:
+        content={}
         response = Http.get(id)
-        soup = BeautifulSoup(response.content, 'html.parser')
+        if self._is_capcha(response.content):
+            while(True):
+                content = self.bypass_capcha(id)
+                if content:
+                    break
+        else:
+            content = response.content
+        soup = BeautifulSoup(content, 'html.parser')
         title = soup.select_one('div.col-sm-8')
         title = title.select_one('div.view-content')
         title = title.select_one('span')

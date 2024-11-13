@@ -25,7 +25,7 @@ class NorteRoseProvider(WordPressMadara):
         ua = UserAgent()
         user = ua.chrome
         self.user = ua.chrome
-        self.headers = {'host': 'norterose.com.br', 'Cookie': 'visited=true; wpmanga-reading-history=W3siaWQiOjQxMiwiYyI6IjI1MTYiLCJwIjoxLCJpIjoiIiwidCI6MTcxOTk2MzA1OX1d', 'user_agent': user, 'referer': f'{self.url}'}
+        self.headers = {'host': 'norterose.com.br', 'Cookie': 'visited=true; wpmanga-reading-history=W3siaWQiOjQxMiwiYyI6IjI1MTYiLCJwIjoxLCJpIjoiIiwidCI6MTcxOTk2MzA1OX1d', 'user_agent': user, 'referer': f'{self.url}/manga/'}
     
     def download(self, pages: Pages, fn: any, headers=None, cookies=None):
         if headers is not None:

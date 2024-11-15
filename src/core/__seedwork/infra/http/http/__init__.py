@@ -124,7 +124,6 @@ class HttpService(Http):
 
             response = scraper.post(url, data=data, json=json, headers=headers, cookies=cookies, timeout=None, **kwargs)
             status = response.status_code
-            print(f'[no-render] {response.text}')
 
             if response.status_code == 403:
                 print(f"<stroke style='color:#add8e6;'>[REQUEST] POST:</stroke> <span style='color:#add8e6;'>POST</span> <span style='color:#FFFF00;'>{status}</span> <a href='#'>{url}</a>")

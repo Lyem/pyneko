@@ -112,7 +112,7 @@ class WordPressMadara(Base):
             raise Exception('No chapters found (old ajax endpoint)!')
 
     def _get_chapters_ajax(self, manga_id):
-        uri = urljoin(self.url, f'{manga_id}ajax/chapters/')
+        uri = urljoin(self.url, f'{manga_id}/ajax/chapters/')
         response = Http.post(uri)
         data = self._fetch_dom(response, self.query_chapters)
         if data:

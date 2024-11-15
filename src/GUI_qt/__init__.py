@@ -310,11 +310,32 @@ class MangaDownloaderApp:
         self.window.verticalChapter.addItem(self.vertical_spacer)
 
     def filter_chapters(self):
-        text = self.window.search.text()
-        if(text != ''):
-            self.chapters = list(filter(lambda chapter: str(chapter.number).find(text)  != -1, self.all_chapters))
-        else:
+        def extract_number(chapter_number):
+            match = re.search(r'\d+(\.\d+)?', chapter_number)
+            return float(match.group()) if match else None
+
+        text = self.window.search.text().strip()
+        if not text:
             self.chapters = self.all_chapters
+            self._add_chapters()
+            return
+
+        try:
+            if match := re.match(r'(\d+(\.\d+)?)\*', text):
+                number = float(match.group(1))
+                self.chapters = [chapter for chapter in self.all_chapters if (extracted := extract_number(chapter.number)) is not None and extracted >= number]
+
+            elif match := re.match(r'(\d+(\.\d+)?)-(\d+(\.\d+)?)', text):
+                start, end = float(match.group(1)), float(match.group(3))
+                self.chapters = [chapter for chapter in self.all_chapters if (extracted := extract_number(chapter.number)) is not None and start <= extracted <= end]
+
+            else:
+                self.chapters = [chapter for chapter in self.all_chapters if text in chapter.number]
+
+        except ValueError as e:
+            print(f"Error: {e}")
+            self.chapters = []
+
         self._add_chapters()
 
     def invert_chapters(self):

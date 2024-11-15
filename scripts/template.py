@@ -21,15 +21,16 @@ def get_message(key, lang='en'):
 
 templates = [
     {'name': 'Madara', 'template': 'wordpress_madara.py.jinja', 'variables': [
-        {'name': 'Link do site', 'value': 'link'},
     ]},
     {'name': 'Base', 'template': 'base.py.jinja', 'variables': []},
     {'name': 'Manga Reader CMS', 'template': 'manga_reader_cms.py.jinja', 'variables': [
         {'name': 'Link do site', 'value': 'link'},
     ]},
+        {'name': 'Link do site', 'value': 'link'},
     {'name': 'Scan Madara Clone', 'template': 'scan_madara_clone.py.jinja', 'variables': [
         {'name': 'Link do site', 'value': 'link'},
-    ]}
+    ]},
+    {'name': 'Wordpress Etoshore Manga Theme', 'template': 'wordpress_etoshore_manga_theme.py.jinja', 'variables': []}
 ]
 
 providers = os.path.join(Path('.') / 'src', 'core', 'providers', 'infra')

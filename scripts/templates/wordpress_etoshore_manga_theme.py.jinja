@@ -1,9 +1,9 @@
 from core.providers.infra.template.wordpress_etoshore_manga_theme import WordpressEtoshoreMangaTheme
 
-class CrystalComicsProvider(WordpressEtoshoreMangaTheme):
-    name = 'Crystal Comics'
-    lang = 'pt_Br'
-    domain = ['crystalcomics.com']
+class {{class}}Provider(WordpressEtoshoreMangaTheme):
+    name = '{{ name }}'
+    lang = '{{lang}}'
+    domain = ['{{domain}}']
 
     def __init__(self) -> None:
         self.get_title = 'h1'

@@ -33,7 +33,6 @@ class ApenasUmaFaProvider(Base):
 
     def getPages(self, ch: Chapter) -> Pages:
         response = Http.get(ch.id)
-        print(response.content)
         soup = BeautifulSoup(response.content, 'html.parser')
         pages_div = soup.select_one('div.i_img')
         imgs = pages_div.select('img')

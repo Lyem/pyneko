@@ -43,7 +43,8 @@
         "overwrite": "Overwrite",
         "downloading": "Downloading:",
         "slicing": "Slicing:",
-        "grouping": "Grouping:"
+        "grouping": "Grouping:",
+        "external": "External providers"
     },
     "pt_BR": {
         "websites": "Sites",
@@ -89,7 +90,8 @@
         "overwrite": "Sobrescrever",
         "downloading": "Baixando:",
         "slicing": "Fatiando:",
-        "grouping": "Agrupando:"
+        "grouping": "Agrupando:",
+        "external": "Provedores externos"
     },
     "es": {
         "websites": "Sitios web",
@@ -135,7 +137,8 @@
         "overwrite": "Sobrescribir",
         "downloading": "Descargando:",
         "slicing": "Cortando:",
-        "grouping": "Agrupando:"
+        "grouping": "Agrupando:",
+        "external": "Proveedores externos"
     },
     "fr": {
         "websites": "Sites web",
@@ -181,7 +184,8 @@
         "overwrite": "Écraser",
         "downloading": "Téléchargement:",
         "slicing": "Découpe:",
-        "grouping": "Regroupement:"
+        "grouping": "Regroupement:",
+        "external": "Fournisseurs externes"
     },
     "de": {
         "websites": "Websites",
@@ -227,7 +231,8 @@
         "overwrite": "Überschreiben",
         "downloading": "Herunterladen:",
         "slicing": "Schneiden:",
-        "grouping": "Gruppieren:"
+        "grouping": "Gruppieren:",
+        "external": "Externe Anbieter"
     },
     "it": {
         "websites": "Siti Web",
@@ -273,7 +278,8 @@
         "overwrite": "Sovrascrivere",
         "downloading": "Scaricamento:",
         "slicing": "Taglio:",
-        "grouping": "Raggruppamento:"
+        "grouping": "Raggruppamento:",
+        "external": "Fornitori esterni"
     },
     "ja": {
         "websites": "ウェブサイト",
@@ -319,7 +325,8 @@
         "overwrite": "上書き",
         "downloading": "ダウンロード中:",
         "slicing": "スライス中:",
-        "grouping": "グループ化中:"
+        "grouping": "グループ化中:",
+        "external": "外部プロバイダー"
     },
     "zh_CN": {
         "websites": "网站",
@@ -365,7 +372,8 @@
         "overwrite": "覆盖",
         "downloading": "下载中:",
         "slicing": "切片中:",
-        "grouping": "分组中:"
+        "grouping": "分组中:",
+        "external": "外部提供商"
     },
     "ru": {
         "websites": "Веб-сайты",
@@ -411,7 +419,8 @@
         "overwrite": "Перезаписать",
         "downloading": "Загрузка:",
         "slicing": "Нарезка:",
-        "grouping": "Группировка:"
+        "grouping": "Группировка:",
+        "external": "Внешние поставщики"
     },
     "ar": {
         "websites": "مواقع",
@@ -457,6 +466,7 @@
         "overwrite": "الكتابة فوق",
         "downloading": "جارٍ التحميل:",
         "slicing": "جارٍ التقطيع:",
-        "grouping": "جارٍ التجميع:"
+        "grouping": "جارٍ التجميع:",
+        "external": "مزودون خارجيون"
     }
 }

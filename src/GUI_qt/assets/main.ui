@@ -103,8 +103,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>390</width>
-               <height>380</height>
+               <width>394</width>
+               <height>350</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -125,8 +125,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>390</width>
-               <height>380</height>
+               <width>394</width>
+               <height>350</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -147,7 +147,7 @@
           <item>
            <spacer name="horizontalSpacer">
             <property name="orientation">
-             <enum>Qt::Orientation::Horizontal</enum>
+             <enum>Qt::Horizontal</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -187,7 +187,7 @@
         <item>
          <spacer name="horizontalSpacer_2">
           <property name="orientation">
-           <enum>Qt::Orientation::Horizontal</enum>
+           <enum>Qt::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -204,9 +204,6 @@
           </property>
           <item>
            <spacer name="verticalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Orientation::Vertical</enum>
-            </property>
             <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
@@ -223,7 +220,7 @@
             <item>
              <spacer name="horizontalSpacer_5">
               <property name="orientation">
-               <enum>Qt::Orientation::Horizontal</enum>
+               <enum>Qt::Horizontal</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
@@ -248,7 +245,7 @@
             <item>
              <spacer name="horizontalSpacer_6">
               <property name="orientation">
-               <enum>Qt::Orientation::Horizontal</enum>
+               <enum>Qt::Horizontal</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
@@ -275,9 +272,6 @@
           </item>
           <item>
            <spacer name="verticalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Orientation::Vertical</enum>
-            </property>
             <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
@@ -291,7 +285,7 @@
         <item>
          <spacer name="horizontalSpacer_3">
           <property name="orientation">
-           <enum>Qt::Orientation::Horizontal</enum>
+           <enum>Qt::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -317,7 +311,7 @@
           <item>
            <spacer name="horizontalSpacer_4">
             <property name="orientation">
-             <enum>Qt::Orientation::Horizontal</enum>
+             <enum>Qt::Horizontal</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -332,7 +326,7 @@
         <item>
          <widget class="Line" name="line_2">
           <property name="orientation">
-           <enum>Qt::Orientation::Vertical</enum>
+           <enum>Qt::Vertical</enum>
           </property>
          </widget>
         </item>
@@ -345,9 +339,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
-             <width>776</width>
-             <height>755</height>
+             <y>-479</y>
+             <width>779</width>
+             <height>994</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -540,17 +534,11 @@
                </layout>
               </item>
               <item>
-               <widget class="Line" name="line_5">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>20</height>
-                 </size>
+               <layout class="QVBoxLayout" name="verticalLayout_17">
+                <property name="topMargin">
+                 <number>20</number>
                 </property>
-                <property name="orientation">
-                 <enum>Qt::Orientation::Vertical</enum>
-                </property>
-               </widget>
+               </layout>
               </item>
               <item>
                <widget class="QGroupBox" name="group_imgs">
@@ -592,17 +580,11 @@
                </widget>
               </item>
               <item>
-               <widget class="Line" name="line">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>20</height>
-                 </size>
+               <layout class="QVBoxLayout" name="verticalLayout_16">
+                <property name="topMargin">
+                 <number>20</number>
                 </property>
-                <property name="orientation">
-                 <enum>Qt::Orientation::Vertical</enum>
-                </property>
-               </widget>
+               </layout>
               </item>
               <item>
                <widget class="QGroupBox" name="slicer_box">
@@ -804,17 +786,73 @@
                </widget>
               </item>
               <item>
-               <widget class="Line" name="line_3">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>20</height>
-                 </size>
+               <layout class="QVBoxLayout" name="verticalLayout_14">
+                <property name="topMargin">
+                 <number>20</number>
                 </property>
-                <property name="orientation">
-                 <enum>Qt::Orientation::Vertical</enum>
+               </layout>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="external">
+                <property name="title">
+                 <string>external providers</string>
                 </property>
+                <property name="flat">
+                 <bool>true</bool>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+                <property name="checked">
+                 <bool>false</bool>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_13">
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_11">
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="QPushButton" name="open_external_folder">
+                     <property name="text">
+                      <string>PushButton</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="selected_external">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                     <property name="readOnly">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="select_external">
+                     <property name="maximumSize">
+                      <size>
+                       <width>30</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string>...</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
                </widget>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_15">
+                <property name="topMargin">
+                 <number>20</number>
+                </property>
+               </layout>
               </item>
               <item>
                <widget class="QLabel" name="dev_label">
@@ -832,9 +870,6 @@
               </item>
               <item>
                <spacer name="verticalSpacer">
-                <property name="orientation">
-                 <enum>Qt::Orientation::Vertical</enum>
-                </property>
                 <property name="sizeHint" stdset="0">
                  <size>
                   <width>20</width>

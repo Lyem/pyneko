@@ -18,7 +18,7 @@ from core.slicer.application.use_cases import SlicerUseCase
 from core.group_imgs.application.use_cases import GroupImgsUseCase
 from GUI_qt.load_providers import import_classes_recursively, base_path
 from PyQt6.QtCore import QRunnable, QThreadPool, pyqtSignal, QObject, QLocale, QThread
-from GUI_qt.config import get_config, update_lang, update_progress, update_max_download, update_log
+from GUI_qt.config import get_config, update_lang, update_progress, update_max_download, update_log, update_external_path, update_external
 from core.providers.application.use_cases import ProviderMangaUseCase, ProviderGetChaptersUseCase, ProviderGetPagesUseCase, ProviderDownloadUseCase
 from PyQt6.QtWidgets import QApplication, QMessageBox, QSpacerItem, QSizePolicy, QApplication, QGroupBox, QVBoxLayout, QHBoxLayout, QLabel, QProgressBar, QFileDialog, QWidget
 from core.config.img_conf import (
@@ -174,6 +174,7 @@ class MangaDownloaderApp:
         self.window.progress_scroll.hide()
         self.window.logs.clicked.connect(self.open_log_window)
 
+        self.window.select_external.clicked.connect(self.set_external_path_folder)
         self.window.progress.clicked.connect(self.open_progress_window)
         self.window.websites.clicked.connect(self.open_websites)
         self.window.downloadAll.clicked.connect(self.download_all_chapters)
@@ -181,21 +182,28 @@ class MangaDownloaderApp:
         self.window.invert.clicked.connect(self.invert_chapters)
         self.window.search.textChanged.connect(self.filter_chapters)
         self.window.simul_qtd.textChanged.connect(self.setMaxDownload)
+        self.window.simul_qtd.wheelEvent = lambda event: event.ignore()
         self.window.dev_check.stateChanged.connect(self.toogle_log)
         self.window.group_imgs.toggled.connect(self.toogle_group_img)
+        self.window.external.toggled.connect(self.externalProviderChanged)
         self.window.replacegroupcheckBox.toggled.connect(self.toogle_group_replace)
         self.window.replaceslicecheckBox.toggled.connect(self.toogle_slice_replace)
         self.window.slicer_box.toggled.connect(self.toogle_group_slice)
         self.window.config.clicked.connect(self.open_config)
         self.window.open_folder.clicked.connect(self.open_folder)
+        self.window.open_external_folder.clicked.connect(self.open_external_folder)
         self.window.config_back.clicked.connect(self.open_home)
         self.window.langs.currentTextChanged.connect(self.langChanged)
+        self.window.langs.wheelEvent = lambda event: event.ignore()
         self.window.format_img.currentTextChanged.connect(self.imgFormatChanged)
+        self.window.format_img.wheelEvent = lambda event: event.ignore()
         self.window.group_imgs_combo.currentTextChanged.connect(self.groupImgsComboChanged)
         self.window.slicer_width_select.currentTextChanged.connect(self.groupSlicerWidthComboChanged)
+        self.window.slicer_width_select.wheelEvent = lambda event: event.ignore()
         self.window.slicer_height.textChanged.connect(self.setSlicerHeight)
         self.window.slicer_width_spin.textChanged.connect(self.setSlicerWidth)
         self.window.slicer_detector_select.currentTextChanged.connect(self.groupDetectionTypeChanged)
+        self.window.slicer_detector_select.wheelEvent = lambda event: event.ignore()
         self.window.slicer_detection_sensivity.textChanged.connect(self.setSlicerDetectionSensivity)
         self.window.slicer_scan_line.textChanged.connect(self.setSlicerScanLine)
         self.window.slicer_ignorable_margin.textChanged.connect(self.setSlicerIgnorableHorizontalMargin)
@@ -211,6 +219,7 @@ class MangaDownloaderApp:
         self.imgFormatChanged()
         conf = get_config()
         self.setFolder()
+        self.set_external_path_folder()
 
         if conf.progress:
             self.window.progress_scroll.show()
@@ -227,14 +236,21 @@ class MangaDownloaderApp:
         data = get_img_config()
         self.window.group_imgs.setChecked(data.group)
         self.window.slicer_box.setChecked(data.slice)
+        self.window.external.setChecked(conf.external_provider)
         self.window.replaceslicecheckBox.setChecked(data.slice_replace_original_files)
         self.window.replacegroupcheckBox.setChecked(data.group_replace_original_files)
         self.window.group_imgs_combo.setCurrentText(data.group_format)
+        self.window.group_imgs_combo.wheelEvent = lambda event: event.ignore()
         self.window.slicer_height.setValue(data.split_height)
+        self.window.slicer_height.wheelEvent = lambda event: event.ignore()
         self.window.slicer_width_spin.setValue(data.custom_width)
+        self.window.slicer_width_spin.wheelEvent = lambda event: event.ignore()
         self.window.slicer_detection_sensivity.setValue(data.detection_sensitivity)
+        self.window.slicer_detection_sensivity.wheelEvent = lambda event: event.ignore()
         self.window.slicer_scan_line.setValue(data.scan_line_step)
+        self.window.slicer_scan_line.wheelEvent = lambda event: event.ignore()
         self.window.slicer_ignorable_margin.setValue(data.ignorable_pixels)
+        self.window.slicer_ignorable_margin.wheelEvent = lambda event: event.ignore()
         if(data.automatic_width):
             self.window.slicer_width_select.setCurrentIndex(1)
         else:
@@ -278,6 +294,29 @@ class MangaDownloaderApp:
                 self.window.path.setText(folder_path)
         else:
             self.window.path.setText(data.save)
+    
+    def set_external_path_folder(self):
+        data = get_config()
+        if not self.initial_data:
+            folder_path = QFileDialog.getExistingDirectory(self.window, "Select Folder", data.external_provider_path)
+            if folder_path:
+                update_external_path(folder_path)
+                self.window.selected_external.setText(folder_path)
+        else:
+            if data.external_provider_path:
+                self.window.selected_external.setText(data.external_provider_path)
+    
+    def externalProviderChanged(self, checked):
+        if not self.initial_data:
+            data = get_config()
+            if not data.external_provider_path:
+                folder_path = QFileDialog.getExistingDirectory(self.window, "Select Folder", data.external_provider_path)
+                if folder_path:
+                    update_external_path(folder_path)
+                    self.window.selected_external.setText(folder_path)
+                    update_external(checked)
+            else:
+                update_external(checked)
 
     def chapter_download_button_clicked(self, ch: Chapter, download_button):
         download_button.setEnabled(False)
@@ -560,6 +599,15 @@ class MangaDownloaderApp:
             subprocess.Popen(['open', path])
         else:
             subprocess.Popen(['xdg-open', path])
+    
+    def open_external_folder(self):
+        path = get_config().external_provider_path
+        if sys.platform.startswith('win'):
+            os.startfile(path)
+        elif sys.platform.startswith('darwin'):
+            subprocess.Popen(['open', path])
+        else:
+            subprocess.Popen(['xdg-open', path])
 
     def langChanged(self, lang=None):
         translations = {}
@@ -594,6 +642,7 @@ class MangaDownloaderApp:
         self.window.language_label.setText(translation['language'])
         self.window.img_format.setText(translation['format'])
         self.window.open_folder.setText(translation['open_folder'])
+        self.window.open_external_folder.setText(translation['open_folder'])
         self.window.path_label.setText(translation['path_label'])
         self.window.simul_label.setText(translation['download_qtd'])
         self.window.dev_label.setText(translation['dev_label'])
@@ -620,6 +669,7 @@ class MangaDownloaderApp:
         self.window.slicer_ignorable_margin_label.setText(translation['ignore_horizontal_margins'])
         self.window.replaceslicecheckBox.setText(translation['overwrite'])
         self.window.replacegroupcheckBox.setText(translation['overwrite'])
+        self.window.external.setTitle(translation['external'])
 
     def toogle_group_img(self, checked):
         if not self.initial_data:

@@ -6,6 +6,11 @@ class ProviderRepository(ABC):
     name: str
     lang: str
     domain: str
+    has_login: bool = False
+
+    @abstractmethod
+    def login() -> None:
+        raise NotImplementedError()
     
     @abstractmethod
     def getManga(link: str) -> Manga:

@@ -12,6 +12,7 @@ from GUI_qt.version import version
 from GUI_qt.loading import LoadingWindow
 from GUI_qt.websites import WebSiteOpener
 from GUI_qt.new_version import NewVersion
+from core.config.login_data import delete_login
 from core.providers.domain.entities import Chapter, Manga
 from GUI_qt.git import update_providers, get_last_version
 from core.slicer.application.use_cases import SlicerUseCase
@@ -19,7 +20,7 @@ from core.group_imgs.application.use_cases import GroupImgsUseCase
 from GUI_qt.load_providers import import_classes_recursively, base_path
 from PyQt6.QtCore import QRunnable, QThreadPool, pyqtSignal, QObject, QLocale, QThread
 from GUI_qt.config import get_config, update_lang, update_progress, update_max_download, update_log, update_external_path, update_external
-from core.providers.application.use_cases import ProviderMangaUseCase, ProviderGetChaptersUseCase, ProviderGetPagesUseCase, ProviderDownloadUseCase
+from core.providers.application.use_cases import ProviderMangaUseCase, ProviderGetChaptersUseCase, ProviderGetPagesUseCase, ProviderDownloadUseCase, ProviderLoginUseCase
 from PyQt6.QtWidgets import QApplication, QMessageBox, QSpacerItem, QSizePolicy, QApplication, QGroupBox, QVBoxLayout, QHBoxLayout, QLabel, QProgressBar, QFileDialog, QWidget
 from core.config.img_conf import (
     get_config as get_img_config,
@@ -106,6 +107,7 @@ class DownloadRunnable(QRunnable):
         except Exception as e:
             set_progress_bar_style("red")
             self.signals.download_error.emit(f'{self.ch.name} \n {self.ch.number} \n {str(e)}')
+            delete_login(self.provider.domain[0])
 
 class UpdateThread(QThread):
     finished = pyqtSignal()
@@ -131,9 +133,12 @@ class MangaTask(QRunnable):
 
     def run(self):
         try:
+            if self.provider.has_login:
+                ProviderLoginUseCase(self.provider).execute()
             manga = ProviderMangaUseCase(self.provider).execute(self.link)
             self.signal.finished.emit(manga)
         except Exception as e:
+            delete_login(self.provider.domain[0])
             self.signal.error.emit(str(e))
 
 
@@ -154,6 +159,7 @@ class ChaptersTask(QRunnable):
             self.signal.finished.emit(chapters)
         except Exception as e:
             self.signal.error.emit(str(e))
+            delete_login(self.provider.domain[0])
 
 class MangaDownloaderApp:
     def __init__(self):

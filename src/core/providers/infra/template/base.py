@@ -7,6 +7,10 @@ class Base(ProviderRepository):
     name = ''
     lang = ''
     domain = ['']
+    has_login = False
+
+    def login() -> None:
+        raise NotImplementedError()
 
     def getManga(link: str) -> Manga:
         raise NotImplementedError()

@@ -1,6 +1,7 @@
 import tldextract
 import cloudscraper
 from time import sleep
+from core.config.login_data import get_login
 from core.__seedwork.infra.http.contract.http import Http, Response
 from core.config.request_data import get_request, delete_request, insert_request, RequestData
 from core.cloudflare.application.use_cases import (
@@ -39,6 +40,19 @@ class HttpService(Http):
 
             if request_data:
                 re = request_data
+                if headers is not None:
+                    headers = {**headers, **re.headers}
+                else:
+                    headers = re.headers
+                if cookies is not None:
+                    cookies = {**cookies, **re.cookies}
+                else:
+                    cookies = re.cookies
+            
+            login_data = get_login(domain)
+
+            if login_data:
+                re = login_data
                 if headers is not None:
                     headers = {**headers, **re.headers}
                 else:
@@ -121,6 +135,19 @@ class HttpService(Http):
                 else: headers = re.headers
                 if cookies != None: cookies = cookies | re.cookies
                 else: cookies = re.cookies
+            
+            login_data = get_login(domain)
+
+            if login_data:
+                re = login_data
+                if headers is not None:
+                    headers = {**headers, **re.headers}
+                else:
+                    headers = re.headers
+                if cookies is not None:
+                    cookies = {**cookies, **re.cookies}
+                else:
+                    cookies = re.cookies
 
             response = scraper.post(url, data=data, json=json, headers=headers, cookies=cookies, timeout=None, **kwargs)
             status = response.status_code

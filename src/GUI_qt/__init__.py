@@ -242,7 +242,8 @@ class MangaDownloaderApp:
         data = get_img_config()
         self.window.group_imgs.setChecked(data.group)
         self.window.slicer_box.setChecked(data.slice)
-        self.window.external.setChecked(conf.external_provider)
+        if conf.external_provider:
+            self.window.external.setChecked(conf.external_provider)
         self.window.replaceslicecheckBox.setChecked(data.slice_replace_original_files)
         self.window.replacegroupcheckBox.setChecked(data.group_replace_original_files)
         self.window.group_imgs_combo.setCurrentText(data.group_format)

@@ -27,6 +27,7 @@ args = [
     '--collect-all=cloudscraper',
     '--collect-all=fake_useragent',
     '--collect-all=cryptography',
+    '--collect-all=cairosvg',
     '--collect-all=pillow_avif',
     f'--icon=assets/icon.ico',
     '--exclude-module=tests',

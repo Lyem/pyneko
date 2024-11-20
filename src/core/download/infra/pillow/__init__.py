@@ -13,7 +13,7 @@ Image.MAX_IMAGE_PIXELS = 933120000
 
 class PillowDownloadRepository(DownloadRepository):
 
-    def download(self, pages: Pages, fn=None, headers=None, cookies=None) -> Chapter:
+    def download(self, pages: Pages, fn=None, headers=None, cookies=None, timeout=None) -> Chapter:
         title = sanitize_folder_name(pages.name)
         config = get_config()
         img_path = config.save
@@ -21,12 +21,10 @@ class PillowDownloadRepository(DownloadRepository):
         os.makedirs(path, exist_ok=True)
         img_format = config.img
 
-        response = Http.get(pages.pages[0], headers=headers, cookies=cookies)
-
         page_number = 1
         files = []
         for i, page in enumerate(pages.pages):
-            response = Http.get(page, headers=headers, cookies=cookies)
+            response = Http.get(page, headers=headers, cookies=cookies, timeout=timeout)
             try:
                 img = Image.open(BytesIO(response.content))
                 icc = img.info.get('icc_profile')

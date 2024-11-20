@@ -18,9 +18,10 @@ class WordPressMadara(Base):
         self.query_pages = 'div.page-break.no-gaps'
         self.query_title_for_uri = 'head meta[property="og:title"]'
         self.query_placeholder = '[id^="manga-chapters-holder"][data-id]'
+        self.timeout=None
 
     def getManga(self, link: str) -> Manga:
-        response = Http.get(link)
+        response = Http.get(link, timeout=getattr(self, 'timeout', None))
         soup = BeautifulSoup(response.content, 'html.parser')
         data = soup.select(self.query_title_for_uri)
         element = data.pop()
@@ -29,7 +30,7 @@ class WordPressMadara(Base):
 
     def getChapters(self, id: str) -> List[Chapter]:
         uri = urljoin(self.url, id)
-        response = Http.get(uri)
+        response = Http.get(uri, timeout=getattr(self, 'timeout', None))
         soup = BeautifulSoup(response.content, 'html.parser')
         data = soup.select(self.query_title_for_uri)
         element = data.pop()
@@ -59,12 +60,12 @@ class WordPressMadara(Base):
     def getPages(self, ch: Chapter) -> Pages:
         uri = urljoin(self.url, ch.id)
         uri = self._add_query_params(uri, {'style': 'list'})
-        response = Http.get(uri)
+        response = Http.get(uri, timeout=getattr(self, 'timeout', None))
         soup = BeautifulSoup(response.content, 'html.parser')
         data = soup.select(self.query_pages)
         if not data:
             uri = self._remove_query_params(uri, ['style'])
-            response = Http.get(uri)
+            response = Http.get(uri, timeout=getattr(self, 'timeout', None))
             soup = BeautifulSoup(response.content, 'html.parser')
             data = soup.select(self.query_pages)
         list = [] 
@@ -88,7 +89,7 @@ class WordPressMadara(Base):
             'x-referer': self.url
         }
         request_url = urljoin(self.url, f'{self.path}/wp-admin/admin-ajax.php')
-        return Http.post(request_url, data=urlencode(form), headers=headers)
+        return Http.post(request_url, data=urlencode(form), headers=headers, timeout=getattr(self, 'timeout', None))
 
     def _fetch_dom(self, response: Response, query: str):
         soup = BeautifulSoup(response.content, 'html.parser')
@@ -104,7 +105,7 @@ class WordPressMadara(Base):
         response = Http.post(uri, data=f'action=manga_get_chapters&manga={data_id}', headers={
             'content-type': 'application/x-www-form-urlencoded',
             'x-referer': self.url
-        })
+        }, timeout=getattr(self, 'timeout', None))
         data = self._fetch_dom(response, self.query_chapters)
         if data:
             return data
@@ -115,7 +116,7 @@ class WordPressMadara(Base):
         if not manga_id.endswith('/'):
             manga_id += '/'
         uri = urljoin(self.url, f'{manga_id}ajax/chapters/')
-        response = Http.post(uri)
+        response = Http.post(uri, timeout=getattr(self, 'timeout', None))
         data = self._fetch_dom(response, self.query_chapters)
         if data:
             return data

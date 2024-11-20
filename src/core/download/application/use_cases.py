@@ -5,5 +5,5 @@ from core.__seedwork.application.use_cases import UseCase
 
 
 class DownloadUseCase(UseCase):
-    def execute(self, pages: Pages, fn=None, headers=None, cookies=None) -> Chapter:
-        return DownloadRepository().download(pages, fn, headers, cookies)
+    def execute(self, pages: Pages, fn=None, headers=None, cookies=None, timeout=None) -> Chapter:
+        return DownloadRepository().download(pages, fn, headers, cookies, timeout=timeout)

@@ -19,7 +19,7 @@ from core.cloudflare.application.use_cases import (
 class HttpService(Http):
     
     @staticmethod
-    def get(url: str, params=None, headers=None, cookies=None, **kwargs) -> Response:
+    def get(url: str, params=None, headers=None, cookies=None, timeout=None, **kwargs) -> Response:
         status = 0
         count = 0
         extract = tldextract.extract(url)
@@ -62,7 +62,7 @@ class HttpService(Http):
                 else:
                     cookies = re.cookies
 
-            response = scraper.get(url, params=params, headers=headers, cookies=cookies, timeout=None, **kwargs)
+            response = scraper.get(url, params=params, headers=headers, cookies=cookies, timeout=timeout, **kwargs)
             status = response.status_code
 
             if response.status_code == 403:
@@ -111,7 +111,7 @@ class HttpService(Http):
 
     
     @staticmethod
-    def post(url, data=None, json=None, headers=None, cookies=None, **kwargs) -> Response:
+    def post(url, data=None, json=None, headers=None, cookies=None, timeout=None, **kwargs) -> Response:
         status = 0
         count = 0
         extract = tldextract.extract(url)
@@ -149,7 +149,7 @@ class HttpService(Http):
                 else:
                     cookies = re.cookies
 
-            response = scraper.post(url, data=data, json=json, headers=headers, cookies=cookies, timeout=None, **kwargs)
+            response = scraper.post(url, data=data, json=json, headers=headers, cookies=cookies, timeout=timeout, **kwargs)
             status = response.status_code
 
             if response.status_code == 403:

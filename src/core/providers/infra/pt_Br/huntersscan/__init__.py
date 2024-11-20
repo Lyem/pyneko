@@ -6,10 +6,10 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class HuntersScanProvider(WordPressMadara):
     name = 'Hunters scan'
     lang = 'pt-Br'
-    domain = ['htoons.online']
+    domain = ['hunterscomics.com']
 
     def __init__(self):
-        self.url = 'https://https://htoons.online'
+        self.url = 'https://hunterscomics.com'
 
         self.path = ''
         
@@ -22,6 +22,7 @@ class HuntersScanProvider(WordPressMadara):
         ua = UserAgent()
         user = ua.chrome
         self.headers = {'host': 'huntersscan.net', 'user_agent': user, 'referer': f'{self.url}/series'}
+        self.timeout=3
 
     
     def download(self, pages: Pages, fn: any, headers=None, cookies=None):
@@ -29,4 +30,4 @@ class HuntersScanProvider(WordPressMadara):
             headers = headers | self.headers
         else:
             headers = self.headers
-        return DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)
+        return DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies, timeout=self.timeout)

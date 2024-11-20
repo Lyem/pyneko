@@ -1,7 +1,7 @@
 from typing import List
-from core.providers.domain.provider_repository import ProviderRepository
-from core.providers.domain.entities import Chapter, Pages, Manga
 from core.download.application.use_cases import DownloadUseCase
+from core.providers.domain.entities import Chapter, Pages, Manga
+from core.providers.domain.provider_repository import ProviderRepository
 
 class Base(ProviderRepository):
     name = ''

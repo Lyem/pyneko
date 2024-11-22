@@ -20,13 +20,11 @@ def get_message(key, lang='en'):
     return translations.get(lang, translations['en']).get(key, '')
 
 templates = [
-    {'name': 'Madara', 'template': 'wordpress_madara.py.jinja', 'variables': [
-    ]},
+    {'name': 'Madara', 'template': 'wordpress_madara.py.jinja', 'variables': []},
     {'name': 'Base', 'template': 'base.py.jinja', 'variables': []},
     {'name': 'Manga Reader CMS', 'template': 'manga_reader_cms.py.jinja', 'variables': [
         {'name': 'Link do site', 'value': 'link'},
     ]},
-        {'name': 'Link do site', 'value': 'link'},
     {'name': 'Scan Madara Clone', 'template': 'scan_madara_clone.py.jinja', 'variables': [
         {'name': 'Link do site', 'value': 'link'},
     ]},

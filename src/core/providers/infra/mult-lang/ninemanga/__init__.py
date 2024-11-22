@@ -1,6 +1,7 @@
 import re
 from typing import List
 from bs4 import BeautifulSoup
+from tldextract import extract
 from core.__seedwork.infra.http import Http
 from core.providers.infra.template.base import Base
 from core.providers.domain.entities import Chapter, Pages, Manga
@@ -73,7 +74,12 @@ class NineMangasProvider(Base):
         for pg in pages:
             list.append(pg.get('src'))
         for url in urls:
-            response = Http.get(f'{self.base}{url.get('value')}')
+            extract_info = extract(ch.id)
+            if extract_info.subdomain:
+                domain = f"{extract_info.subdomain}.{extract_info.domain}.{extract_info.suffix}"
+            else:
+                domain = f"{extract_info.domain}.{extract_info.suffix}"
+            response = Http.get(f'https://{domain}{url.get('value')}')
             soup = BeautifulSoup(response.content, 'html.parser')
             page_div = soup.select('center')[1]
             pages = page_div.select('img.manga_pic')

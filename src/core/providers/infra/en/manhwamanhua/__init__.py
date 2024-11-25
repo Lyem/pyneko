@@ -1,12 +1,12 @@
 from core.providers.infra.template.wordpress_madara import WordPressMadara
 
-class ArcaneScansProvider(WordPressMadara):
-    name = 'Arcane Scans'
+class ManhwaManhuaProvider(WordPressMadara):
+    name = 'Manhwa Manhua'
     lang = 'en'
-    domain = ['arcanescans.com']
+    domain = ['manhwamanhua.com']
 
     def __init__(self):
-        self.url = 'https://arcanescans.com/'
+        self.url = 'https://manhwamanhua.com/'
 
         self.path = ''
         

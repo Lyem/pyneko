@@ -1,12 +1,12 @@
 from core.providers.infra.template.wordpress_madara import WordPressMadara
 
-class ArcaneScansProvider(WordPressMadara):
-    name = 'Arcane Scans'
+class AnisasScansProvider(WordPressMadara):
+    name = 'Anisas Scans'
     lang = 'en'
-    domain = ['arcanescans.com']
+    domain = ['anisascans.in']
 
     def __init__(self):
-        self.url = 'https://arcanescans.com/'
+        self.url = 'https://anisascans.in/'
 
         self.path = ''
         
@@ -14,5 +14,5 @@ class ArcaneScansProvider(WordPressMadara):
         self.query_chapters = 'li.wp-manga-chapter > a'
         self.query_chapters_title_bloat = None
         self.query_pages = 'div.page-break.no-gaps'
-        self.query_title_for_uri = 'div.post-title > h1'
+        self.query_title_for_uri = 'head meta[property="og:title"]'
         self.query_placeholder = '[id^="manga-chapters-holder"][data-id]'

@@ -15,7 +15,6 @@ class MangaKakalotProvider(Base):
     
     def getManga(self, link: str) -> Manga:
         response = Http.get(link)
-        print(response.content)
         soup = BeautifulSoup(response.content, 'html.parser')
         title = soup.select_one('div.manga-info-top h1')
 
@@ -30,6 +29,7 @@ class MangaKakalotProvider(Base):
         list = []
         for ch in chapters:
             list.append(Chapter(ch.get('href'), ch.get_text().strip(), title.get_text().strip()))
+        list.reverse()
         return list
 
     def getPages(self, ch: Chapter) -> Pages:

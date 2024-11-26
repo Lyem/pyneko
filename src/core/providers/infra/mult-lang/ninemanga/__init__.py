@@ -19,9 +19,10 @@ class NineMangasProvider(Base):
         response = Http.get(link)
         soup = BeautifulSoup(response.content, 'html.parser')
         info = soup.select_one('ul.message')
-        title = info.select_one('span')
+        title = info.select_one('span').get_text().strip()
+        title_formated = title.replace(' Manga', '')
 
-        return Manga(link, title.get_text().strip())
+        return Manga(link, title_formated)
     
     def add_query_param_if_missing(self, url, param, value):
         parsed_url = urlparse(url)
@@ -54,14 +55,15 @@ class NineMangasProvider(Base):
         response = Http.get(url)
         soup = BeautifulSoup(response.content, 'html.parser')
         info = soup.select_one('ul.message')
-        title = info.select_one('span')
+        title = info.select_one('span').get_text().strip()
+        title_formated = title.replace(' Manga', '')
         chapter_div = soup.select_one('div.silde')
         chapters = chapter_div.select('a.chapter_list_a')
         list = []
         for chapter in chapters:
-            list.append(Chapter(self.ten_pages_url(chapter.get('href')), self.extract_numbers(chapter.get('title')), title.get_text().strip()))
+            list.append(Chapter(self.ten_pages_url(chapter.get('href')), self.extract_numbers(chapter.get('title')), title_formated))
+        list.reverse()
         return list
-
 
     def getPages(self, ch: Chapter) -> Pages:
         list = []

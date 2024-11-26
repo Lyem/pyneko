@@ -29,6 +29,7 @@ class MangaNatoProvider(Base):
         list = []
         for ch in chapters:
             list.append(Chapter(ch.get('href'), ch.get_text().strip(), title.get_text().strip()))
+        list.reverse()
         return list
 
     def getPages(self, ch: Chapter) -> Pages:

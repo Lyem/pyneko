@@ -5,7 +5,7 @@ from core.providers.infra.template.base import Base
 from core.providers.domain.entities import Chapter, Pages, Manga
 
 class AsuraComicProvider(Base):
-    name = 'Asura Comics'
+    name = 'Asura Scans'
     lang = 'en'
     domain = ['asuracomic.net']
 
@@ -22,10 +22,12 @@ class AsuraComicProvider(Base):
         response = Http.get(id)
         soup = BeautifulSoup(response.content, 'html.parser')
         title = soup.select_one('span.text-xl.font-bold')
-        chapters = soup.select('h3 > a.block')
+        chapters_div = soup.select_one('div.pl-4.pr-2.pb-4.overflow-y-auto.scrollbar-thumb-themecolor.scrollbar-track-transparent.scrollbar-thin.mr-3')
+        chapters = chapters_div.select('h3 > a')
         list = []
         for ch in chapters:
             list.append(Chapter(f'{self.url}{ch.get('href')}', ch.get_text().strip(), title.get_text().strip()))
+        list.reverse()
         return list
 
     def getPages(self, ch: Chapter) -> Pages:

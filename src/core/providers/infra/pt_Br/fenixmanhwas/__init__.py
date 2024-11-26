@@ -5,8 +5,8 @@ from core.__seedwork.infra.http import Http
 from core.providers.infra.template.base import Base
 from core.providers.domain.entities import Chapter, Pages, Manga
 
-class FenixComicsBrProvider(Base):
-    name = 'Fenix Comics Br'
+class FenixManhwasProvider(Base):
+    name = 'Fênix Manhwas'
     lang = 'pt_Br'
     domain = ['fenixcomicsbr.blogspot.com']
 
@@ -38,7 +38,7 @@ class FenixComicsBrProvider(Base):
             if len(ch['link']) > 4 and ch['link'][4]['href'] != id:
                 list.append(Chapter(ch['link'][4]['href'], ch['link'][4]['title'], title.get_text().strip()))
 
-        return sorted(list, key=lambda ch: ch.number, reverse=True)
+        return sorted(list, key=lambda ch: ch.number)
 
     def getPages(self, ch: Chapter) -> Pages:
         response = Http.get(ch.id)

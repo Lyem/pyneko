@@ -1,8 +1,8 @@
-from core.providers.infra.pt_Br.cerisetoon import CerisetoonProvider
+from core.providers.infra.pt_Br.cerisescan import CeriseScanProvider
 from core.providers.domain.entities import Chapter, Pages, Manga
 
-response = CerisetoonProvider().getPages('https://cerisetoon.com/a-besta-domada-pela-vila/54/')
-CerisetoonProvider().download(response)
+response = CeriseScanProvider().getPages('https://cerisetoon.com/a-besta-domada-pela-vila/54/')
+CeriseScanProvider().download(response)
 
 class TestCerisetoonProvider:
     # def test_mangas(self):
@@ -23,6 +23,6 @@ class TestCerisetoonProvider:
     #         assert isinstance(ch, Chapter)
         
     def test_getPages(self):
-        response = CerisetoonProvider().getPages('https://cerisetoon.com/a-besta-domada-pela-vila/54/')
+        response = CeriseScanProvider().getPages('https://cerisetoon.com/a-besta-domada-pela-vila/54/')
         assert len(response.pages) > 0
         assert isinstance(response, Pages)

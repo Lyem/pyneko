@@ -18,7 +18,7 @@ class BatotoProvider(Base):
     def getManga(self, link: str) -> Manga:
         response = Http.get(link, headers=self.headers)
         soup = BeautifulSoup(response.content, 'html.parser')
-        title = soup.select_one('h3.item-title')
+        title = soup.select_one('h3.item-title > a')
         return Manga(link, title.get_text())
 
     def getChapters(self, link: str) -> List[Chapter]:
@@ -26,9 +26,10 @@ class BatotoProvider(Base):
         response = Http.get(link, headers=self.headers)
         soup = BeautifulSoup(response.content, 'html.parser')
         chs = soup.select('a.visited.chapt')
-        title = soup.select_one('h3.item-title')
+        title = soup.select_one('h3.item-title > a')
         for chapter in chs:
             list.append(Chapter(f'{self.base}{chapter.get('href')}', chapter.select_one('b').get_text(), title.get_text()))
+        list.reverse()
         return list
 
     def getPages(self, ch: Chapter) -> Pages:

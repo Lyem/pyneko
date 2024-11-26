@@ -1,7 +1,7 @@
 from core.providers.infra.template.wordpress_madara import WordPressMadara
 
 class CafeComYaoiProvider(WordPressMadara):
-    name = 'cafe com yaoi'
+    name = 'Café com Yaoi'
     lang = 'pt-Br'
     domain = ['cafecomyaoi.com.br']
 

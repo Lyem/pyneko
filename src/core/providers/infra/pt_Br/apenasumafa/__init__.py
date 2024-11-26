@@ -5,7 +5,7 @@ from core.providers.infra.template.base import Base
 from core.providers.domain.entities import Chapter, Pages, Manga
 
 class ApenasUmaFaProvider(Base):
-    name = 'Apenas Uma Fa'
+    name = 'Apenas Uma Fã'
     lang = 'pt_Br'
     domain = ['apenasuma-fa.blogspot.com']
 
@@ -29,7 +29,7 @@ class ApenasUmaFaProvider(Base):
         for ch in response['feed']['entry']:
             if ch['link'][4]['href'] != id:
                 list.append(Chapter(ch['link'][4]['href'], ch['link'][4]['title'], title.get_text().strip()))
-        return sorted(list, key=lambda ch: float(ch.number.split(' ')[1]), reverse=True)
+        return sorted(list, key=lambda ch: float(ch.number.split(' ')[1]))
 
     def getPages(self, ch: Chapter) -> Pages:
         response = Http.get(ch.id)

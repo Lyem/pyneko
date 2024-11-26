@@ -1,7 +1,7 @@
 from core.providers.infra.template.wordpress_madara import WordPressMadara
 
-class DianxiatradsProvider(WordPressMadara):
-    name = 'Dianxia Trads'
+class DianxiaTraducoesProvider(WordPressMadara):
+    name = 'Dianxia Traduções'
     lang = 'pt-Br'
     domain = ['dianxiatrads.com']
 

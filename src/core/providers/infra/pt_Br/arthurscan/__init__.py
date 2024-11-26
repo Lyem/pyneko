@@ -1,7 +1,7 @@
 from core.providers.infra.template.wordpress_madara import WordPressMadara
 
 class ArthurScanProvider(WordPressMadara):
-    name = 'Arthur scan'
+    name = 'Arthur Scan'
     lang = 'pt-Br'
     domain = ['arthurscan.xyz']
 

@@ -6,8 +6,8 @@ from core.download.application.use_cases import DownloadUseCase
 from core.providers.domain.entities import Chapter, Pages, Manga
 
 class GreentoonProvider(Base):
-    name = 'greentoon'
-    lang = 'mult'
+    name = 'GreenToon'
+    lang = 'ko'
     domain = ['greentoon.net']
 
     def __init__(self) -> None:
@@ -29,6 +29,7 @@ class GreentoonProvider(Base):
         title = soup.select_one('div.info > h2')
         for chapter in chs:
             list.append(Chapter(chapter.get('href'), chapter.select_one('div.subj').get_text(), title.get_text().strip()))
+        list.reverse()
         return list
 
     def getPages(self, ch: Chapter) -> Pages:

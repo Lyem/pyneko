@@ -1,7 +1,7 @@
 from core.providers.infra.template.wordpress_etoshore_manga_theme import WordpressEtoshoreMangaTheme
 
-class CrystalComicsProvider(WordpressEtoshoreMangaTheme):
-    name = 'Crystal Comics'
+class CrystalScanProvider(WordpressEtoshoreMangaTheme):
+    name = 'Crystal Scan'
     lang = 'pt_Br'
     domain = ['crystalcomics.com']
 

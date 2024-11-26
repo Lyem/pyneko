@@ -37,6 +37,7 @@ class ScanMadaraClone(Base):
         for tag in tags:
             cap = tag.find('span', class_='numero__capitulo').get_text()
             list.append(Chapter(id=tag.get('href'), number=cap, name=title))
+        list.reverse()
         return list
     
     def getPages(self, ch: Chapter) -> Pages:

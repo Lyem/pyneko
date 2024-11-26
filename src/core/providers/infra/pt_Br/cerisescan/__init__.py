@@ -1,7 +1,7 @@
 from core.providers.infra.template.scan_madara_clone import ScanMadaraClone
 
-class CerisetoonProvider(ScanMadaraClone):
-    name = 'Cerise toon'
+class CeriseScanProvider(ScanMadaraClone):
+    name = 'Cerise Scan'
     lang = 'pt-Br'
     domain = ['cerise.leitorweb.com']
 

@@ -1,12 +1,12 @@
 from core.providers.infra.template.wordpress_madara import WordPressMadara
 
 class AlgodaodoceProvider(WordPressMadara):
-    name = 'Algodão doce'
+    name = 'Algodão Doce'
     lang = 'pt-Br'
-    domain = ['algodãodoce.com']
+    domain = ['xn--algododoce-j5a.com']
 
     def __init__(self):
-        self.url = 'https://algodãodoce.com'
+        self.url = 'https://xn--algododoce-j5a.com/'
 
         self.path = ''
         

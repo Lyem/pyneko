@@ -1,7 +1,7 @@
 from core.providers.infra.template.wordpress_madara import WordPressMadara
 
 class FayScanProvider(WordPressMadara):
-    name = 'Fay scans'
+    name = 'Fay Scans'
     lang = 'pt-Br'
     domain = ['fayscans.net']
 

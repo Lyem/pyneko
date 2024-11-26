@@ -1,7 +1,7 @@
 from core.providers.infra.template.wordpress_madara import WordPressMadara
 
 class FbsScanProvider(WordPressMadara):
-    name = 'Fbs scan'
+    name = 'Fleur Blanche Scan'
     lang = 'pt-Br'
     domain = ['fbsquadx.com']
 

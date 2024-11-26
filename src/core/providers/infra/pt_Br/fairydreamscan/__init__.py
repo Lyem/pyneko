@@ -1,12 +1,12 @@
 from core.providers.infra.template.wordpress_madara import WordPressMadara
 
-class DreamScanProvider(WordPressMadara):
-    name = 'Dream scan'
+class FairyDreamScanProvider(WordPressMadara):
+    name = 'Fairy Dream Scan'
     lang = 'pt-Br'
-    domain = ['dreamscan.com.br']
+    domain = ['fairydream.com.br']
 
     def __init__(self):
-        self.url = 'https://dreamscan.com.br'
+        self.url = 'https://fairydream.com.br/'
 
         self.path = ''
         

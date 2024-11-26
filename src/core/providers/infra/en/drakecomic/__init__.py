@@ -1,7 +1,7 @@
 from core.providers.infra.template.manga_reader_cms import MangaReaderCms
 
 class DrakeComicProvider(MangaReaderCms):
-    name = 'Drake Comic'
+    name = 'Drake Scans'
     lang = 'en'
     domain = ['drakecomic.org']
 

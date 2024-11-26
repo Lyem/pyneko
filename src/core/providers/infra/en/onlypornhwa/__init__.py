@@ -2,7 +2,7 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 
 class OnlyPornhwaProvider(WordPressMadara):
     name = 'Only Pornhwa'
-    lang = 'pt_Br'
+    lang = 'en'
     domain = ['onlypornhwa.com']
 
     def __init__(self):

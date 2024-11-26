@@ -8,7 +8,7 @@ from core.providers.infra.template.base import Base
 from core.providers.domain.entities import Chapter, Pages, Manga
 
 class AsuraComicProvider(Base):
-    name = 'Asura Comics'
+    name = 'Asura Scans'
     lang = 'en'
     domain = ['asuracomic.net']
 
@@ -29,6 +29,7 @@ class AsuraComicProvider(Base):
         list = []
         for ch in chapters:
             list.append(Chapter(f'{self.url}{ch.get('href')}', ch.get_text().strip(), title.get_text().strip()))
+        list.reverse()
         return list
 
     def getPages(self, ch: Chapter) -> Pages:

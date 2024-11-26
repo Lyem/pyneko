@@ -1,4 +1,7 @@
+import re
+import json
 from typing import List
+from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 from core.__seedwork.infra.http import Http
 from core.providers.infra.template.base import Base
@@ -22,8 +25,7 @@ class AsuraComicProvider(Base):
         response = Http.get(id)
         soup = BeautifulSoup(response.content, 'html.parser')
         title = soup.select_one('span.text-xl.font-bold')
-        chapters_div = soup.select_one('div.pl-4.pr-2.pb-4.overflow-y-auto.scrollbar-thumb-themecolor.scrollbar-track-transparent.scrollbar-thin.mr-3')
-        chapters = chapters_div.select('h3 > a')
+        chapters = soup.select('h3 > a.flex.flex-row ')
         list = []
         for ch in chapters:
             list.append(Chapter(f'{self.url}{ch.get('href')}', ch.get_text().strip(), title.get_text().strip()))
@@ -31,10 +33,21 @@ class AsuraComicProvider(Base):
         return list
 
     def getPages(self, ch: Chapter) -> Pages:
-        list = []
         response = Http.get(ch.id)
         soup = BeautifulSoup(response.content, 'html.parser')
-        images = soup.select('img.object-cover.mx-auto')
-        for pgs in images:
-            list.append(pgs.get('src'))
-        return Pages(ch.id, ch.number, ch.name, list)
+        scripts = soup.select('script')
+        pattern = re.compile(r'\\"order\\":\s*(\d+),\s*\\"url\\":\s*\\"(https?://[^"]+)\\"')
+
+        result = {}
+
+        for script in scripts:
+            if script.string and "self.__next_f.push" in script.string:
+                matches = pattern.findall(script.string)
+                for match in matches:
+                    order, url = match
+                    if url not in result:
+                        result[url] = int(order)
+
+        sorted_urls = [url for url, _ in sorted(result.items(), key=lambda x: x[1])]
+
+        return Pages(ch.id, ch.number, ch.name, sorted_urls)

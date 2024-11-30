@@ -12,6 +12,7 @@ class NewSussyToonsProvider(Base):
 
     def __init__(self) -> None:
         self.base = 'https://api.sussytoons.site'
+        self.CDN = 'https://cdn.sussytoons.site'
     
     def getManga(self, link: str) -> Manga:
         match = re.search(r'/obra/(\d+)', link)
@@ -36,8 +37,13 @@ class NewSussyToonsProvider(Base):
         list = []
         for pg in response['resultado']['cap_paginas']:
             if response['resultado']['cap_imagem'] == None:
-                page = f'{self.base}/storage/wp-content/uploads/WP-manga/data/{pg['src']}?cache=/scans/1/obras/{response['resultado']['obra']['obr_id']}/capitulos/{response['resultado']['cap_numero']}'
+                if "?t=" in pg['src'] and pg['src'].startswith("?t="):
+                    continue
+                page = f'{self.CDN}/storage/wp-content/uploads/WP-manga/data/{pg['src']}?cache=/scans/1/obras/{response['resultado']['obra']['obr_id']}/capitulos/{response['resultado']['cap_numero']}'
             else:
-                page = f'{self.base}/storage//scans/1/obras/{response['resultado']['obra']['obr_id']}/capitulos/{response['resultado']['cap_numero']}/{pg['src']}'
+                if "?t=" in pg['src'] and pg['src'].startswith("?t="):
+                    continue
+
+                page = f'{self.CDN}/scans/1/obras/{response['resultado']['obra']['obr_id']}/capitulos/{response['resultado']['cap_numero']}/{pg['src']}'
             list.append(page)
         return Pages(ch.id, ch.number, ch.name, list)

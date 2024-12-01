@@ -32,6 +32,7 @@ class MangaBrProvider(Base):
             if number:
                 number_text = number.get_text().strip()
                 number_text = re.sub(r'\d{2}-\d{2}-\d{4}', '', number_text).strip()
+                number_text = re.sub(r'\s+', ' ', number_text)
                 list.append(Chapter(f'{self.base}{ch.get("href")}', number_text, title.get_text().strip()))
         return list
 

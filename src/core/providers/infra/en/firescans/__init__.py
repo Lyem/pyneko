@@ -6,7 +6,7 @@ class FireScansProvider(WordPressMadara):
     domain = ['firescans.xyz']
 
     def __init__(self):
-        self.url = 'https://firescans.xyz/manga/to-be-an-actor/'
+        self.url = 'https://firescans.xyz/'
 
         self.path = ''
         

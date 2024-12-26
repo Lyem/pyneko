@@ -38,7 +38,8 @@ class LoobytProvider(Base):
     def getPages(self, ch: Chapter) -> Pages:
         response = Http.get(ch.id)
         soup = BeautifulSoup(response.content, 'html.parser')
-        scripts = soup.select('body script')[8]
+        scripts = soup.select('body script')[10]
+        print(scripts.get_text())
         cdn_pattern = r'https:\/\/cdn\.readmangas\.org\/[^"]+'
         list = re.findall(cdn_pattern, scripts.get_text())
         urls = [url.rstrip("\\") for url in list]

@@ -11,4 +11,4 @@ class CrystalScanProvider(WordpressEtoshoreMangaTheme):
         self.chapter = 'li.language-BR > a'
         self.get_chapter_number = 'div.title'
         self.get_div_page = 'div.chapter-image-content'
-        self.get_pages = 'noscript > img'
+        self.get_pages = 'img'

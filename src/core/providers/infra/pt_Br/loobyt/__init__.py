@@ -9,7 +9,7 @@ from core.providers.domain.entities import Chapter, Pages, Manga
 class LoobytProvider(Base):
     name = 'Loobyt'
     lang = 'pt_Br'
-    domain = ['www.loobyt.com']
+    domain = [re.compile(r"^(?:[a-zA-Z0-9-]+\.)*loobyt\.com$")]
 
     def __init__(self) -> None:
         self.base = 'https://www.loobyt.com/readme/'
@@ -39,7 +39,6 @@ class LoobytProvider(Base):
         response = Http.get(ch.id)
         soup = BeautifulSoup(response.content, 'html.parser')
         scripts = soup.select('body script')[10]
-        print(scripts.get_text())
         cdn_pattern = r'https:\/\/cdn\.readmangas\.org\/[^"]+'
         list = re.findall(cdn_pattern, scripts.get_text())
         urls = [url.rstrip("\\") for url in list]

@@ -11,7 +11,7 @@ class NewSussyToonsProvider(Base):
     domain = ['new.sussytoons.site']
 
     def __init__(self) -> None:
-        self.base = 'https://api.sussytoons.site'
+        self.base = 'https://api-dev.sussytoons.site'
         self.CDN = 'https://cdn.sussytoons.site'
     
     def getManga(self, link: str) -> Manga:
@@ -26,9 +26,8 @@ class NewSussyToonsProvider(Base):
         id_value = match.group(1)
         response = Http.get(f'{self.base}/obras/{id_value}').json()
         title = response['resultado']['obr_nome']
-        response = Http.get(f'{self.base}/obras/{id_value}/capitulos?limite=9999999999').json()
         list = []
-        for ch in response['resultados']:
+        for ch in response['resultado']['capitulos']:
             list.append(Chapter(ch['cap_id'], ch['cap_nome'], title))
         return list
 

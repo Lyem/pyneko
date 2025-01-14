@@ -1,3 +1,5 @@
+from core.providers.domain.entities import Pages
+from core.download.application.use_cases import DownloadUseCase
 from core.providers.infra.template.wordpress_etoshore_manga_theme import WordpressEtoshoreMangaTheme
 
 class CrystalScanProvider(WordpressEtoshoreMangaTheme):
@@ -12,3 +14,12 @@ class CrystalScanProvider(WordpressEtoshoreMangaTheme):
         self.get_chapter_number = 'div.title'
         self.get_div_page = 'div.chapter-image-content'
         self.get_pages = 'img'
+        self.headers = {'host': 'crystalcomics.com', 'referer': 'https://crystalcomics.com/img'}
+
+    
+    def download(self, pages: Pages, fn: any, headers=None, cookies=None):
+        if headers is not None:
+            headers = headers | self.headers
+        else:
+            headers = self.headers
+        return DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)

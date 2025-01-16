@@ -1,3 +1,5 @@
+from core.providers.domain.entities import Pages
+from core.download.application.use_cases import DownloadUseCase
 from core.providers.infra.template.wordpress_madara import WordPressMadara
 
 class FlowerMangasProvider(WordPressMadara):
@@ -16,3 +18,13 @@ class FlowerMangasProvider(WordPressMadara):
         self.query_pages = 'div.page-break.no-gaps'
         self.query_title_for_uri = 'head meta[property="og:title"]'
         self.query_placeholder = '[id^="manga-chapters-holder"][data-id]'
+
+        self.headers = {'Referer': 'https://flowermanga.net/'}
+
+    
+    def download(self, pages: Pages, fn: any, headers=None, cookies=None):
+        if headers is not None:
+            headers = headers | self.headers
+        else:
+            headers = self.headers
+        return DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)

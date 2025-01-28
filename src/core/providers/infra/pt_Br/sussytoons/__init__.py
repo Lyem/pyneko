@@ -1,5 +1,6 @@
 import re
 from typing import List
+from bs4 import BeautifulSoup
 from core.__seedwork.infra.http import Http
 from urllib.parse import urlparse, parse_qs
 from core.providers.infra.template.base import Base
@@ -15,6 +16,7 @@ class NewSussyToonsProvider(Base):
         self.CDN = 'https://cdn.sussytoons.site'
         self.old = 'https://oldi.sussytoons.site/wp-content/uploads/WP-manga/data/'
         self.oldCDN = 'https://oldi.sussytoons.site/scans/1/obras'
+        self.webBase = 'https://www.sussytoons.site'
     
     def getManga(self, link: str) -> Manga:
         match = re.search(r'/obra/(\d+)', link)
@@ -37,16 +39,15 @@ class NewSussyToonsProvider(Base):
             print(e)
 
     def getPages(self, ch: Chapter) -> Pages:
-        try:
-            response = Http.get(f'{self.base}/capitulos/{ch.id[1]}', headers={'scan-id': '1'}).json()
-            chapter_number = response['resultado']['cap_numero']
-        except Exception as e:
-            print(e)
-        try:
-            list = []
-            for pg in response['resultado']['cap_paginas']:
-                page = f'{self.oldCDN}/{ch.id[0]}/capitulos/{chapter_number}/{pg['src']}'
-                list.append(page)
-            return Pages(ch.id, ch.number, ch.name, list)
-        except Exception as e:
-            print(e)
+            try:
+                response = Http.get(f'{self.webBase}/capitulo/{ch.id[1]}')
+                soup = BeautifulSoup(response.content, 'html.parser')
+                get_images = soup.select('img.chakra-image.css-1hgt80r')
+                list = []
+                for images in get_images:
+                    list.append(images.get('src'))
+
+                return Pages(ch.id, ch.number, ch.name, list)
+            
+            except Exception as e:
+                print(e)

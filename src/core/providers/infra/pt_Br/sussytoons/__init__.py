@@ -9,7 +9,7 @@ from core.providers.domain.entities import Chapter, Pages, Manga
 class NewSussyToonsProvider(Base):
     name = 'New Sussy Toons'
     lang = 'pt_Br'
-    domain = ['new.sussytoons.site', 'www.sussyscan.com', 'www.sussytoons.site']
+    domain = ['new.sussytoons.site', 'www.sussyscan.com', 'www.sussytoons.site', 'www.sussytoons.wtf']
 
     def __init__(self) -> None:
         self.base = 'https://api-dev.sussytoons.site'

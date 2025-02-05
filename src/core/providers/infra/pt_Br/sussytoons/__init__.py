@@ -1,8 +1,10 @@
 import re
+import asyncio
+import nodriver as uc
 from typing import List
 from bs4 import BeautifulSoup
 from core.__seedwork.infra.http import Http
-from urllib.parse import urlparse, parse_qs
+# from urllib.parse import urlparse, parse_qs
 from core.providers.infra.template.base import Base
 from core.providers.domain.entities import Chapter, Pages, Manga
 
@@ -16,7 +18,8 @@ class NewSussyToonsProvider(Base):
         self.CDN = 'https://cdn.sussytoons.site'
         self.old = 'https://oldi.sussytoons.site/wp-content/uploads/WP-manga/data/'
         self.oldCDN = 'https://oldi.sussytoons.site/scans/1/obras'
-        self.webBase = 'https://www.sussytoons.site'
+        self.webBase = 'https://www.sussytoons.wtf'
+        self.cookies = [{'sussytoons-terms-accepted', 'true'}]
     
     def getManga(self, link: str) -> Manga:
         match = re.search(r'/obra/(\d+)', link)
@@ -38,14 +41,41 @@ class NewSussyToonsProvider(Base):
         except Exception as e:
             print(e)
 
+
+    def get_Pages(self, id, sleep):
+        async def get_Pages_driver():
+            browser = await uc.start()
+            page = await browser.get(id)
+            await browser.cookies.set_all(self.cookies)
+            await asyncio.sleep(sleep)
+            html = await page.get_content()
+            browser.stop() 
+            return html
+        resultado = uc.loop().run_until_complete(get_Pages_driver())
+        return resultado
+    
     def getPages(self, ch: Chapter) -> Pages:
             try:
-                response = Http.get(f'{self.webBase}/capitulo/{ch.id[1]}')
-                soup = BeautifulSoup(response.content, 'html.parser')
-                get_images = soup.select('img.chakra-image.css-1hgt80r')
+                # response = Http.get(f'{self.webBase}/capitulo/{ch.id[1]}')
+                # print(f'[no-render]{response.content}')
                 list = []
-                for images in get_images:
-                    list.append(images.get('src'))
+                while_is_true = True
+                courrent_page = 0
+                sleep_time = 10
+                while(while_is_true):
+                    html = self.get_Pages(f'{self.webBase}/capitulo/{ch.id[1]}', sleep_time)
+                    soup = BeautifulSoup(html, 'html.parser')
+                    get_images = soup.select('img.chakra-image.css-1ki54i')
+                    for images in get_images:
+                        list.append(images.get('src'))
+                    if len(list) > 0:
+                        while_is_true = False
+
+                    if courrent_page >= 3:
+                        break
+                    courrent_page += 1
+
+                    sleep_time += 5
 
                 return Pages(ch.id, ch.number, ch.name, list)
             

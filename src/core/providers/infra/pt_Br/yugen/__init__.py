@@ -47,6 +47,7 @@ class YugenProvider(Base):
     def getPages(self, ch: Chapter) -> Pages:
         response = Http.post(f'{self.api}api/chapters/chapter-info/', json={
             "code": ch.id,
+            "key":"wKwPtVJhLSHoMJAiTAVnnggEils1zgHF",
         })
         data = response.json()
 

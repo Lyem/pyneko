@@ -42,9 +42,18 @@ class NewSussyToonsProvider(Base):
             print(e)
 
 
-    def get_Pages(self, id, sleep):
+    def get_Pages(self, id, sleep, background = False):
         async def get_Pages_driver():
-            browser = await uc.start()
+            browser = await uc.start(
+                 browser_args=[
+                    '--window-size=600,600', 
+                    f'--app={id}',
+                    '--disable-extensions', 
+                    '--disable-popup-blocking'
+                ],
+                browser_executable_path=None,
+                headless=background
+            )
             page = await browser.get(id)
             await browser.cookies.set_all(self.cookies)
             await asyncio.sleep(sleep)
@@ -65,7 +74,7 @@ class NewSussyToonsProvider(Base):
                 while(while_is_true):
                     html = self.get_Pages(f'{self.webBase}/capitulo/{ch.id[1]}', sleep_time)
                     soup = BeautifulSoup(html, 'html.parser')
-                    get_images = soup.select('img.chakra-image.css-1ki54i')
+                    get_images = soup.select('img.chakra-image.css-8atqhb')
                     for images in get_images:
                         list.append(images.get('src'))
                     if len(list) > 0:

@@ -16,7 +16,7 @@ class SlimeReadProvider(Base):
 
     def __init__(self) -> None:
         self.base = 'https://slimeread.com'
-        self.api = 'https://tipaeupapai.slimeread.com:8443'
+        self.api = 'https://carnaval.slimeread.com:8443'
         ua = UserAgent()
         user = ua.chrome
         self.headers = {'origin': 'slimeread.com','referer': f'{self.base}', 'User-Agent': user}
@@ -26,7 +26,7 @@ class SlimeReadProvider(Base):
         id = link.split('/')[4]
         page = self.getPageContent(f'{self.base}/manga/{id}')
         soup = BeautifulSoup(page, 'html.parser')
-        title = soup.select_one('p.text-3xl')
+        title = soup.select_one('h2.tw-tv.tw-zj.transition.tw-lp.tw-ey.tw-iu')
         return Manga(id, title.get_text())
 
     def _is_json(self, texto):
@@ -55,7 +55,8 @@ class SlimeReadProvider(Base):
             while len(data) == 0:
                 page_content = await page.get_content()
                 soup = BeautifulSoup(page_content, 'html.parser')
-                data = soup.select('p.text-3xl')
+                data = soup.select('h2.tw-tv.tw-zj.transition.tw-lp.tw-ey.tw-iu')
+                # data = soup.select('h2.tw-tv.tw-zj.transition.tw-lp.tw-ey.tw-iu')
 
             content = page_content
             browser.stop()
@@ -72,8 +73,10 @@ class SlimeReadProvider(Base):
         else:
             array = response.json()
         page = self.getPageContent(f'{self.base}/manga/{id}')
+        print(f'[no-render]{page}')
+        list = []
         soup = BeautifulSoup(page, 'html.parser')
-        title = soup.select_one('p.text-3xl')
+        title = soup.select_one('h2.tw-tv.tw-zj.transition.tw-lp.tw-ey.tw-iu')
         for chapter in array:
             value = chapter['btc_cap'] + 1
             if value.is_integer():

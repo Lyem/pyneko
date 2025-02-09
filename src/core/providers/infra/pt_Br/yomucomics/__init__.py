@@ -4,14 +4,14 @@ from urllib.parse import urljoin
 from core.__seedwork.infra.http import Http
 from core.providers.domain.entities import Chapter, Pages
 from core.providers.infra.template.manga_reader_cms import MangaReaderCms
-class SssScanlatorProvider(MangaReaderCms):
-    name = 'Sss Scanlator'
+class YomuComicsProvider(MangaReaderCms):
+    name = 'Yomu Comics'
     lang = 'pt-Br'
-    domain = ['ssstoons.com']
+    domain = ['yomucomics.com']
 
     def __init__(self):
         super().__init__()
-        self.url = 'https://ssstoons.com'
+        self.url = 'https://yomucomics.com'
         self.path = '/'
 
         self.query_mangas = 'ul.manga-list li a'

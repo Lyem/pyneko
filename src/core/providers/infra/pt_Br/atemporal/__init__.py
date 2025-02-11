@@ -22,7 +22,7 @@ class AtemporalProvider(WordPressMadara):
 
         ua = UserAgent()
         user = ua.chrome
-        self.headers = {'host': 'atemporal.cloud', 'user_agent': user, 'referer': f'{self.url}/series'}
+        self.headers = {'host': 'atemporal.cloud', 'user_agent': user, 'referer': f'{self.url}/series', 'Cookie': 'acesso_legitimo=1'}
 
     
     def download(self, pages: Pages, fn: any, headers=None, cookies=None):

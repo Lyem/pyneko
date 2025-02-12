@@ -29,5 +29,5 @@ class SafireScanProvider(BloggerCms):
                     if ch['link'][4]['href'] == id:
                         continue
                     list.append(Chapter(ch['link'][4]['href'], ch['title']['$t'], title.get_text(strip=True)))
-            break
+                break
         return list

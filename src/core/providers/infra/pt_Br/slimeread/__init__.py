@@ -1,7 +1,10 @@
+import os
+import cv2
 import json
 import nodriver as uc
-from typing import List
 from time import sleep
+from typing import List
+from pathlib import Path
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 from core.__seedwork.infra.http import Http
@@ -73,7 +76,6 @@ class SlimeReadProvider(Base):
         else:
             array = response.json()
         page = self.getPageContent(f'{self.base}/manga/{id}')
-        print(f'[no-render]{page}')
         list = []
         soup = BeautifulSoup(page, 'html.parser')
         title = soup.select_one('h2.tw-tv.tw-zj.transition.tw-lp.tw-ey.tw-iu')
@@ -110,12 +112,65 @@ class SlimeReadProvider(Base):
                 list.append(f'{cdn_selected}{data['btcu_image']}')
         return Pages(ch.id, ch.number, ch.name, list)
     
+    def adjust_template_size(self, template, img):
+        h_img, w_img = img.shape[:2]
+        h_template, w_template = template.shape[:2]
+
+        if h_template > h_img or w_template > w_img:
+            scale_h = h_img / h_template
+            scale_w = w_img / w_template
+            scale = min(scale_h, scale_w)
+            template = cv2.resize(template, (int(w_template * scale), int(h_template * scale)))
+        
+        return template
+
+    def removeMark(self, img_path, template_path, output_path) -> bool:
+        img = cv2.imread(img_path)
+        template = cv2.imread(template_path)
+        template = self.adjust_template_size(template, img)
+
+        h, w = template.shape[:2]
+        result = cv2.matchTemplate(img, template, cv2.TM_CCOEFF_NORMED)
+        
+        _, max_val, _, max_loc = cv2.minMaxLoc(result)
+        
+        if max_val >= 0.8:
+            y_cut = max_loc[1] + h  # Corta abaixo do template encontrado
+            img_cropped = img[y_cut:, :]
+            cv2.imwrite(output_path, img_cropped)
+            return True
+        
+        return False
+    
     def download(self, pages: Pages, fn: any, headers=None, cookies=None):
-        if headers is not None:
-            headers = headers | self.headers
-        else:
+        if headers is None:
             headers = self.headers
-        return DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)
+        else:
+            headers = headers | self.headers
+
+        downloaded_pages = DownloadUseCase().execute(
+            pages=pages, 
+            fn=fn, 
+            headers=headers, 
+            cookies=cookies
+        )
+
+        # Lista de templates de marca a serem testados
+        marks = ['mark1.png']  # Ajuste com seus arquivos
+        marks_path = os.path.join(Path(__file__).parent, 'templates')  # Pasta com as marcas
+
+        # Processar cada imagem baixada
+        for page_path in downloaded_pages.files:
+            for mark in marks:
+                template_path = os.path.join(marks_path, mark)
+                if self.removeMark(
+                    img_path=page_path,
+                    template_path=template_path,
+                    output_path=page_path  # Sobrescreve a imagem original
+                ):
+                    break  # Para de testar templates se um for encontrado
+
+        return downloaded_pages
 
 if __name__ == "__main__":
     manga = SlimeReadProvider().getManga('https://slimeread.com/manga/545/a-caixa-de-joias-da-princesa')

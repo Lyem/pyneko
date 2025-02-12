@@ -1,3 +1,4 @@
+import re
 from typing import List
 from core.__seedwork.infra.http import Http
 from core.providers.infra.template.base import Base
@@ -6,7 +7,7 @@ from core.providers.domain.entities import Chapter, Pages, Manga
 class YugenProvider(Base):
     name = 'Yugen mangas'
     lang = 'pt-Br'
-    domain = ['yugenmangasbr.voblog.xyz', 'yugenmangasbr.soupnos.com', 'yugenmangasbr.idoveb.net']
+    domain = [re.compile(r'\byugenmangasbr\.[^\s/]+(?:\.[^\s/]+)*\b')]
 
     def __init__(self) -> None:
         self.base = 'https://yugenmangasbr.idoveb.net'
@@ -47,7 +48,7 @@ class YugenProvider(Base):
     def getPages(self, ch: Chapter) -> Pages:
         response = Http.post(f'{self.api}api/chapters/chapter-info/', json={
             "code": ch.id,
-            "key":"wKwPtVJhLSHoMJAiTAVnnggEils1zgHF",
+            "key":"mOlh8W0u5LnoaaYbuJdBYgrDjidseyyn",
         })
         data = response.json()
 

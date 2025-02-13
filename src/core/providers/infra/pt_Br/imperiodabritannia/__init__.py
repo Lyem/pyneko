@@ -24,7 +24,7 @@ class ImperiodabritanniaProvider(WordPressMadara):
         ua = UserAgent()
         user = ua.chrome
         self.user = ua.chrome
-        self.headers = {'host': 'imperiodabritannia.com', 'user_agent': user, 'referer': f'{self.url}'}
+        self.headers = {'host': 'imperiodabritannia.com', 'user_agent': user, 'referer': f'{self.url}', 'Cookie': 'acesso_legitimo=1'}
     
     def download(self, pages: Pages, fn: any, headers=None, cookies=None):
         if headers is not None:

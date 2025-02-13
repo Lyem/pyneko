@@ -1,12 +1,12 @@
 from core.providers.infra.template.wordpress_madara import WordPressMadara
 
-class NorteroseProvider(WordPressMadara):
-    name = 'Norterose'
+class SpectralScanProvider(WordPressMadara):
+    name = 'Spectral Scan'
     lang = 'pt_Br'
-    domain = ['norterose.xyz']
+    domain = ['spectralscan.xyz']
 
     def __init__(self):
-        self.url = 'https://norterose.xyz/manga/como-cacar-sua-mestra/'
+        self.url = 'https://spectralscan.xyz/'
 
         self.path = ''
         

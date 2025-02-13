@@ -1,46 +1,33 @@
 from typing import List
 from bs4 import BeautifulSoup
 from core.__seedwork.infra.http import Http
-from core.providers.infra.template.base import Base
-from core.providers.domain.entities import Chapter, Pages, Manga
+from core.providers.domain.entities import Chapter
+from core.providers.infra.template.blogger_cms import BloggerCms
 
-class SafireScanProvider(Base):
+class SafireScanProvider(BloggerCms):
     name = 'Safire Scans'
     lang = 'pt_Br'
     domain = ['www.safirescan.xyz']
 
-    def __init__(self) -> None:
-        pass
-    
-    def getManga(self, link: str) -> Manga:
-        response = Http.get(link)
-        soup = BeautifulSoup(response.content, 'html.parser')
-        title = soup.select_one('div h1.my-2.text-2xl')
 
-        return Manga(link, title.get_text(strip=True))
+    def __init__(self) -> None:
+        self.get_title = 'header h1'
+        self.API_domain = 'www.safirescan.xyz'
+        self.get_pages = 'div.separator a img'
 
     def getChapters(self, id: str) -> List[Chapter]:
-        list = []
         response = Http.get(id)
         soup = BeautifulSoup(response.content, 'html.parser')
-        title = soup.select_one('div h1.my-2.text-2xl')
-        subtitles = soup.select_one('div p')
-        array_sub = subtitles.get_text().split(',')
-        for subs in array_sub:
-            response = Http.get(f'https://www.safirescan.xyz/feeds/posts/default/-/{subs.strip()}?alt=json&start-index=1&max-results=150').json()
-            if 'feed' in response and 'entry' in response['feed']:
+        title = soup.select_one(self.get_title)
+        get_sub_titles = soup.select_one('header p')
+        sub_titles = get_sub_titles.get_text().split(',')
+        list = []
+        for sub_title in sub_titles:
+            response = Http.get(f'https://{self.API_domain}/feeds/posts/default/-/{sub_title.strip('')}?alt=json&start-index=1&max-results=150').json()
+            if response['feed']['entry']:
                 for ch in response['feed']['entry']:
-                    if ch['link'][-1]['href'] != id:
-                        list.append(Chapter(ch['link'][-1]['href'], ch['link'][-1]['title'], title.get_text(strip=True)))
+                    if ch['link'][4]['href'] == id:
+                        continue
+                    list.append(Chapter(ch['link'][4]['href'], ch['title']['$t'], title.get_text(strip=True)))
                 break
         return list
-
-    def getPages(self, ch: Chapter) -> Pages:
-        response = Http.get(ch.id)
-        soup = BeautifulSoup(response.content, 'html.parser')
-        get_pages = soup.select('article#reader img')
-        list = []
-        for pgs in get_pages:
-            list.append(pgs.get('src'))
-        return Pages(ch.id, ch.number, ch.name, list)
-

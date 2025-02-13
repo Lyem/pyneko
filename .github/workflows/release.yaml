@@ -14,7 +14,6 @@ jobs:
       matrix:
         config:
           - os: ubuntu-22.04
-          - os: macos-12
           - os: windows-2019
 
     steps:
@@ -62,9 +61,6 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v4
 
-      - name: Zip file macos
-        run: zip -r pyneko_macos.zip pyneko-pyinstaller-artifact-macos-12/__init__.app pyneko-pyinstaller-artifact-macos-12/__init__
-
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
@@ -77,4 +73,3 @@ jobs:
           files: |
             pyneko-pyinstaller-artifact-windows-2019/Pyneko.exe
             pyneko-pyinstaller-artifact-ubuntu-22.04/Pyneko
-            pyneko_macos.zip

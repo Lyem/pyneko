@@ -70,7 +70,7 @@ class NewSussyToonsProvider(Base):
                 list = []
                 while_is_true = True
                 courrent_page = 0
-                sleep_time = 10
+                sleep_time = 25
                 while(while_is_true):
                     html = self.get_Pages(f'{self.webBase}/capitulo/{ch.id[1]}', sleep_time)
                     soup = BeautifulSoup(html, 'html.parser')

@@ -3,10 +3,10 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class MysticMagicProvider(WordPressMadara):
     name = 'Mystic Magic'
     lang = 'pt_Br'
-    domain = ['mysticmoon.lat']
+    domain = ['mysticmagic.com.br']
 
     def __init__(self):
-        self.url = 'https://mysticmoon.lat/'
+        self.url = 'https://mysticmagic.com.br/'
 
         self.path = ''
         

@@ -1,10 +1,10 @@
 import re
+import math
 import asyncio
 import nodriver as uc
 from typing import List
 from bs4 import BeautifulSoup
 from core.__seedwork.infra.http import Http
-# from urllib.parse import urlparse, parse_qs
 from core.providers.infra.template.base import Base
 from core.providers.domain.entities import Chapter, Pages, Manga
 
@@ -64,29 +64,36 @@ class NewSussyToonsProvider(Base):
         return resultado
     
     def getPages(self, ch: Chapter) -> Pages:
+        images = []
+        base_delay = 25  
+        max_delay = 300 
+        max_attempts = 5 
+        attempt = 0
+
+        while attempt < max_attempts:
             try:
-                # response = Http.get(f'{self.webBase}/capitulo/{ch.id[1]}')
-                # print(f'[no-render]{response.content}')
-                list = []
-                while_is_true = True
-                courrent_page = 0
-                sleep_time = 25
-                while(while_is_true):
-                    html = self.get_Pages(f'{self.webBase}/capitulo/{ch.id[1]}', sleep_time)
-                    soup = BeautifulSoup(html, 'html.parser')
-                    get_images = soup.select('img.chakra-image.css-8atqhb')
-                    for images in get_images:
-                        list.append(images.get('src'))
-                    if len(list) > 0:
-                        while_is_true = False
+                current_delay = min(base_delay * math.pow(2, attempt), max_delay)
+                
+                print(f"Attempt {attempt + 1} - Using {current_delay} seconds delay")
+                
+                html = self.get_Pages(
+                    id=f'{self.webBase}/capitulo/{ch.id[1]}',
+                    sleep=current_delay,
+                    background=attempt > 1 
+                )
+                
+                soup = BeautifulSoup(html, 'html.parser')
+                images = [img.get('src') for img in soup.select('img.chakra-image.css-8atqhb')]
+                
+                if images:
+                    print("Successfully fetched images")
+                    break
+                else:
+                    print("No images found, retrying...")
 
-                    if courrent_page >= 3:
-                        break
-                    courrent_page += 1
-
-                    sleep_time += 5
-
-                return Pages(ch.id, ch.number, ch.name, list)
-            
             except Exception as e:
-                print(e)
+                print(f"Attempt {attempt + 1} failed: {str(e)}")
+            
+            attempt += 1
+
+        return Pages(ch.id, ch.number, ch.name, images)

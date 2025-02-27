@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 from core.__seedwork.infra.http import Http
 from core.providers.infra.template.base import Base
 from core.providers.domain.entities import Chapter, Pages, Manga
+import json
 
 class NewSussyToonsProvider(Base):
     name = 'New Sussy Toons'
@@ -14,7 +15,7 @@ class NewSussyToonsProvider(Base):
     domain = ['new.sussytoons.site', 'www.sussyscan.com', 'www.sussytoons.site', 'www.sussytoons.wtf']
 
     def __init__(self) -> None:
-        self.base = 'https://api-dev.sussytoons.site'
+        self.base = 'https://api.sussytoons.wtf'
         self.CDN = 'https://cdn.sussytoons.site'
         self.old = 'https://oldi.sussytoons.site/wp-content/uploads/WP-manga/data/'
         self.oldCDN = 'https://oldi.sussytoons.site/scans/1/obras'
@@ -36,7 +37,7 @@ class NewSussyToonsProvider(Base):
             title = response['resultado']['obr_nome']
             list = []
             for ch in response['resultado']['capitulos']:
-                list.append(Chapter([id_value, ch['cap_id'], ], ch['cap_nome'], title))
+                list.append(Chapter([id_value, ch['cap_id']], ch['cap_nome'], title))
             return list
         except Exception as e:
             print(e)
@@ -44,8 +45,49 @@ class NewSussyToonsProvider(Base):
 
     def get_Pages(self, id, sleep, background = False):
         async def get_Pages_driver():
+            inject_script = """
+            const mockResponse = {
+                statusCode: 200,
+                resultado: {
+                    usr_id: 83889,
+                    usr_nome: "White_Preto",
+                    usr_email: "emailgay@gmail.com",
+                    usr_nick: "emailgay",
+                    usr_imagem: null,
+                    usr_banner: null,
+                    usr_moldura: null,
+                    usr_criado_em: "2025-02-26 16:34:19.591",
+                    usr_atualizado_em: "2025-02-26 16:34:19.591",
+                    usr_status: "ATIVO",
+                    vip_habilitado: true,
+                    vip_habilitado_em: "2025-02-26 16:34:19.591",
+                    vip_temporario_em: null,
+                    vip_acaba_em: "2035-02-26 16:34:19.591",
+                    usr_google_token: null,
+                    scan: {
+                        scan_id: 1,
+                        scan_nome: "Sussy"
+                    },
+                    scan_id: 1,
+                    tags: []
+                }
+            };
+
+            // Intercepta todas as requisições para a API
+            const originalFetch = window.fetch;
+            window.fetch = async function(url, options) {
+                if (url.includes('api.sussytoons.wtf/me')) {
+                    return new Response(JSON.stringify(mockResponse), {
+                        status: 200,
+                        headers: {'Content-Type': 'application/json'}
+                    });
+                }
+                return originalFetch(url, options);
+            };
+            """
+
             browser = await uc.start(
-                 browser_args=[
+                browser_args=[
                     '--window-size=600,600', 
                     f'--app={id}',
                     '--disable-extensions', 
@@ -56,6 +98,9 @@ class NewSussyToonsProvider(Base):
             )
             page = await browser.get(id)
             await browser.cookies.set_all(self.cookies)
+            
+            await page.evaluate(inject_script)
+            
             await asyncio.sleep(sleep)
             html = await page.get_content()
             browser.stop() 

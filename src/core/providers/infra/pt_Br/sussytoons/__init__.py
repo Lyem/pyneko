@@ -12,7 +12,7 @@ import json
 class NewSussyToonsProvider(Base):
     name = 'New Sussy Toons'
     lang = 'pt_Br'
-    domain = ['new.sussytoons.site', 'www.sussyscan.com', 'www.sussytoons.site', 'www.sussytoons.wtf']
+    domain = ['new.sussytoons.site', 'www.sussyscan.com', 'www.sussytoons.site', 'www.sussytoons.wtf', 'sussytoons.wtf']
 
     def __init__(self) -> None:
         self.base = 'https://api.sussytoons.wtf'

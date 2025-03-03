@@ -29,7 +29,6 @@ class YanpFansubProvider(WordPressMadara):
             response = Http.get(uri, timeout=getattr(self, 'timeout', None))
             soup = BeautifulSoup(response.content, 'html.parser')
             data = soup.select(self.query_pages)
-            print(ch.name)
             if not data:
                 uri = self._remove_query_params(uri, ['style'])
                 response = Http.get(uri, timeout=getattr(self, 'timeout', None))

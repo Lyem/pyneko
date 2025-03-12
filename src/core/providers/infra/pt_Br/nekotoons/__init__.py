@@ -1,12 +1,12 @@
 from core.providers.infra.template.yushuke_theme import YushukeTheme
 
-class YushukeMangasProvider(YushukeTheme):
-    name = 'Yushuke Mangas'
+class NekoToonsProvider(YushukeTheme):
+    name = 'Neko Toons'
     lang = 'pt_Br'
-    domain = ['new.yushukemangas.com']
+    domain = ['nekotoons.site']
 
     def __init__(self) -> None:
-        self.url = 'https://new.yushukemangas.com'
+        self.url = 'https://nekotoons.site'
         self.chapters_api = f'{self.url}/ajax/lzmvke.php?'
         
         self.title = 'div.manga-title-row h1'

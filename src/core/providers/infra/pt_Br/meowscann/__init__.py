@@ -7,10 +7,10 @@ from core.providers.domain.entities import Chapter, Pages, Manga
 class MeowScannProvider(Base):
     name = 'Meow Scann'
     lang = 'pt_Br'
-    domain = ['meowscann.blogspot.com']
+    domain = ['meowscan1.blogspot.com']
 
     def __init__(self) -> None:
-        self.API_domain = 'meowscann.blogspot.com'
+        self.API_domain = 'meowscan1.blogspot.com'
         self.cookie = {'INTERSTITIAL': 'ABqL8_iSO0SOvzSV_83iT6ezjBIH3Mfpn3D7fSU49FFXG3flWhzLl9o96fPkqcQ'}
     
     def getManga(self, link: str) -> Manga:

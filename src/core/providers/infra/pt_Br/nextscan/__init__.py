@@ -12,7 +12,7 @@ class NextScanProvider(WordpressEtoshoreMangaTheme):
         self.url = 'https://nextscan.cloud'
         self.get_title = 'h1'
         self.get_chapters_list = 'div.list-box.chapter-list'
-        self.chapter = 'li.language-BRA > a'
+        self.chapter = 'li.language-br a'
         self.get_chapter_number = 'div.title'
         self.get_div_page = 'div.chapter-image-content'
         self.get_pages = 'div.chapter-item > img'
@@ -21,9 +21,9 @@ class NextScanProvider(WordpressEtoshoreMangaTheme):
         user = ua.chrome
         self.headers = {'host': 'nextscan.cloud', 'user_agent': user, 'referer': f'{self.url}/series'}
 
-    def download(self, pages: Pages, fn: any, headers=None, cookies=None):
-        if headers is not None:
-            headers = headers | self.headers
-        else:
-            headers = self.headers
-        return DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)
+    # def download(self, pages: Pages, fn: any, headers=None, cookies=None):
+    #     if headers is not None:
+    #         headers = headers | self.headers
+    #     else:
+    #         headers = self.headers
+    #     return DownloadUseCase().execute(pages=pages, fn=fn, headers=headers, cookies=cookies)

@@ -1,4 +1,3 @@
-from turtle import title
 from typing import List
 from bs4 import BeautifulSoup
 from core.__seedwork.infra.http import Http

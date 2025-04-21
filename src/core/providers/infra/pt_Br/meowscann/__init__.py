@@ -11,7 +11,7 @@ class MeowScannProvider(Base):
 
     def __init__(self) -> None:
         self.API_domain = 'meowscan1.blogspot.com'
-        self.cookie = {'INTERSTITIAL': 'ABqL8_iSO0SOvzSV_83iT6ezjBIH3Mfpn3D7fSU49FFXG3flWhzLl9o96fPkqcQ'}
+        self.cookie = {'INTERSTITIAL': 'ABqL8_j9iNX3aHhf2VR_tVo_UBu0PZk5TTu29be9X72JDH_DQweTZ4YGL2mMmPk'}
     
     def getManga(self, link: str) -> Manga:
         response = Http.get(link, cookies=self.cookie)

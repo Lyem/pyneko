@@ -19,7 +19,7 @@ class EmpreguetesProvider(Base):
         self.base = 'https://api.sussytoons.wtf'
         self.CDN = 'https://cdn.sussytoons.site'
         self.old = 'https://oldi.sussytoons.site/wp-content/uploads/WP-manga/data/'
-        self.chapter = 'https://novo.empreguetes.site/capitulos'
+        self.chapter = 'https://novo.empreguetes.site/capitulo'
         self.webBase = 'https://www.sussytoons.wtf'
         self.cookies = [{'sussytoons-terms-accepted', 'true'}]
     
@@ -42,67 +42,102 @@ class EmpreguetesProvider(Base):
             return list
         except Exception as e:
             print(e)
-    
+        
     def getPages(self, ch: Chapter) -> Pages:
         try:
+            # Validações iniciais
             if not hasattr(ch, 'id') or not isinstance(ch.id, (list, tuple)) or len(ch.id) < 2:
-                raise ValueError("ch.id must be a list/tuple with at least 2 elements")
+                raise ValueError("ch.id deve ser uma lista/tupla com pelo menos 2 elementos")
             if not hasattr(ch, 'number') or not isinstance(ch.number, str):
-                raise ValueError("ch.number must be a valid string")
+                raise ValueError("ch.number deve ser uma string válida")
             if not hasattr(ch, 'name'):
-                raise ValueError("ch.name must be defined")
+                raise ValueError("ch.name deve estar definido")
             if not hasattr(self, 'CDN') or not self.CDN:
-                raise ValueError("self.CDN must be defined and non-empty")
+                raise ValueError("self.CDN deve estar definido e não vazio")
             if not hasattr(self, 'chapter') or not self.chapter:
-                raise ValueError("self.chapter must be defined and non-empty")
+                raise ValueError("self.chapter deve estar definido e não vazio")
 
+            # Extrai o número do capítulo
+            chapter_number_parts = ch.number.split(' ')
+            if len(chapter_number_parts) < 2:
+                raise ValueError(f"Formato de número de capítulo inválido: {ch.number}")
+            chapter_number = chapter_number_parts[1]
+
+            # Verifica se o capítulo existe
             chapter_url = f"{self.chapter}/{ch.id[1]}"
             response = Http.get(chapter_url)
             if response.status not in range(200, 300):
                 raise RuntimeError(f"Failed to fetch chapter data: {response.status} - {chapter_url}")
 
+            # Define o base_url para as imagens
+            base_url = f"{self.CDN}/scans/3/obras/{ch.id[0]}/capitulos/{chapter_number}/"
+
+            # Define as funções de formatação para o número da página
+            format_functions = [
+                lambda n: str(n),          # Sem zeros à esquerda (ex.: 1, 2, 10)
+                lambda n: f"{n:02d}",      # Dois dígitos com zero à esquerda (ex.: 01, 02, 10)
+                lambda n: f"{n:03d}"       # Três dígitos com zero à esquerda (ex.: 001, 002, 010)
+            ]
+
+            # Define as variações de sufixo e formatos de imagem
+            suffixes = ["", "_copiar"]
+            extensions = ["jpg", "webp", "png"]
+
+            # Passo 1: Encontrar o padrão válido para a página 1
+            fixed_fmt = None
+            fixed_suff = None
+            fixed_ext = None
+            found_first = False
+
+            for fmt in format_functions:
+                for suff in suffixes:
+                    for ext in extensions:
+                        page_str = fmt(1)
+                        filename = f"{page_str}{suff}.{ext}"
+                        url = base_url + filename
+                        try:
+                            response = Http.get(url)
+                            if response.status in range(200, 300):
+                                fixed_fmt = fmt
+                                fixed_suff = suff
+                                fixed_ext = ext
+                                found_first = True
+                                break
+                        except Exception as e:
+                            print(f"Falha na requisição para {url}: {e}")
+                    if found_first:
+                        break
+                if found_first:
+                    break
+
+            if not found_first:
+                raise RuntimeError("Nenhuma URL de imagem válida encontrada para a página 1")
+
+            # Passo 2: Buscar páginas subsequentes usando o padrão fixo
             image_urls = []
-            attempts = 0
             current = 1
-            zero_qt = 1
-            max_zero_qt = 3
-            image_formats = ['jpg', 'webp', 'png']
-            current_format_idx = 0
+            max_pages = 1000  # Limite para evitar loop infinito
 
-            chapter_number_parts = ch.number.split(' ')
-            if len(chapter_number_parts) < 2:
-                raise ValueError(f"Invalid chapter number format: {ch.number}")
-            chapter_number = chapter_number_parts[1]
-
-            while True:
-                url = f"{self.CDN}/scans/3/obras/{ch.id[0]}/capitulos/{chapter_number}/{current:0{zero_qt}d}.{image_formats[current_format_idx]}"
+            while len(image_urls) < max_pages:
+                page_str = fixed_fmt(current)
+                filename = f"{page_str}{fixed_suff}.{fixed_ext}"
+                url = base_url + filename
                 try:
-                    request_image = Http.get(url)
-                except Exception as req_err:
-                    print(f"Request failed for {url}: {req_err}")
-                    request_image = None
-
-                if request_image is None or request_image.status not in range(200, 300):
-                    if zero_qt < max_zero_qt:
-                        zero_qt += 1
-                        continue
+                    response = Http.get(url)
+                    if response.status in range(200, 300):
+                        image_urls.append(url)
+                        current += 1
                     else:
-                        current_format_idx += 1
-                        zero_qt = 1
-                        if current_format_idx >= len(image_formats):
-                            break
-                        continue
+                        break
+                except Exception as e:
+                    print(f"Falha na requisição para {url}: {e}")
+                    break
 
-                    image_urls.append(url)
-                    current += 1
-                    zero_qt = 1
-                    current_format_idx = 0
-
+            # Passo 3: Retornar o resultado
             if not image_urls:
-                raise RuntimeError("No valid image URLs found")
-
+                raise RuntimeError("Nenhuma URL de imagem válida encontrada")
             return Pages(ch.id, ch.number, ch.name, image_urls)
 
         except Exception as e:
-            print(f"Error in getPages: {str(e)}")
+            print(f"Erro em getPages: {str(e)}")
             raise

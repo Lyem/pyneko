@@ -74,7 +74,7 @@ class EmpreguetesProvider(Base):
                 lambda n: f"{n:03d}"     
             ]
 
-            suffixes = ["", "_copiar"]
+            suffixes = ["", "_copiar", " (1) final copiar"]
             extensions = ["jpg", "webp", "png"]
 
             fixed_fmt = None

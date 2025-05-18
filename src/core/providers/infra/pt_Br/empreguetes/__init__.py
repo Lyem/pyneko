@@ -45,7 +45,6 @@ class EmpreguetesProvider(Base):
         
     def getPages(self, ch: Chapter) -> Pages:
         try:
-            # Validações iniciais
             if not hasattr(ch, 'id') or not isinstance(ch.id, (list, tuple)) or len(ch.id) < 2:
                 raise ValueError("ch.id deve ser uma lista/tupla com pelo menos 2 elementos")
             if not hasattr(ch, 'number') or not isinstance(ch.number, str):
@@ -57,33 +56,27 @@ class EmpreguetesProvider(Base):
             if not hasattr(self, 'chapter') or not self.chapter:
                 raise ValueError("self.chapter deve estar definido e não vazio")
 
-            # Extrai o número do capítulo
             chapter_number_parts = ch.number.split(' ')
             if len(chapter_number_parts) < 2:
                 raise ValueError(f"Formato de número de capítulo inválido: {ch.number}")
             chapter_number = chapter_number_parts[1]
 
-            # Verifica se o capítulo existe
             chapter_url = f"{self.chapter}/{ch.id[1]}"
             response = Http.get(chapter_url)
             if response.status not in range(200, 300):
                 raise RuntimeError(f"Failed to fetch chapter data: {response.status} - {chapter_url}")
 
-            # Define o base_url para as imagens
             base_url = f"{self.CDN}/scans/3/obras/{ch.id[0]}/capitulos/{chapter_number}/"
 
-            # Define as funções de formatação para o número da página
             format_functions = [
-                lambda n: str(n),          # Sem zeros à esquerda (ex.: 1, 2, 10)
-                lambda n: f"{n:02d}",      # Dois dígitos com zero à esquerda (ex.: 01, 02, 10)
-                lambda n: f"{n:03d}"       # Três dígitos com zero à esquerda (ex.: 001, 002, 010)
+                lambda n: str(n),      
+                lambda n: f"{n:02d}",  
+                lambda n: f"{n:03d}"     
             ]
 
-            # Define as variações de sufixo e formatos de imagem
             suffixes = ["", "_copiar"]
             extensions = ["jpg", "webp", "png"]
 
-            # Passo 1: Encontrar o padrão válido para a página 1
             fixed_fmt = None
             fixed_suff = None
             fixed_ext = None
@@ -113,10 +106,9 @@ class EmpreguetesProvider(Base):
             if not found_first:
                 raise RuntimeError("Nenhuma URL de imagem válida encontrada para a página 1")
 
-            # Passo 2: Buscar páginas subsequentes usando o padrão fixo
             image_urls = []
             current = 1
-            max_pages = 1000  # Limite para evitar loop infinito
+            max_pages = 1000 
 
             while len(image_urls) < max_pages:
                 page_str = fixed_fmt(current)
@@ -133,7 +125,6 @@ class EmpreguetesProvider(Base):
                     print(f"Falha na requisição para {url}: {e}")
                     break
 
-            # Passo 3: Retornar o resultado
             if not image_urls:
                 raise RuntimeError("Nenhuma URL de imagem válida encontrada")
             return Pages(ch.id, ch.number, ch.name, image_urls)

@@ -326,11 +326,14 @@ class MangaDownloaderApp:
                 update_external(checked)
 
     def chapter_download_button_clicked(self, ch: Chapter, download_button):
-        download_button.setEnabled(False)
+        try:
+            download_button.setEnabled(False)
 
-        runnable = DownloadRunnable(ch, self.provider_selected)
-        self.download_status.append((ch, self.provider_selected, runnable))
-        self._load_progress()
+            runnable = DownloadRunnable(ch, self.provider_selected)
+            self.download_status.append((ch, self.provider_selected, runnable))
+            self._load_progress()
+        except Exception as e:
+            print(f"Error in chapter download button clicked: {e}")
 
     def _add_chapters(self):
         while self.window.verticalChapter.count():

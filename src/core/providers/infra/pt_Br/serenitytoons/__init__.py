@@ -86,7 +86,7 @@ class SerenityToonsProvider(Base):
                 
                 if result:
                     for cap in result['capitulos']:
-                        list.append(Chapter([id_value, cap['cap_id']], cap['cap_nome'].encode('latin1').decode('utf-8'), title))
+                        list.append(Chapter([id_value, cap['cap_id']], cap['cap_nome'].encode('latin1').decode('utf-8'), title.get_text()))
                 else:
                     print("Não foi possível extrair o JSON de capítulos.")
             return list

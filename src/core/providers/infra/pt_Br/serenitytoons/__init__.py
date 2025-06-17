@@ -25,21 +25,70 @@ class SerenityToonsProvider(Base):
         self.cookies = [{'sussytoons-terms-accepted', 'true'}]
     
     def getManga(self, link: str) -> Manga:
-        match = re.search(r'/obra/(\d+)', link)
-        id_value = match.group(1)
-        response = Http.get(f'{self.base}/obras/{id_value}').json()
-        title = response['resultado']['obr_nome']
-        return Manga(link, title)
+        response = Http.get(link)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        title = soup.select_one('title')
+        return Manga(link, title.get_text())
+    
+    def extract_json_object(self, text, key):
+        inicio = text.find(f'"{key}":')
+        if inicio == -1:
+            return None
 
+        inicio_json = text.find('{', inicio)
+        if inicio_json == -1:
+            return None
+
+        contador = 0
+        fim_json = inicio_json
+
+        for i, char in enumerate(text[inicio_json:], start=inicio_json):
+            if char == '{':
+                contador += 1
+            elif char == '}':
+                contador -= 1
+                if contador == 0:
+                    fim_json = i + 1
+                    break
+
+        json_str = text[inicio_json:fim_json]
+        try:
+            return json.loads(json_str)
+        except json.JSONDecodeError as e:
+            print("Erro ao decodificar JSON:", e)
+            print("JSON bruto:", json_str)
+            return None
+    
     def getChapters(self, id: str) -> List[Chapter]:
         try:
             match = re.search(r'/obra/(\d+)', id)
             id_value = match.group(1)
-            response = Http.get(f'{self.base}/obras/{id_value}').json()
-            title = response['resultado']['obr_nome']
+            response = Http.get(id)
+            soup = BeautifulSoup(response.content, 'html.parser')
+            title = soup.select_one('title')
+            scripts = soup.find_all('script')
+            target_script = None
+            for script in scripts:
+                if script.string and 'cap_id' in script.string:
+                    print(f"Script encontrado")
+                    target_script = script.string
+                    break
+            match = re.search(r'self\.__next_f\.push\(\[1,"(5:.*?)"\]\)', target_script, re.DOTALL)
             list = []
-            for ch in response['resultado']['capitulos']:
-                list.append(Chapter([id_value, ch['cap_id']], ch['cap_nome'], title))
+            if not match:
+                print("Não foi possível extrair a string JSON embutida.")
+            else:
+                json_raw = match.group(1)
+
+                escape = json_raw.encode().decode("unicode_escape")
+
+                result = self.extract_json_object(escape, "resultado")
+                
+                if result:
+                    for cap in result['capitulos']:
+                        list.append(Chapter([id_value, cap['cap_id']], cap['cap_nome'].encode('latin1').decode('utf-8'), title))
+                else:
+                    print("Não foi possível extrair o JSON de capítulos.")
             return list
         except Exception as e:
             print(e)

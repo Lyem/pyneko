@@ -19,7 +19,7 @@ class SafireScanProvider(BloggerCms):
         response = Http.get(id)
         soup = BeautifulSoup(response.content, 'html.parser')
         title = soup.select_one(self.get_title)
-        get_sub_titles = soup.select_one('header p')
+        get_sub_titles = soup.select_one('h1.my-2.text-2xl + p')
         sub_titles = get_sub_titles.get_text().split(',')
         list = []
         for sub_title in sub_titles:

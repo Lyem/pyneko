@@ -3,10 +3,10 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class GhostScanProvider(WordPressMadara):
     name = 'Ghost scan'
     lang = 'pt-Br'
-    domain = ['ghostscan.com.br']
+    domain = ['ghostscan.xyz']
 
     def __init__(self):
-        self.url = 'https://ghostscan.com.br'
+        self.url = 'https://ghostscan.xyz'
 
         self.path = ''
         

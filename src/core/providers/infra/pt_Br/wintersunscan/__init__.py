@@ -15,14 +15,14 @@ class WinterSunScanProvider(Base):
     def getManga(self, link: str) -> Manga:
         response = Http.get(link)
         soup = BeautifulSoup(response.content, 'html.parser')
-        title = soup.select_one('div.name-rating.mb-24 h2')
+        title =  soup.select_one('head meta[property="og:title"]')
         return Manga(link, title.get_text(strip=True))
 
 
     def getChapters(self, id: str) -> List[Chapter]:
         response = Http.get(id)
         soup = BeautifulSoup(response.content, 'html.parser')
-        title = soup.select_one('div.name-rating.mb-24 h2')
+        title =  soup.select_one('head meta[property="og:title"]')
         get_chapters_div = soup.select_one('div.specmobile.row')
         list = []
         for ch in get_chapters_div:

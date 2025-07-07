@@ -16,7 +16,7 @@ class WinterSunScanProvider(Base):
         response = Http.get(link)
         soup = BeautifulSoup(response.content, 'html.parser')
         title =  soup.select_one('head meta[property="og:title"]')
-        return Manga(link, title.get_text(strip=True))
+        return Manga(link, title)
 
 
     def getChapters(self, id: str) -> List[Chapter]:
@@ -28,7 +28,7 @@ class WinterSunScanProvider(Base):
         for ch in get_chapters_div:
             onclick = ch.select_one('div.card-caps.d-flex.align-items-center')
             url = onclick.get('onclick').split("'")[1]
-            list.append(Chapter(url, ch.select_one('span.color-white.d-block').get_text(strip=True), title.get_text(strip=True)))
+            list.append(Chapter(url, ch.select_one('span.color-white.d-block'), title))
         return list
 
     def getPages(self, ch: Chapter) -> Pages:

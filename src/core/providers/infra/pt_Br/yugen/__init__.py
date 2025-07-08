@@ -7,10 +7,10 @@ from core.providers.domain.entities import Chapter, Pages, Manga
 class YugenProvider(Base):
     name = 'Yugen mangas'
     lang = 'pt-Br'
-    domain = [re.compile(r'\byugenmangasbr\.[^\s/]+(?:\.[^\s/]+)*\b')]
+    domain = [re.compile(r'\byugenbr\.[^\s/]+(?:\.[^\s/]+)*\b')]
 
     def __init__(self) -> None:
-        self.base = 'https://yugenmangasbr.idoveb.net'
+        self.base = 'https://yugenbr.nssec.xyz/'
         self.cdn = 'https://media.yugenweb.com/'
         self.api = 'https://api.yugenweb.com/'
         self.headers = {'referer': f'{self.base}'}

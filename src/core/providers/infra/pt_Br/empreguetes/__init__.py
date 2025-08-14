@@ -13,7 +13,7 @@ import json
 class EmpreguetesProvider(Base):
     name = 'Empreguetes'
     lang = 'pt_Br'
-    domain = ['novo.empreguetes.site']
+    domain = ['empreguetes.xyz']
 
     def __init__(self) -> None:
         self.base = 'https://api.sussytoons.wtf'

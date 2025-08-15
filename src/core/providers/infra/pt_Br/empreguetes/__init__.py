@@ -19,7 +19,7 @@ class EmpreguetesProvider(Base):
         self.base = 'https://api.sussytoons.wtf'
         self.CDN = 'https://cdn.sussytoons.site'
         self.old = 'https://oldi.sussytoons.site/wp-content/uploads/WP-manga/data/'
-        self.chapter = 'https://novo.empreguetes.site/capitulo'
+        self.chapter = 'https://empreguetes.xyz/capitulo'
         self.webBase = 'https://www.sussytoons.wtf'
         self.cookies = [{'sussytoons-terms-accepted', 'true'}]
     

@@ -26,7 +26,7 @@ class EmpreguetesProvider(Base):
     def getManga(self, link: str) -> Manga:
         match = re.search(r'/obra/(\d+)', link)
         id_value = match.group(1)
-        response = Http.get(f'{self.base}/obras/{id_value}', header={'scan-id': 'empreguetes.xyz'}).json()
+        response = Http.get(f'{self.base}/obras/{id_value}', headers={'scan-id': 'empreguetes.xyz'}).json()
         title = response['resultado']['obr_nome']
         return Manga(link, title)
 
@@ -34,7 +34,7 @@ class EmpreguetesProvider(Base):
         try:
             match = re.search(r'/obra/(\d+)', id)
             id_value = match.group(1)
-            response = Http.get(f'{self.base}/obras/{id_value}', header={'scan-id': 'empreguetes.xyz'}).json()
+            response = Http.get(f'{self.base}/obras/{id_value}', headers={'scan-id': 'empreguetes.xyz'}).json()
             title = response['resultado']['obr_nome']
             list = []
             for ch in response['resultado']['capitulos']:
@@ -62,7 +62,7 @@ class EmpreguetesProvider(Base):
             chapter_number = chapter_number_parts[1]
 
             chapter_url = f"{self.chapter}/{ch.id[1]}"
-            response = Http.get(chapter_url, header={'scan-id': 'empreguetes.xyz'})
+            response = Http.get(chapter_url, headers={'scan-id': 'empreguetes.xyz'})
             if response.status not in range(200, 300):
                 raise RuntimeError(f"Failed to fetch chapter data: {response.status} - {chapter_url}")
 
@@ -89,7 +89,7 @@ class EmpreguetesProvider(Base):
                         filename = f"{page_str}{suff}.{ext}"
                         url = base_url + filename
                         try:
-                            response = Http.get(url, header={'scan-id': 'empreguetes.xyz'})
+                            response = Http.get(url, headers={'scan-id': 'empreguetes.xyz'})
                             if response.status in range(200, 300):
                                 fixed_fmt = fmt
                                 fixed_suff = suff
@@ -115,7 +115,7 @@ class EmpreguetesProvider(Base):
                 filename = f"{page_str}{fixed_suff}.{fixed_ext}"
                 url = base_url + filename
                 try:
-                    response = Http.get(url, header={'scan-id': 'empreguetes.xyz'})
+                    response = Http.get(url, headers={'scan-id': 'empreguetes.xyz'})
                     if response.status in range(200, 300):
                         image_urls.append(url)
                         current += 1

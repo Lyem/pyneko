@@ -3,10 +3,10 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class CovenScanProvider(WordPressMadara):
     name = 'Coven Scan'
     lang = 'pt_Br'
-    domain = ['cvnscan.com']
+    domain = ['covendasbruxonas.com']
 
     def __init__(self):
-        self.url = 'https://cvnscan.com'
+        self.url = 'https://covendasbruxonas.com'
 
         self.path = ''
         

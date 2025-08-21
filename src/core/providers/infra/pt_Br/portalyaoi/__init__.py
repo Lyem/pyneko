@@ -3,10 +3,10 @@ from core.providers.infra.template.wordpress_madara import WordPressMadara
 class PortalYaoiProvider(WordPressMadara):
     name = 'Portal yaoi'
     lang = 'pt-Br'
-    domain = ['portalyaoi.com']
+    domain = ['lerboyslove.com']
 
     def __init__(self):
-        self.url = 'https://portalyaoi.com'
+        self.url = 'https://lerboyslove.com'
 
         self.path = ''
         

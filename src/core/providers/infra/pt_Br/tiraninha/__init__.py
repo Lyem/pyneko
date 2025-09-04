@@ -14,7 +14,7 @@ class TiraninhaProvider(WordPressMadara):
     domain = ['www.tiraninha.baby']
 
     def __init__(self):
-        self.url = 'https://www.tiraninha.baby/'
+        self.url = 'https://tiraninha.baby/'
 
         self.path = ''
         

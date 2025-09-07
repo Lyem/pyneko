@@ -3,6 +3,7 @@ import os
 import sys
 import json
 import subprocess
+import traceback
 from PyQt6 import uic
 from typing import List
 from clipman import init, get
@@ -39,6 +40,51 @@ from core.config.img_conf import (
     update_group_replace_original_files
 )
 
+def global_exception_handler(exc_type, exc_value, exc_traceback):
+    if issubclass(exc_type, KeyboardInterrupt):
+        sys.__excepthook__(exc_type, exc_value, exc_traceback)
+        return
+
+    error_msg = ''.join(traceback.format_exception(exc_type, exc_value, exc_traceback))
+    
+    print(f"[ERRO GLOBAL CAPTURADO] {error_msg}", file=sys.stderr)
+    
+    try:
+        config = get_config()
+        translations = {}
+        assets_path = os.path.join(os.path.join(base_path(), 'GUI_qt'), 'assets')
+        
+        with open(os.path.join(assets_path, 'translations.json'), 'r', encoding='utf-8') as file:
+            translations = json.load(file)
+        
+        language = config.lang if config else 'en'
+        if language not in translations:
+            language = 'en'
+        
+        translate = translations[language]
+        
+        app = QApplication.instance()
+        if app is None:
+            app = QApplication(sys.argv)
+        
+        error_title = translate.get('error', 'Erro')
+        app_error_msg = translate.get('app_error', 'Erro na aplicação:')
+        
+        simple_error = str(exc_value) if exc_value else "Erro desconhecido"
+        
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Icon.Critical)
+        msg_box.setWindowTitle(error_title)
+        msg_box.setText(f"{app_error_msg} {simple_error}")
+        msg_box.setDetailedText(error_msg)
+        msg_box.exec()
+        
+    except Exception as e:
+        print(f"[ERRO CRÍTICO] Falha ao exibir erro: {e}", file=sys.stderr)
+        print(f"[ERRO ORIGINAL] {error_msg}", file=sys.stderr)
+
+sys.excepthook = global_exception_handler
+
 class WorkerSignals(QObject):
     progress_changed = pyqtSignal(int)
     download_error = pyqtSignal(str)
@@ -58,7 +104,13 @@ class DownloadRunnable(QRunnable):
         try:
             img_conf = get_img_config()
             conf = get_config()
-            pages = ProviderGetPagesUseCase(self.provider).execute(self.ch)
+            
+            try:
+                pages = ProviderGetPagesUseCase(self.provider).execute(self.ch)
+            except Exception as e:
+                self.signals.download_error.emit(f'{self.ch.name} \n {self.ch.number} \n Erro ao obter páginas: {str(e)}')
+                return
+            
             translations = {}
 
             with open(os.path.join(self.assets, 'translations.json'), 'r', encoding='utf-8') as file:
@@ -87,27 +139,51 @@ class DownloadRunnable(QRunnable):
 
             set_progress_bar_style("#32CD32")
             def update_progress_bar(value):
-                self.signals.progress_changed.emit(int(value))
+                try:
+                    self.signals.progress_changed.emit(int(value))
+                except Exception as e:
+                    print(f"Erro ao atualizar barra de progresso: {e}")
 
-            ch = ProviderDownloadUseCase(self.provider).execute(pages=pages, fn=update_progress_bar)
+            try:
+                ch = ProviderDownloadUseCase(self.provider).execute(pages=pages, fn=update_progress_bar)
+            except Exception as e:
+                self.signals.download_error.emit(f'{self.ch.name} \n {self.ch.number} \n Erro no download: {str(e)}')
+                delete_login(self.provider.domain[0])
+                return
 
             if img_conf.slice:
-                self.signals.name.emit(translation['slicing'])
-                self.signals.progress_changed.emit(0)
-                set_progress_bar_style("#0080FF")
-                ch = SlicerUseCase().execute(ch, update_progress_bar)
+                try:
+                    self.signals.name.emit(translation['slicing'])
+                    self.signals.progress_changed.emit(0)
+                    set_progress_bar_style("#0080FF")
+                    ch = SlicerUseCase().execute(ch, update_progress_bar)
+                except Exception as e:
+                    self.signals.download_error.emit(f'{self.ch.name} \n {self.ch.number} \n Erro no slice: {str(e)}')
+                    return
 
             if img_conf.group:
-                self.signals.name.emit(translation['grouping'])
-                self.signals.progress_changed.emit(0)
-                set_progress_bar_style("#FFA500")
-                GroupImgsUseCase().execute(ch, update_progress_bar)
-                self.signals.progress_changed.emit(100)
+                try:
+                    self.signals.name.emit(translation['grouping'])
+                    self.signals.progress_changed.emit(0)
+                    set_progress_bar_style("#FFA500")
+                    GroupImgsUseCase().execute(ch, update_progress_bar)
+                    self.signals.progress_changed.emit(100)
+                except Exception as e:
+                    self.signals.download_error.emit(f'{self.ch.name} \n {self.ch.number} \n Erro no agrupamento: {str(e)}')
+                    return
 
         except Exception as e:
-            set_progress_bar_style("red")
-            self.signals.download_error.emit(f'{self.ch.name} \n {self.ch.number} \n {str(e)}')
-            delete_login(self.provider.domain[0])
+            try:
+                set_progress_bar_style("red")
+                self.signals.download_error.emit(f'{self.ch.name} \n {self.ch.number} \n Erro geral: {str(e)}')
+                delete_login(self.provider.domain[0])
+            except Exception as cleanup_error:
+                print(f"Erro crítico no DownloadRunnable: {e}")
+                print(f"Erro no cleanup: {cleanup_error}")
+                try:
+                    self.signals.download_error.emit(f'Erro crítico: {str(e)}')
+                except:
+                    pass
 
 class UpdateThread(QThread):
     finished = pyqtSignal()
@@ -134,12 +210,30 @@ class MangaTask(QRunnable):
     def run(self):
         try:
             if self.provider.has_login:
-                ProviderLoginUseCase(self.provider).execute()
-            manga = ProviderMangaUseCase(self.provider).execute(self.link)
-            self.signal.finished.emit(manga)
+                try:
+                    ProviderLoginUseCase(self.provider).execute()
+                except Exception as e:
+                    self.signal.error.emit(f"Erro no login: {str(e)}")
+                    return
+                    
+            try:
+                manga = ProviderMangaUseCase(self.provider).execute(self.link)
+                self.signal.finished.emit(manga)
+            except Exception as e:
+                self.signal.error.emit(f"Erro ao obter manga: {str(e)}")
+                delete_login(self.provider.domain[0])
+                
         except Exception as e:
-            delete_login(self.provider.domain[0])
-            self.signal.error.emit(str(e))
+            try:
+                delete_login(self.provider.domain[0])
+                self.signal.error.emit(f"Erro geral: {str(e)}")
+            except Exception as cleanup_error:
+                print(f"Erro no MangaTask: {e}")
+                print(f"Erro no cleanup: {cleanup_error}")
+                try:
+                    self.signal.error.emit(f"Erro crítico: {str(e)}")
+                except:
+                    pass
 
 
 class ChaptersTaskSignals(QObject):
@@ -155,11 +249,43 @@ class ChaptersTask(QRunnable):
 
     def run(self):
         try:
-            chapters = ProviderGetChaptersUseCase(self.provider).execute(self.id)
-            self.signal.finished.emit(chapters)
+            try:
+                chapters = ProviderGetChaptersUseCase(self.provider).execute(self.id)
+                self.signal.finished.emit(chapters)
+            except Exception as e:
+                self.signal.error.emit(f"Erro ao obter capítulos: {str(e)}")
+                delete_login(self.provider.domain[0])
+                
         except Exception as e:
-            self.signal.error.emit(str(e))
-            delete_login(self.provider.domain[0])
+            try:
+                delete_login(self.provider.domain[0])
+                self.signal.error.emit(f"Erro geral: {str(e)}")
+            except Exception as cleanup_error:
+                print(f"Erro no ChaptersTask: {e}")
+                print(f"Erro no cleanup: {cleanup_error}")
+                try:
+                    self.signal.error.emit(f"Erro crítico: {str(e)}")
+                except:
+                    pass
+
+class SafeSlotWrapper:
+    @staticmethod
+    def protect(func):
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except Exception as e:
+                print(f"Erro capturado no slot {func.__name__}: {e}")
+                print(f"Traceback: {traceback.format_exc()}")
+                
+                try:
+                    app = QApplication.instance()
+                    if app:
+                        QMessageBox.critical(None, "Erro", f"Erro em {func.__name__}: {str(e)}")
+                except:
+                    pass
+                    
+        return wrapper
 
 class MangaDownloaderApp:
     def __init__(self, app=None):
@@ -735,7 +861,6 @@ class MangaDownloaderApp:
 
 if __name__ == "__main__":
     try:
-
         try:
             import pyi_splash # type: ignore
             pyi_splash.close()
@@ -751,18 +876,62 @@ if __name__ == "__main__":
         main_app = MangaDownloaderApp(app)
         
         def start_main_app():
-            loading_window.close()
-            main_app.window.show()
+            try:
+                loading_window.close()
+                main_app.window.show()
+            except Exception as e:
+                print(f"Erro ao iniciar aplicação principal: {e}")
+                global_exception_handler(type(e), e, e.__traceback__)
 
         update_thread.finished.connect(start_main_app)
         update_thread.start()
 
         sys.exit(app.exec())
+        
     except Exception as e:
-        config = get_config()
-        translations = {}
-        with open(os.path.join(os.path.join(os.path.join(base_path(), 'GUI_qt'), 'assets'), 'translations.json'), 'r', encoding='utf-8') as file:
-            translations = json.load(file)
-        new = QApplication(sys.argv)
-        translate = translations[config.lang]
-        QMessageBox.critical(None, translate['error'], f"{translate['app_error']} {str(e)}")
+        print(f"Erro crítico na inicialização: {e}")
+        print(f"Traceback: {traceback.format_exc()}")
+        
+        try:
+            config = get_config()
+            translations = {}
+            assets_path = os.path.join(os.path.join(base_path(), 'GUI_qt'), 'assets')
+            
+            with open(os.path.join(assets_path, 'translations.json'), 'r', encoding='utf-8') as file:
+                translations = json.load(file)
+            
+            app = QApplication.instance()
+            if app is None:
+                app = QApplication(sys.argv)
+            
+            language = config.lang if config else 'en'
+            if language not in translations:
+                language = 'en'
+                
+            translate = translations[language]
+            
+            error_title = translate.get('error', 'Erro')
+            app_error_msg = translate.get('app_error', 'Erro na aplicação:')
+            
+            msg_box = QMessageBox()
+            msg_box.setIcon(QMessageBox.Icon.Critical)
+            msg_box.setWindowTitle(error_title)
+            msg_box.setText(f"{app_error_msg} {str(e)}")
+            msg_box.setDetailedText(traceback.format_exc())
+            msg_box.exec()
+            
+        except Exception as fallback_error:
+            print(f"Erro crítico no fallback: {fallback_error}")
+            print(f"Erro original: {e}")
+            
+            try:
+                app = QApplication.instance()
+                if app is None:
+                    app = QApplication(sys.argv)
+                    
+                QMessageBox.critical(None, "Erro Crítico", 
+                                   f"Erro fatal na aplicação:\n{str(e)}\n\nVerifique os logs para mais detalhes.")
+            except:
+                print("ERRO FATAL: Não foi possível exibir interface de erro")
+                print(f"Erro: {e}")
+                sys.exit(1)

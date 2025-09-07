@@ -162,7 +162,7 @@ class ChaptersTask(QRunnable):
             delete_login(self.provider.domain[0])
 
 class MangaDownloaderApp:
-    def __init__(self):
+    def __init__(self, app=None):
         self.provider_selected = None
         self.manga_id_selectd = None
         self.chapters = []
@@ -173,9 +173,8 @@ class MangaDownloaderApp:
         self.current_dir = os.path.join(base_path(), 'GUI_qt')
         self.assets = os.path.join(self.current_dir, 'assets')
 
-        self.app = QApplication(sys.argv)
+        self.app = app if app is not None else QApplication(sys.argv)
         self.window = uic.loadUi(os.path.join(self.assets, 'main.ui'))
-        self.window.show()
 
         self.window.progress_scroll.hide()
         self.window.logs.clicked.connect(self.open_log_window)
@@ -289,7 +288,8 @@ class MangaDownloaderApp:
 
 
     def run(self):
-        sys.exit(self.app.exec())
+        self.window.show()
+        return self.app.exec()
 
 
     def setFolder(self):
@@ -736,29 +736,28 @@ class MangaDownloaderApp:
 if __name__ == "__main__":
     try:
 
-        if os.environ.get('PYNEKOENV') == 'dev':
-            from jurigged import watch
-            watch(str(base_path()))
-
         try:
             import pyi_splash # type: ignore
             pyi_splash.close()
         except:
             pass
 
-        update = QApplication(sys.argv)
+        app = QApplication(sys.argv)
 
         loading_window = LoadingWindow()
         loading_window.show()
 
         update_thread = UpdateThread()
-        update_thread.finished.connect(loading_window.close)
+        main_app = MangaDownloaderApp(app)
+        
+        def start_main_app():
+            loading_window.close()
+            main_app.window.show()
 
+        update_thread.finished.connect(start_main_app)
         update_thread.start()
 
-        update.exec()
-
-        MangaDownloaderApp().run()
+        sys.exit(app.exec())
     except Exception as e:
         config = get_config()
         translations = {}

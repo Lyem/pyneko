@@ -15,9 +15,9 @@ def run():
     if(is_posix):
         os.environ['PYTHONPATH'] = str(src_path)
 
-        result = subprocess.run(["jurigged", str(app)], capture_output=True, text=True, env=os.environ)
+        result = subprocess.run(["python", str(app)], capture_output=True, text=True, env=os.environ)
     else:
-        script = f"set PYTHONPATH={str(src_path)} && jurigged {str(app)}"
+        script = f"set PYTHONPATH={str(src_path)} && python {str(app)}"
         result = subprocess.run(script, capture_output=True, text=True, shell=True)
 
     output = result.stdout

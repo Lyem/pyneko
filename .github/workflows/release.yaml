@@ -17,6 +17,10 @@ jobs:
           - os: windows-2022
 
     steps:
+      - name: Install CA certificates
+        if: ${{ matrix.config.os == 'ubuntu-22.04' }}
+        run: sudo apt-get update && sudo apt-get install -y ca-certificates
+
       - name: Checkout code
         uses: actions/checkout@v3
 

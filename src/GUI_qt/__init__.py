@@ -26,10 +26,10 @@ if __name__ == "__main__":
         loading_window.show()
 
         update_thread = UpdateThread()
-        main_app = MangaDownloaderMainWindow(app)
         
         def start_main_app():
             try:
+                main_app = MangaDownloaderMainWindow(app)
                 loading_window.close()
                 main_app.window.show()
             except Exception as e:

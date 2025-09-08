@@ -14,7 +14,7 @@ jobs:
       matrix:
         config:
           - os: ubuntu-22.04
-          - os: windows-2019
+          - os: windows-2022
 
     steps:
       - name: Checkout code
@@ -37,7 +37,7 @@ jobs:
         run: poetry run build
 
       - name: Rename build app for Windows
-        if: ${{ matrix.config.os == 'windows-2019' }}
+        if: ${{ matrix.config.os == 'windows-2022' }}
         run: mv ./dist/__init__.exe ./dist/Pyneko.exe
 
       - name: Rename build app for Ubuntu
@@ -71,5 +71,5 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            pyneko-pyinstaller-artifact-windows-2019/Pyneko.exe
+            pyneko-pyinstaller-artifact-windows-2022/Pyneko.exe
             pyneko-pyinstaller-artifact-ubuntu-22.04/Pyneko

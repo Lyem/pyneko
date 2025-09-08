@@ -4,8 +4,8 @@ import json
 from pathlib import Path
 from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import QLocale
-from GUI_qt.load_providers import base_path
-from GUI_qt.config import get_config, update_lang
+from GUI_qt.utils.load_providers import base_path
+from GUI_qt.utils.config import get_config, update_lang
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QProgressBar
 
 def base():

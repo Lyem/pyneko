@@ -2,7 +2,7 @@ import os
 import importlib.util
 from typing import List
 from pathlib import Path
-from GUI_qt.config import get_config
+from GUI_qt.utils.config import get_config
 from platformdirs import user_data_path
 from core.providers.domain.provider_repository import ProviderRepository
 
